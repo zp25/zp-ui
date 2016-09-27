@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <title>Components</title>
+  <link rel="stylesheet" type="text/css" href="styles/main.css">
+</head>
+<body>
+  <div class="app app--banner">
+    <!-- Banner -->
+    <div class="banner" data-group="main">
+      <ul class="banner__main">
+        <li class="slide_pannel" style="background-color: red;"></li><!--
+        --><li class="slide_pannel" style="background-color: green;"></li><!--
+        --><li class="slide_pannel" style="background-color: blue;"></li>
+      </ul>
+      <ul class="banner__nav">
+        <li class="slide_nav" data-order="1">
+          <a class="slide_nav__anchor" href="#slide_1"></a>
+        </li><!--
+        --><li class="slide_nav" data-order="2">
+          <a class="slide_nav__anchor" href="#slide_2"></a>
+        </li><!--
+        --><li class="slide_nav" data-order="3">
+          <a class="slide_nav__anchor" href="#slide_3"></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="app app--banner-lite">
+    <!-- Banner精简版 -->
+    <div class="banner" data-group="lite">
+      <ul class="banner__main">
+        <li class="slide_pannel" style="background-color: red;"></li><!--
+        --><li class="slide_pannel" style="background-color: green;"></li><!--
+        --><li class="slide_pannel" style="background-color: blue;"></li>
+      </ul>
+    </div>
+
+    <div class="main"></div>
+  </div>
+
+  <script src="jquery/dist/jquery.min.js"></script>
+  <script src="scripts/util.js"></script>
+  <script src="scripts/banner.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

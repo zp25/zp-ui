@@ -1,0 +1,124 @@
+@mixin banner($w:100%, $h:420px) {
+  .banner {
+    width: $w;
+    height: $h;
+    position: relative;
+    overflow: hidden;
+
+    .banner__main {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      white-space: nowrap;
+      overflow: visible;
+
+      .slide_pannel {
+        // lte IE 7
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        width: 100%;
+        height: 100%;
+        background: transparent center no-repeat;
+        // gte IE 9
+        background-size: cover;
+      }
+    }
+
+    .banner__nav {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 12px;
+      text-align: center;
+      padding: 15px 0;
+      // gte IE 8
+      // line-height: 42px;
+
+      .slide_nav {
+        // lte IE 7
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        width: 12px;
+        height: 12px;
+        vertical-align: top;
+        // gte IE 9
+        border-radius: 50%;
+        margin: 0 10px;
+        overflow: hidden;
+
+        .slide_nav__anchor {
+          display: block;
+          width: 100%;
+          height: 100%;
+          background-color: color(grey-light);
+
+          &.slide_nav__anchor--focus {
+            background-color: color(grey);
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin bannerFlex($w:100%, $h:420px, $len:3) {
+  .banner {
+    flex: 0 0 auto;
+    width: $w;
+    height: $h;
+    position: relative;
+    overflow: hidden;
+
+    .banner__main {
+      width: 100%;
+      height: 100%;
+      @include flexbox();
+      overflow: visible;
+      transition: transform 0.5s;
+
+      .slide_pannel {
+        flex: 0 0 100%;
+        background: transparent center/cover no-repeat;
+      }
+
+      @for $i from 1 through $len {
+        &[data-focus='#{$i}'] {
+          transform: translateX((1 - $i) * 100%);
+        }
+      }
+    }
+
+    .banner__nav {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 42px;
+      @include flexbox(row, nowrap, center, center);
+
+      .slide_nav {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin: 0 10px;
+        overflow: hidden;
+
+        .slide_nav__anchor {
+          display: block;
+          width: 100%;
+          height: 100%;
+          background-color: color(grey-light);
+
+          &.slide_nav__anchor--focus {
+            background-color: color(grey);
+          }
+        }
+      }
+    }
+  }
+}

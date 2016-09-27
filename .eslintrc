@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "jquery": true,
+    "es6": true
+  },
+  "globals": {
+    "Banner": false,
+    "BannerLite": false
+  },
+  "rules": {
+    "no-console": 1,
+    "no-cond-assign": ["error", "except-parens"],
+    "no-param-reassign": [
+      "error", { "props": false }
+    ]
+  },
+  "extends": "airbnb-base"
+}
