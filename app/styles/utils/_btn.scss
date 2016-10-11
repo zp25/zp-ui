@@ -1,0 +1,42 @@
+.btn {
+  display: inline-block;
+  color: color(black);
+  font-size: fontSize();
+  line-height: 1.5;
+  font-weight: normal;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: color(white);
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  touch-action: manipulation;
+  user-select: none;
+  cursor: pointer;
+
+  &.btn--s {
+    font-size: fontSize(light);
+    padding: 5px 10px;
+  }
+
+  &.btn--green, &.btn--success {
+    color: color(white);
+    background-color: color(green);
+  }
+  &.btn--blue, &.btn--info {
+    color: color(white);
+    background-color: color(blue);
+  }
+  &.btn--red, &.btn--danger {
+    color: color(white);
+    background-color: color(red);
+  }
+
+  &.btn--disabled, &[disabled] {
+    color: color(white) !important;
+    background-color: color(grey) !important;
+    cursor: default !important;
+    // opacity: 0.65;
+  }
+}

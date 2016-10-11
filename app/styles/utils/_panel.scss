@@ -1,0 +1,41 @@
+.panel {
+  font-size: fontSize();
+  font-weight: normal;
+  border: 1px solid color(grey);
+  border-radius: 4px;
+  overflow: hidden;
+
+  // black
+  &.panel--black {
+    border: 1px solid color(black-hole);
+
+    .panel__head {
+      color: color(white);
+      background-color: color(black-hole);
+    }
+  }
+  &.panel--black-reverse {
+    border: 1px solid color(black-hole);
+
+    .panel__body {
+      color: color(white);
+      background-color: color(black-hole);
+    }
+  }
+
+  .panel__head {
+    color: color(black);
+    background-color: color(white);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 10px 15px;
+  }
+
+  .panel__body {
+    color: color(black);
+    background-color: color(white);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    padding: 15px;
+  }
+}

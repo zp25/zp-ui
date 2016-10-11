@@ -3,15 +3,12 @@ import Util from './util';
 
 const bannerBase = Base => class extends Base {
   constructor(group = '', options = {}) {
-    super();
+    super(group);
 
     const { focus, delay } = Object.assign({}, {
       focus: 1,
       delay: 8000,
     }, options);
-
-    // 组
-    this.group = group;
 
     // 主要元素
     this.banner = document.querySelector(
