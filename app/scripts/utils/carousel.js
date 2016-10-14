@@ -51,15 +51,20 @@ carouselBase.prototype.clearTimeout = function carouselClearTimeout() {
 
 /**
  * 播放指定页
+ * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
  * @return {number} 将播放页
  */
-carouselBase.prototype.play = function play() {
+carouselBase.prototype.play = function play(reverse = false) {
   const len = this.main.children('.slide_pannel').length;
   const focus = Number(this.main.data('focus'));
 
   let next = this.focus;
   if (focus) {
-    next = focus >= len ? 1 : focus + 1;
+    if (reverse) {
+      next = focus === 1 ? len : focus - 1;
+    } else {
+      next = focus >= len ? 1 : focus + 1;
+    }
   }
 
   return next;
@@ -129,18 +134,18 @@ Carousel.prototype.handle = function handle(e) {
 };
 
 /**
- * 启动定时器，播放下一张图
- * @return {number} 定时器ID
+ * 播放指定页
+ * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
  */
-Carousel.prototype.play = function play() {
-  const next = Object.getPrototypeOf(Carousel.prototype).play.call(this);
+Carousel.prototype.play = function play(reverse) {
+  const next = Object.getPrototypeOf(Carousel.prototype).play.call(this, reverse);
 
   this.nav.find(
     `.slide_nav[data-order="${next}"] .slide_nav__anchor`).click();
 };
 
 /**
- * 自动播放
+ * 自动播放，总是正向播放，正向指播放当前图片右侧的图片
  */
 Carousel.prototype.autoplay = function autoplay() {
   this.isAutoplay = true;
@@ -170,6 +175,9 @@ function CarouselLite(group, options = {}) {
 CarouselLite.prototype = Object.create(carouselBase.prototype);
 CarouselLite.prototype.constructor = CarouselLite;
 
+/**
+ * 自动播放
+ */
 CarouselLite.prototype.play = function play() {
   this.clearTimeout();
 

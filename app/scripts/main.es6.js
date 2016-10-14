@@ -2,11 +2,24 @@ import { Carousel, CarouselLite } from './utils_es6/carousel';
 import Mask from './utils_es6/mask';
 
 /**
+ * carousel自定义导航的处理函数
+ * @param {Event} e 事件对象
+ * @param {Object} carousel 受控制的carousel对象
+ */
+function customNav(e, carousel) {
+  e.preventDefault();
+
+  const reverse = e.target.dataset.reverse === 'true';
+  carousel.play(reverse);
+}
+
+/**
  * 事件处理
  * @param {Object} e 事件对象
  * @param {Object} mask mask对象
+ * @param {Object} carousel 受控制的carousel对象
  */
-function eventHandler(e, mask) {
+function eventHandler(e, mask, carousel) {
   const trigger = e.target.dataset.trigger;
 
   switch (trigger) {
@@ -23,6 +36,9 @@ function eventHandler(e, mask) {
     case 'close':
       e.preventDefault();
       mask.hide();
+      break;
+    case 'custom-nav':
+      customNav(e, carousel);
       break;
     default:
       e.stopPropagation();
@@ -44,5 +60,5 @@ document.addEventListener('DOMContentLoaded', () => {
   mask.hide();
 
   // event listener
-  document.body.addEventListener('click', (e) => { eventHandler(e, mask); }, false);
+  document.body.addEventListener('click', (e) => { eventHandler(e, mask, carousel); }, false);
 }, false);

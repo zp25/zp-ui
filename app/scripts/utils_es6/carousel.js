@@ -51,16 +51,21 @@ const carouselBase = Base => class extends Base {
 
   /**
    * 播放指定页
+   * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
    * @return {number} 将播放页
    */
-  play() {
+  play(reverse = false) {
     // main，存储信息，读取轮播页数和聚焦页
     const len = this.main.querySelectorAll('.slide_pannel').length;
     const focus = Number(this.main.dataset.focus);
 
     let next = this.focus;
     if (focus) {
-      next = focus >= len ? 1 : focus + 1;
+      if (reverse) {
+        next = focus === 1 ? len : focus - 1;
+      } else {
+        next = focus >= len ? 1 : focus + 1;
+      }
     }
 
     return next;
@@ -130,16 +135,17 @@ class Carousel extends carouselBase(Util) {
 
   /**
    * 播放指定页
+   * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
    */
-  play() {
-    const next = super.play();
+  play(reverse) {
+    const next = super.play(reverse);
 
     this.nav.querySelector(
       `.slide_nav[data-order="${next}"] .slide_nav__anchor`).click();
   }
 
   /**
-   * 自动播放
+   * 自动播放，总是正向播放，正向指播放当前图片右侧的图片
    */
   autoplay() {
     this.isAutoplay = true;
@@ -149,7 +155,7 @@ class Carousel extends carouselBase(Util) {
   }
 
   /**
-   * 暂停轮播
+   * 暂停自动播放
    */
   pause() {
     super.pause();
