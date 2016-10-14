@@ -11,8 +11,8 @@
     "es6": true
   },
   "globals": {
-    "Banner": false,
-    "BannerLite": false
+    "Carousel": false,
+    "CarouselLite": false
   },
   "rules": {
     "no-console": 1,

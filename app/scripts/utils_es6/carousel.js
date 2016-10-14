@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import Util from './util';
 
-const bannerBase = Base => class extends Base {
+const carouselBase = Base => class extends Base {
   constructor(group = '', options = {}) {
     super(group);
 
@@ -11,10 +11,10 @@ const bannerBase = Base => class extends Base {
     }, options);
 
     // 主要元素
-    this.banner = document.querySelector(
-      `.banner${this.group ? `[data-group="${this.group}"]` : ''}`
+    this.carousel = document.querySelector(
+      `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`
     );
-    this.main = this.banner.querySelector('.banner__main');
+    this.main = this.carousel.querySelector('.carousel__main');
 
     // 初始聚焦页，不要修改，没有上边界判断
     if (typeof focus === 'number' || focus instanceof Number) {
@@ -74,12 +74,12 @@ const bannerBase = Base => class extends Base {
   }
 };
 
-class Banner extends bannerBase(Util) {
+class Carousel extends carouselBase(Util) {
   constructor(group, options = {}) {
     super(group, options);
 
     // 主要元素
-    this.nav = this.banner.querySelector('.banner__nav');
+    this.nav = this.carousel.querySelector('.carousel__nav');
 
     // 是否自动播放
     this.isAutoplay = false;
@@ -158,7 +158,7 @@ class Banner extends bannerBase(Util) {
   }
 }
 
-class BannerLite extends bannerBase(Util) {
+class CarouselLite extends carouselBase(Util) {
   constructor(group, options = {}) {
     super(group, options);
   }
@@ -184,4 +184,4 @@ class BannerLite extends bannerBase(Util) {
   }
 }
 
-export { Banner, BannerLite };
+export { Carousel, CarouselLite };

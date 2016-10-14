@@ -1,11 +1,11 @@
 /* eslint no-unused-vars:1 */
 
 /**
- * Banner超类
+ * Carousel超类
  * @param {string} group   轮播组
  * @param {Object} options 配置
  */
-function bannerBase(group, options = {}) {
+function carouselBase(group, options = {}) {
   const focus = options.focus || 1;
   const delay = options.delay || 8000;
 
@@ -13,8 +13,8 @@ function bannerBase(group, options = {}) {
   this.group = group || '';
 
   // 主要元素
-  this.banner = $(`.banner${group ? `[data-group="${group}"]` : ''}`);
-  this.main = this.banner.children('.banner__main');
+  this.carousel = $(`.carousel${group ? `[data-group="${group}"]` : ''}`);
+  this.main = this.carousel.children('.carousel__main');
 
   // 初始聚焦页，不要修改，没有上边界判断
   if (typeof focus === 'number' || focus instanceof Number) {
@@ -33,7 +33,7 @@ function bannerBase(group, options = {}) {
 /**
  * 设置定时器，延时执行play
  */
-bannerBase.prototype.setTimeout = function bannerSetTimeout() {
+carouselBase.prototype.setTimeout = function carouselSetTimeout() {
   this.timeoutID = setTimeout(() => {
     this.play();
   }, this.delay);
@@ -42,7 +42,7 @@ bannerBase.prototype.setTimeout = function bannerSetTimeout() {
 /**
  * 清理定时器
  */
-bannerBase.prototype.clearTimeout = function bannerClearTimeout() {
+carouselBase.prototype.clearTimeout = function carouselClearTimeout() {
   if (this.timeoutID) {
     clearTimeout(this.timeoutID);
     this.timeoutID = NaN;
@@ -53,7 +53,7 @@ bannerBase.prototype.clearTimeout = function bannerClearTimeout() {
  * 播放指定页
  * @return {number} 将播放页
  */
-bannerBase.prototype.play = function play() {
+carouselBase.prototype.play = function play() {
   const len = this.main.children('.slide_pannel').length;
   const focus = Number(this.main.data('focus'));
 
@@ -65,7 +65,7 @@ bannerBase.prototype.play = function play() {
   return next;
 };
 
-bannerBase.prototype.pause = function pause() {
+carouselBase.prototype.pause = function pause() {
   this.clearTimeout();
 };
 
@@ -74,11 +74,11 @@ bannerBase.prototype.pause = function pause() {
  * @param {string} group   轮播组
  * @param {Object} options 配置
  */
-function Banner(group, options = {}) {
-  bannerBase.call(this, group, options);
+function Carousel(group, options = {}) {
+  carouselBase.call(this, group, options);
 
   // 主要元素
-  this.nav = this.banner.children('.banner__nav');
+  this.nav = this.carousel.children('.carousel__nav');
 
   // 是否自动播放
   this.isAutoplay = false;
@@ -86,13 +86,13 @@ function Banner(group, options = {}) {
   this.bind();
 }
 
-Banner.prototype = Object.create(bannerBase.prototype);
-Banner.prototype.constructor = Banner;
+Carousel.prototype = Object.create(carouselBase.prototype);
+Carousel.prototype.constructor = Carousel;
 
 /**
  * 为导航绑定事件监听
  */
-Banner.prototype.bind = function bind() {
+Carousel.prototype.bind = function bind() {
   const that = this;
 
   this.nav.children('.slide_nav').each(function each() {
@@ -108,7 +108,7 @@ Banner.prototype.bind = function bind() {
  * 导航回调
  * @param {Object} e 事件对象
  */
-Banner.prototype.handle = function handle(e) {
+Carousel.prototype.handle = function handle(e) {
   this.clearTimeout();
 
   const order = Number($(e.currentTarget).data('order'));
@@ -132,8 +132,8 @@ Banner.prototype.handle = function handle(e) {
  * 启动定时器，播放下一张图
  * @return {number} 定时器ID
  */
-Banner.prototype.play = function play() {
-  const next = Object.getPrototypeOf(Banner.prototype).play.call(this);
+Carousel.prototype.play = function play() {
+  const next = Object.getPrototypeOf(Carousel.prototype).play.call(this);
 
   this.nav.find(
     `.slide_nav[data-order="${next}"] .slide_nav__anchor`).click();
@@ -142,7 +142,7 @@ Banner.prototype.play = function play() {
 /**
  * 自动播放
  */
-Banner.prototype.autoplay = function autoplay() {
+Carousel.prototype.autoplay = function autoplay() {
   this.isAutoplay = true;
 
   // 播放初始聚焦页
@@ -152,8 +152,8 @@ Banner.prototype.autoplay = function autoplay() {
 /**
  * 暂停自动播放
  */
-Banner.prototype.pause = function pause() {
-  Object.getPrototypeOf(Banner.prototype).pause.call(this);
+Carousel.prototype.pause = function pause() {
+  Object.getPrototypeOf(Carousel.prototype).pause.call(this);
 
   this.isAutoplay = false;
 };
@@ -163,17 +163,17 @@ Banner.prototype.pause = function pause() {
  * @param {string} group   轮播组
  * @param {Object} options 配置
  */
-function BannerLite(group, options = {}) {
-  bannerBase.call(this, group, options);
+function CarouselLite(group, options = {}) {
+  carouselBase.call(this, group, options);
 }
 
-BannerLite.prototype = Object.create(bannerBase.prototype);
-BannerLite.prototype.constructor = BannerLite;
+CarouselLite.prototype = Object.create(carouselBase.prototype);
+CarouselLite.prototype.constructor = CarouselLite;
 
-BannerLite.prototype.play = function play() {
+CarouselLite.prototype.play = function play() {
   this.clearTimeout();
 
-  const next = Object.getPrototypeOf(BannerLite.prototype).play.call(this);
+  const next = Object.getPrototypeOf(CarouselLite.prototype).play.call(this);
   const offset = `${(1 - next) * 100}%`;
 
   this.main.data('focus', next)
@@ -185,6 +185,6 @@ BannerLite.prototype.play = function play() {
 /**
  * 自动播放，play的别名
  */
-BannerLite.prototype.autoplay = function autoplay() {
+CarouselLite.prototype.autoplay = function autoplay() {
   this.play();
 };
