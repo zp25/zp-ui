@@ -21,6 +21,7 @@ function eventHandler(e, mask) {
       setTimeout(() => { mask.message('Loading结束'); }, 2000);
       break;
     case 'close':
+      e.preventDefault();
       mask.hide();
       break;
     default:
