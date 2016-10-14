@@ -29,6 +29,36 @@
       right: 20px;
     }
   }
+
+  &.app--manu {
+    position: relative;
+    height: 100px;
+    @include manuFlex();
+    transform-style: preserve-3d;
+
+    .manu {
+      .manu__nav {
+        &.manu__nav--active {
+          .custom-detail {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .custom-detail {
+          position: absolute;
+          top: 42px;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          line-height: 24px;
+          list-style: decimal inside;
+          background-color: color(white);
+          padding: 5px 10px;
+          transform: translate3d(0, 0, -999px);
+        }
+      }
+    }
+  }
 }
 
 main {

@@ -1,5 +1,6 @@
 import { Carousel, CarouselLite } from './utils_es6/carousel';
 import Mask from './utils_es6/mask';
+import Manu from './utils_es6/manu';
 
 /**
  * carousel自定义导航的处理函数
@@ -58,6 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // mask
   const mask = new Mask('main');
   mask.hide();
+
+  // manu
+  const manu = new Manu('main');
+  manu.init();
 
   // event listener
   document.body.addEventListener('click', (e) => { eventHandler(e, mask, carousel); }, false);

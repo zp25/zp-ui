@@ -1,0 +1,32 @@
+@mixin manuFlex() {
+  .manu {
+    width: 100%;
+    @include flexbox();
+    border-bottom: 1px solid color(border);
+
+    .manu__nav {
+      flex: 0 0 auto;
+      margin-right: 3px;
+      margin-bottom: -1px;
+
+      &.manu__nav--active {
+        .manu__nav__anchor {
+          background-color: color(white);
+          border: 1px solid color(border);
+          border-bottom-color: transparent;
+        }
+      }
+
+      .manu__nav__anchor {
+        display: block;
+        color: color(black);
+        font-size: fontSize();
+        line-height: (20 / 14);
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: 4px 4px 0 0;
+        padding: 10px 15px;
+      }
+    }
+  }
+}
