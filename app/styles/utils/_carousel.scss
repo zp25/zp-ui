@@ -14,7 +14,7 @@
       white-space: nowrap;
       overflow: visible;
 
-      .slide_pannel {
+      .slide-pannel {
         // lte IE 7
         display: inline-block;
         *display: inline;
@@ -38,7 +38,7 @@
       // gte IE 8
       // line-height: 42px;
 
-      .slide_nav {
+      .slide-nav {
         // lte IE 7
         display: inline-block;
         *display: inline;
@@ -51,15 +51,17 @@
         margin: 0 10px;
         overflow: hidden;
 
-        .slide_nav__anchor {
+        &.slide-nav--active {
+          .slide-nav__anchor {
+            background-color: color(grey);
+          }
+        }
+
+        .slide-nav__anchor {
           display: block;
           width: 100%;
           height: 100%;
           background-color: color(grey-light);
-
-          &.slide_nav__anchor--focus {
-            background-color: color(grey);
-          }
         }
       }
     }
@@ -81,7 +83,7 @@
       overflow: visible;
       transition: transform 0.5s;
 
-      .slide_pannel {
+      .slide-pannel {
         flex: 0 0 100%;
         background: transparent center/cover no-repeat;
       }
@@ -101,22 +103,24 @@
       height: 42px;
       @include flexbox(row, nowrap, center, center);
 
-      .slide_nav {
+      .slide-nav {
         width: 12px;
         height: 12px;
         border-radius: 50%;
         margin: 0 10px;
         overflow: hidden;
 
-        .slide_nav__anchor {
+        &.slide-nav--active {
+          .slide-nav__anchor {
+            background-color: color(grey);
+          }
+        }
+
+        .slide-nav__anchor {
           display: block;
           width: 100%;
           height: 100%;
           background-color: color(grey-light);
-
-          &.slide_nav__anchor--focus {
-            background-color: color(grey);
-          }
         }
       }
     }

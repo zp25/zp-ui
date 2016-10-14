@@ -56,7 +56,7 @@ const carouselBase = Base => class extends Base {
    */
   play(reverse = false) {
     // main，存储信息，读取轮播页数和聚焦页
-    const len = this.main.querySelectorAll('.slide_pannel').length;
+    const len = this.main.querySelectorAll('.slide-pannel').length;
     const focus = Number(this.main.dataset.focus);
 
     let next = this.focus;
@@ -97,7 +97,7 @@ class Carousel extends carouselBase(Util) {
    * 为导航绑定事件监听
    */
   bind() {
-    Array.from(this.nav.querySelectorAll('.slide_nav')).forEach((list) => {
+    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((list) => {
       list.onclick = (e) => {
         e.preventDefault();
 
@@ -119,14 +119,13 @@ class Carousel extends carouselBase(Util) {
     this.main.dataset.focus = order;
 
     // nav，控制，修改样式
-    Array.from(this.nav.querySelectorAll('.slide_nav__anchor'))
-      .forEach((anchor) => {
-        if (e.target === anchor) {
-          anchor.classList.add('slide_nav__anchor--focus');
-        } else {
-          anchor.classList.remove('slide_nav__anchor--focus');
-        }
-      });
+    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((list) => {
+      if (e.currentTarget === list) {
+        list.classList.add('slide-nav--active');
+      } else {
+        list.classList.remove('slide-nav--active');
+      }
+    });
 
     if (this.isAutoplay) {
       this.setTimeout();
@@ -141,7 +140,7 @@ class Carousel extends carouselBase(Util) {
     const next = super.play(reverse);
 
     this.nav.querySelector(
-      `.slide_nav[data-order="${next}"] .slide_nav__anchor`).click();
+      `.slide-nav[data-order="${next}"] .slide-nav__anchor`).click();
   }
 
   /**
