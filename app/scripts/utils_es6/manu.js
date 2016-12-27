@@ -7,8 +7,7 @@ export default class extends Util {
 
     // 主要元素
     this.manu = document.querySelector(
-      `.manu${this.group ? `[data-group="${this.group}"]` : ''}`
-    );
+      `.manu${this.group ? `[data-group="${this.group}"]` : ''}`);
 
     // 绑定事件监听
     this.bind();

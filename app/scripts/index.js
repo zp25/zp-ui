@@ -1,3 +1,7 @@
+import 'es5-shim';
+import 'es5-shim/es5-sham';
+import { Carousel, CarouselLite } from './utils/carousel';
+
 /**
  * carousel自定义导航的处理函数
  * @param {Event} e 事件对象

@@ -1,52 +1,96 @@
 import gulp from 'gulp';
 import del from 'del';
 import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
 import browserSync from 'browser-sync';
 import gulpLoadPlugins from 'gulp-load-plugins';
-import browserify from 'browserify';
-import watchify from 'watchify';
-import babelify from 'babelify';
-import source from 'vinyl-source-stream';
+import dotenv from 'dotenv';
+import { tmpConcat, concat } from './gulpfile.concat.babel';
+import { tmpBundle, bundle, vendor } from './gulpfile.bundle.babel';
+
+dotenv.config({ silent: true });
 
 const $ = gulpLoadPlugins();
 const BS = browserSync.create();
-const AUTOPREFIXER_CONFIG = { browsers: ['last 1 version'] };
+const AUTOPREFIXER_CONFIG = { browsers: ['last 2 versions', 'chrome >= 49'] };
+const BUNDLE = process.env.SCRIPT === 'bundle';
 const PATHS = {
   html: {
     src: 'app/**/*.html',
+    dest: 'dist',
   },
   styles: {
     src: 'app/styles/**/*.{scss,css}',
     tmp: '.tmp/styles',
+    dest: 'dist/styles',
   },
   scripts: {
-    src: 'app/scripts/**/*.js',
-    concat: [
-      'app/scripts/utils/**/*.js',
-      'app/scripts/main.js'
+    src: [
+      'app/scripts/**/*.js',
     ],
-    entries: [
-      'app/scripts/main.es6.js'
+    exclude: [
+      '!app/scripts/templates.min.js',
     ],
-    tmp: '.tmp/scripts',
+    watch: [
+      'app/scripts/dev.js',
+      'app/scripts/templates.min.js',
+    ],
   },
   images: {
     src: 'app/images/**/*',
+    tmp: '.tmp/images',
+    dest: 'dist/images',
   },
   assets: ['.tmp', 'app', 'node_modules'],
 };
-const VENDOR = ['babel-polyfill'];
 
 // Lint JavaScript
 function lint() {
-  return gulp.src(PATHS.scripts.src)
+  return gulp.src(PATHS.scripts.src.concat(PATHS.scripts.exclude))
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.if(!BS.active, $.eslint.failOnError()))
 }
 
+// Image Optimazation
+const makeHashKey = entry => file => [file.contents.toString('utf8'), entry].join('');
+
+function images() {
+  return gulp.src(PATHS.images.src)
+    .pipe($.cache($.imagemin({
+      progressive: true,
+      interlaced: true,
+      multipass: true,
+    }), {
+      key: makeHashKey('images'),
+    }))
+    .pipe(gulp.dest(PATHS.images.dest))
+    .pipe($.size({ title: 'images' }));
+}
+
+function tmpWebp() {
+  return gulp.src(PATHS.images.src)
+    .pipe($.cache($.webp({ quality: 75 }), { key: makeHashKey('webp') }))
+    .pipe(gulp.dest(PATHS.images.tmp))
+    .pipe(BS.stream({ once: true }));
+}
+
+function webp() {
+  return gulp.src(PATHS.images.src)
+    .pipe($.cache($.webp({ quality: 75 }), { key: makeHashKey('webp') }))
+    .pipe(gulp.dest(PATHS.images.dest))
+    .pipe($.size({ title: 'webp' }));
+}
+
+// Copy
+function copy() {
+  return gulp.src(['app/*', '!app/*.html'])
+    .pipe(gulp.dest('dist'))
+    .pipe($.size({ title: 'copy' }));
+}
+
 // Styles
-function sass() {
+function tmpSass() {
   const processors = [
     autoprefixer(AUTOPREFIXER_CONFIG)
   ];
@@ -63,68 +107,52 @@ function sass() {
     .pipe(BS.stream({ once: true }));
 }
 
-// Scripts
-function vendor() {
-  const b = browserify({
-    debug: true,
-  });
+function sass() {
+  const processors = [
+    autoprefixer(AUTOPREFIXER_CONFIG),
+    cssnano()
+  ];
 
-  VENDOR.forEach(lib => {
-    b.require(lib);
-  });
-
-  b.on('log', $.util.log);
-
-  return b.bundle()
-    .on('error', $.util.log.bind($.util, 'Browserify Error'))
-    .pipe(source('vendor.js'))
-    .pipe(gulp.dest(PATHS.scripts.tmp));
-}
-
-function script() {
-  return gulp.src(PATHS.scripts.concat)
-    .pipe($.newer(PATHS.scripts.tmp))
+  return gulp.src(PATHS.styles.src)
     .pipe($.sourcemaps.init())
-      .pipe($.babel())
-    .pipe($.sourcemaps.write())
-    .pipe(gulp.dest(PATHS.scripts.tmp))
-    .pipe(BS.stream({ once: true }));
+      .pipe($.sass({ precision: 10 })
+        .on('error', $.sass.logError)
+      )
+      .pipe($.postcss(processors))
+      .pipe($.size({ title: 'styles' }))
+    .pipe($.sourcemaps.write('.'))
+    .pipe(gulp.dest(PATHS.styles.dest));
 }
 
-function bundle() {
-  const b = browserify({
-    entries: PATHS.scripts.entries,
-    cache: {},
-    packageCache: {},
-    transform: [babelify],
-    plugin: [watchify],
-    debug: true,
-  });
+// HTML
+function html() {
+  const processors = [
+    cssnano()
+  ];
 
-  VENDOR.forEach(lib => {
-    b.exclude(lib);
-  });
-
-  // 只有执行bundle()后watchify才能监听update事件
-  b.on('update', () => development(b));
-  b.on('log', $.util.log);
-
-  return development(b);
-}
-
-function development(b) {
-  return b.bundle()
-    .on('error', $.util.log.bind($.util, 'Browserify Error'))
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest(PATHS.scripts.tmp))
-    .pipe(BS.stream({ once: true }));
+  return gulp.src(PATHS.html.src)
+    .pipe($.useref({ searchPath: PATHS.assets }))
+    .pipe($.if('*.html', $.htmlmin({
+      collapseWhitespace: true,
+      collapseBooleanAttributes: true,
+      removeAttributeQuotes: true,
+      removeComments: true,
+      removeEmptyAttributes: true,
+      removeOptionalTags: true,
+      removeRedundantAttributes: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+    })))
+    .pipe($.if('*.html', $.size({ title: 'html', showFiles: true })))
+    .pipe($.if('*.css', $.postcss(processors)))
+    .pipe(gulp.dest(PATHS.html.dest));
 }
 
 // Serve
 function serve() {
   BS.init({
     notify: false,
-    logPrefix: 'components',
+    logPrefix: 'work',
     server: {
       baseDir: PATHS.assets,
     },
@@ -132,28 +160,56 @@ function serve() {
   });
 
   gulp.watch(PATHS.html.src).on('change', BS.reload);
-  gulp.watch(PATHS.styles.src, sass);
-  gulp.watch(PATHS.images.src).on('change', BS.reload);
+  gulp.watch(PATHS.styles.src, tmpSass);
+  gulp.watch(PATHS.images.src, tmpWebp);
 
-  gulp.watch(PATHS.scripts.src, lint);
-  gulp.watch(PATHS.scripts.concat, script);
+  if (BUNDLE) {
+    gulp.watch(PATHS.scripts.src, lint);
+    // 不打包PATHS.scripts.watch中文件，不会触发reload
+    gulp.watch(PATHS.scripts.watch).on('change', BS.reload);
+  } else {
+    gulp.watch(PATHS.scripts.src, gulp.parallel(lint, 'tmpScript'));
+  }
+}
+
+// Serve distribution
+function serveDist() {
+  BS.init({
+    notify: false,
+    logPrefix: 'work',
+    server: 'dist',
+    port: 3001,
+  });
 }
 
 // Clean output directory
-function cleanTmp() {
-  return del(['.tmp']);
+function clean() {
+  return del(['.tmp', 'dist/*']);
 }
 
 // Tasks
-gulp.task('clean', gulp.series(cleanTmp, vendor));
+gulp.task('tmpScript', (BUNDLE ? tmpBundle(BS) : tmpConcat(BS)));
+gulp.task('script', (BUNDLE ? bundle : concat));
 gulp.task(vendor);
-gulp.task(script);
-gulp.task(bundle);
 
-// run scripts, sass first and run browserSync before watch
+gulp.task('clean:all', (BUNDLE ? gulp.series(clean, vendor) : clean));
+gulp.task('clean:cache', cb => $.cache.clearAll(cb));
+
+// Build production files, the default task
 gulp.task('default',
   gulp.series(
-    gulp.parallel(script, bundle, sass),
+    'clean:all', html,
+    gulp.parallel(lint, 'script', sass, images, webp, copy)
+  )
+);
+
+// run scripts, sass first and run browserSync before watch
+gulp.task('serve',
+  gulp.series(
+    gulp.parallel('tmpScript', tmpSass, tmpWebp),
     serve
   )
 );
+
+// Build and serve the output from the dist build
+gulp.task('serve:dist', gulp.series('default', serveDist));

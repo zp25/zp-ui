@@ -12,16 +12,11 @@ const carouselBase = Base => class extends Base {
 
     // 主要元素
     this.carousel = document.querySelector(
-      `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`
-    );
+      `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`);
     this.main = this.carousel.querySelector('.carousel__main');
 
-    // 初始聚焦页，不要修改，没有上边界判断
-    if (typeof focus === 'number' || focus instanceof Number) {
-      this.focus = focus > 0 ? focus : 1;
-    } else {
-      this.focus = 1;
-    }
+    // 初始聚焦页，没有上边界判断
+    this.focus = Number.isInteger(focus) && focus > 0 ? focus : 1;
 
     // 轮播延时
     this.delay = delay;
@@ -51,11 +46,11 @@ const carouselBase = Base => class extends Base {
 
   /**
    * 播放指定页
-   * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
-   * @return {number} 将播放页
+   * @param {Boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
+   * @return {Number} 将播放页
    */
   play(reverse = false) {
-    // main，存储信息，读取轮播页数和聚焦页
+    // 读取轮播页数和当前聚焦页
     const len = this.main.querySelectorAll('.slide-pannel').length;
     const focus = Number(this.main.dataset.focus);
 
@@ -97,11 +92,12 @@ class Carousel extends carouselBase(Util) {
    * 为导航绑定事件监听
    */
   bind() {
-    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((list) => {
-      list.onclick = (e) => {
+    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((item) => {
+      item.onclick = (e) => {
         e.preventDefault();
 
-        this.handle(e);
+        const target = e.currentTarget;
+        this.handle(target);
       };
     });
   }
@@ -110,20 +106,20 @@ class Carousel extends carouselBase(Util) {
    * 导航回调
    * @param {Object} e 事件对象
    */
-  handle(e) {
+  handle(target) {
     this.clearTimeout();
 
-    const order = e.currentTarget.dataset.order;
+    const order = target.dataset.order;
 
     // main，存储信息，存入聚焦页
     this.main.dataset.focus = order;
 
     // nav，控制，修改样式
-    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((list) => {
-      if (e.currentTarget === list) {
-        list.classList.add('slide-nav--active');
+    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((item) => {
+      if (target === item) {
+        item.classList.add('slide-nav--active');
       } else {
-        list.classList.remove('slide-nav--active');
+        item.classList.remove('slide-nav--active');
       }
     });
 
@@ -134,7 +130,7 @@ class Carousel extends carouselBase(Util) {
 
   /**
    * 播放指定页
-   * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
+   * @param {Boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
    */
   play(reverse) {
     const next = super.play(reverse);

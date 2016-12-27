@@ -1,4 +1,4 @@
-/* eslint no-unused-vars:1 */
+import 'babel-polyfill';
 
 /**
  * Carousel超类
@@ -17,11 +17,8 @@ function carouselBase(group, options = {}) {
   this.main = this.carousel.children('.carousel__main');
 
   // 初始聚焦页，不要修改，没有上边界判断
-  if (typeof focus === 'number' || focus instanceof Number) {
-    this.focus = focus > 0 ? focus : 1;
-  } else {
-    this.focus = 1;
-  }
+  this.focus = (typeof focus === 'number' || focus instanceof Number) && focus > 0
+    ? focus : 1;
 
   // 轮播延时
   this.delay = delay;
@@ -55,8 +52,8 @@ carouselBase.prototype.clearTimeout = function carouselClearTimeout() {
  * @return {number} 将播放页
  */
 carouselBase.prototype.play = function play(reverse = false) {
-  const len = this.main.children('.slide_pannel').length;
-  const focus = Number(this.main.data('focus'));
+  const len = this.main.children('.slide-pannel').length;
+  const focus = this.main.data('focus');
 
   let next = this.focus;
   if (focus) {
@@ -100,11 +97,12 @@ Carousel.prototype.constructor = Carousel;
 Carousel.prototype.bind = function bind() {
   const that = this;
 
-  this.nav.children('.slide_nav').each(function each() {
+  this.nav.children('.slide-nav').each(function each() {
     $(this).on('click', (e) => {
       e.preventDefault();
 
-      that.handle(e);
+      const target = $(e.currentTarget);
+      that.handle(target);
     });
   });
 };
@@ -113,10 +111,10 @@ Carousel.prototype.bind = function bind() {
  * 导航回调
  * @param {Object} e 事件对象
  */
-Carousel.prototype.handle = function handle(e) {
+Carousel.prototype.handle = function handle(target) {
   this.clearTimeout();
 
-  const order = Number($(e.currentTarget).data('order'));
+  const order = Number(target.data('order'));
   const offset = `${(1 - order) * 100}%`;
 
   // main
@@ -124,9 +122,9 @@ Carousel.prototype.handle = function handle(e) {
     .animate({ left: offset }, 500);
 
   // nav
-  this.nav.find('.slide_nav__anchor')
-    .removeClass('slide_nav__anchor--focus')
-    .filter(e.target).addClass('slide_nav__anchor--focus');
+  this.nav.children('.slide-nav')
+    .removeClass('slide-nav--active')
+    .filter(target).addClass('slide-nav--active');
 
   if (this.isAutoplay) {
     this.setTimeout();
@@ -141,7 +139,7 @@ Carousel.prototype.play = function play(reverse) {
   const next = Object.getPrototypeOf(Carousel.prototype).play.call(this, reverse);
 
   this.nav.find(
-    `.slide_nav[data-order="${next}"] .slide_nav__anchor`).click();
+    `.slide-nav[data-order="${next}"] .slide-nav__anchor`).click();
 };
 
 /**
@@ -196,3 +194,5 @@ CarouselLite.prototype.play = function play() {
 CarouselLite.prototype.autoplay = function autoplay() {
   this.play();
 };
+
+export { Carousel, CarouselLite };

@@ -7,8 +7,7 @@ export default class extends Util {
 
     // 主要元素
     this.mask = document.querySelector(
-      `.mask${this.group ? `[data-group="${this.group}"]` : ''}`
-    );
+      `.mask${this.group ? `[data-group="${this.group}"]` : ''}`);
     this.main = this.mask.querySelector('.mask__panel');
 
     // 定时器
