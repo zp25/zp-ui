@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 /**
  * Carousel超类
  * @param {string} group   轮播组
