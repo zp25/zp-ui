@@ -4,49 +4,24 @@ import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import browserSync from 'browser-sync';
 import gulpLoadPlugins from 'gulp-load-plugins';
-import dotenv from 'dotenv';
+import {
+  AUTOPREFIXER_CONFIG,
+  HTMLMINIFIER,
+  PATHS,
+} from './constants';
 import { tmpConcat, concat } from './gulpfile.concat.babel';
 import { tmpBundle, bundle, vendor } from './gulpfile.bundle.babel';
 
-dotenv.config({ silent: true });
-
-const $ = gulpLoadPlugins();
+const $ = gulpLoadPlugins({
+  rename: {
+    'gulp-rev-replace': 'replace',
+  },
+});
 const BS = browserSync.create();
-const AUTOPREFIXER_CONFIG = { browsers: ['last 2 versions', 'chrome >= 49'] };
-const BUNDLE = process.env.SCRIPT === 'bundle';
-const PATHS = {
-  html: {
-    src: 'app/**/*.html',
-    dest: 'dist',
-  },
-  styles: {
-    src: 'app/styles/**/*.{scss,css}',
-    tmp: '.tmp/styles',
-    dest: 'dist/styles',
-  },
-  scripts: {
-    src: [
-      'app/scripts/**/*.js',
-    ],
-    exclude: [
-      '!app/scripts/templates.min.js',
-    ],
-    watch: [
-      'app/scripts/dev.js',
-      'app/scripts/templates.min.js',
-    ],
-  },
-  images: {
-    src: 'app/images/**/*',
-    tmp: '.tmp/images',
-    dest: 'dist/images',
-  },
-  assets: ['.tmp', 'app', 'node_modules'],
-};
 
 // Lint JavaScript
 function lint() {
-  return gulp.src(PATHS.scripts.src.concat(PATHS.scripts.exclude))
+  return gulp.src(PATHS.scripts.src)
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.if(!BS.active, $.eslint.failOnError()))
@@ -84,7 +59,7 @@ function webp() {
 
 // Copy
 function copy() {
-  return gulp.src(['app/*', '!app/*.html'])
+  return gulp.src(PATHS.copy)
     .pipe(gulp.dest('dist'))
     .pipe($.size({ title: 'copy' }));
 }
@@ -98,7 +73,11 @@ function tmpSass() {
   return gulp.src(PATHS.styles.src)
     .pipe($.newer(PATHS.styles.tmp))
     .pipe($.sourcemaps.init())
-      .pipe($.sass({ precision: 10 })
+      .pipe(
+        $.sass({
+          includePaths: ['node_modules/normalize.css'],
+          precision: 10,
+        })
         .on('error', $.sass.logError)
       )
       .pipe($.postcss(processors))
@@ -115,13 +94,23 @@ function sass() {
 
   return gulp.src(PATHS.styles.src)
     .pipe($.sourcemaps.init())
-      .pipe($.sass({ precision: 10 })
+      .pipe(
+        $.sass({
+          includePaths: ['node_modules/normalize.css'],
+          precision: 10,
+        })
         .on('error', $.sass.logError)
       )
       .pipe($.postcss(processors))
       .pipe($.size({ title: 'styles' }))
+      .pipe($.rev())
     .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest(PATHS.styles.dest));
+    .pipe(gulp.dest(PATHS.styles.dest))
+    .pipe($.rev.manifest({
+      base: process.cwd(),
+      merge: true,
+    }))
+    .pipe(gulp.dest(PATHS.root));
 }
 
 // HTML
@@ -132,19 +121,12 @@ function html() {
 
   return gulp.src(PATHS.html.src)
     .pipe($.useref({ searchPath: PATHS.assets }))
-    .pipe($.if('*.html', $.htmlmin({
-      collapseWhitespace: true,
-      collapseBooleanAttributes: true,
-      removeAttributeQuotes: true,
-      removeComments: true,
-      removeEmptyAttributes: true,
-      removeOptionalTags: true,
-      removeRedundantAttributes: true,
-      removeScriptTypeAttributes: true,
-      removeStyleLinkTypeAttributes: true,
-    })))
+    .pipe($.if('*.html', $.htmlmin(HTMLMINIFIER)))
     .pipe($.if('*.html', $.size({ title: 'html', showFiles: true })))
     .pipe($.if('*.css', $.postcss(processors)))
+    .pipe($.replace({
+      manifest: gulp.src(PATHS.manifest),
+    }))
     .pipe(gulp.dest(PATHS.html.dest));
 }
 
@@ -163,23 +145,9 @@ function serve() {
   gulp.watch(PATHS.styles.src, tmpSass);
   gulp.watch(PATHS.images.src, tmpWebp);
 
-  if (BUNDLE) {
-    gulp.watch(PATHS.scripts.src, lint);
-    // 不打包PATHS.scripts.watch中文件，不会触发reload
-    gulp.watch(PATHS.scripts.watch).on('change', BS.reload);
-  } else {
-    gulp.watch(PATHS.scripts.src, gulp.parallel(lint, 'tmpScript'));
-  }
-}
-
-// Serve distribution
-function serveDist() {
-  BS.init({
-    notify: false,
-    logPrefix: 'work',
-    server: 'dist',
-    port: 3001,
-  });
+  gulp.watch(PATHS.scripts.src, lint);
+  gulp.watch(PATHS.scripts.concat, tmpConcat(BS));
+  gulp.watch(PATHS.scripts.watch).on('change', BS.reload);
 }
 
 // Clean output directory
@@ -188,18 +156,19 @@ function clean() {
 }
 
 // Tasks
-gulp.task('tmpScript', (BUNDLE ? tmpBundle(BS) : tmpConcat(BS)));
-gulp.task('script', (BUNDLE ? bundle : concat));
+gulp.task('tmpScript', gulp.parallel(tmpBundle(BS), tmpConcat(BS)));
+gulp.task('script', gulp.parallel(bundle, concat));
 gulp.task(vendor);
 
-gulp.task('clean:all', (BUNDLE ? gulp.series(clean, vendor) : clean));
+gulp.task('clean:all', gulp.series(clean, vendor));
 gulp.task('clean:cache', cb => $.cache.clearAll(cb));
 
 // Build production files, the default task
 gulp.task('default',
   gulp.series(
-    'clean:all', html,
-    gulp.parallel(lint, 'script', sass, images, webp, copy)
+    'clean:all', lint,
+    gulp.parallel('script', sass, images, webp, copy),
+    html,
   )
 );
 
@@ -210,6 +179,3 @@ gulp.task('serve',
     serve
   )
 );
-
-// Build and serve the output from the dist build
-gulp.task('serve:dist', gulp.series('default', serveDist));

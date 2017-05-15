@@ -15,11 +15,7 @@
     "CarouselLite": false
   },
   "rules": {
-    "no-console": 1,
-    "no-cond-assign": ["error", "except-parens"],
-    "no-param-reassign": [
-      "error", { "props": false }
-    ]
+    "no-cond-assign": ["error", "except-parens"]
   },
   "extends": "airbnb-base"
 }

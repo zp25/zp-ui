@@ -1,35 +1,44 @@
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import {
+  PATHS,
+} from './constants';
 
 const $ = gulpLoadPlugins();
-const PATHS = {
-  scripts: {
-    src: [
-      'app/scripts/**/*.js',
-      '!app/scripts/dev.js',
-      '!app/scripts/templates.min.js',
-    ],
-    tmp: '.tmp/scripts',
-    dest: 'dist/scripts',
-  },
-};
 
 // Scripts
-const tmpConcat = BS => () => {
-  return gulp.src(PATHS.scripts.src)
+const tmpConcat = BS => (done) => {
+  const files = PATHS.scripts.concat;
+
+  if (files.length === 0) {
+    done();
+    return;
+  }
+
+  return gulp.src(files)
     .pipe($.newer(PATHS.scripts.tmp))
     .pipe($.sourcemaps.init())
       .pipe($.babel())
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest(PATHS.scripts.tmp))
     .pipe(BS.stream({ once: true }));
-};
+}
 
-const concat = () => {
-  return gulp.src(PATHS.scripts.src)
+const concat = (done) => {
+  const files = PATHS.scripts.concat;
+
+  if (files.length === 0) {
+    done();
+    return;
+  }
+
+  return gulp.src(files)
     .pipe($.sourcemaps.init())
       .pipe($.babel())
-      .pipe($.concat('main.min.js'))
+      .pipe($.concat({
+        path: 'concat.js',
+        cwd: '',
+      }))
       .pipe($.uglify({
         // preserveComments: 'license',
         compress: {
@@ -39,8 +48,14 @@ const concat = () => {
         },
       }))
       .pipe($.size({ title: 'scripts' }))
+      .pipe($.rev())
     .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest(PATHS.scripts.dest));
-};
+    .pipe(gulp.dest(PATHS.scripts.dest))
+    .pipe($.rev.manifest({
+      base: process.cwd(),
+      merge: true,
+    }))
+    .pipe(gulp.dest(PATHS.root));
+}
 
 export { tmpConcat, concat };
