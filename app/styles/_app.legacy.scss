@@ -1,0 +1,89 @@
+*,
+*::before,
+*::after {
+  box-sizing: content-box;
+  // 取消点击链接高亮
+  -webkit-tap-highlight-color: transparent;
+}
+
+// http://www.outlinenone.com/
+:focus {
+  outline: none;
+}
+
+html, button, input, textarea, select {
+  padding: 0;
+  margin: 0;
+  // 文本平滑属性
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a:link,
+a:hover,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
+ol, ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100%;
+
+  body {
+    height: 100%;
+    font-family: Helvetica, Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+#app {
+  .demo {
+    margin-bottom: 20px;
+
+    &.demo--carousel {
+      width: 100%;
+      height: 400px;
+    }
+    &.demo--carousel-lite {
+      width: 100%;
+      height: 400px;
+    }
+  }
+}
+
+.app {
+  &.app--carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .custom-nav {
+      .custom-nav__btn {
+        position: absolute;
+        top: 50%;
+        width: 40px;
+        height: 40px;
+        color: color(black);
+        background-color: color(white);
+        border: none;
+        border-radius: 50%;
+        margin-top: -20px;
+        cursor: pointer;
+
+        &.custom-nav__btn--l {
+          left: 10px;
+        }
+        &.custom-nav__btn--r {
+          right: 10px;
+        }
+      }
+    }
+  }
+}

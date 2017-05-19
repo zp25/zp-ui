@@ -1,46 +1,37 @@
 <div id="app">
   <!-- Carousel -->
-  <div class="app app--carousel">
-    <div class="carousel" data-group="main">
-      <ul class="carousel__main">
-        <li class="slide-pannel" style="background-color: red;"></li><!--
-        --><li class="slide-pannel" style="background-color: green;"></li><!--
-        --><li class="slide-pannel" style="background-color: blue;"></li>
-      </ul>
-      <ul class="carousel__nav">
-        <li class="slide-nav" data-order="1">
-          <a class="slide-nav__anchor" href="#slide_1"></a>
-        </li><!--
-        --><li class="slide-nav" data-order="2">
-          <a class="slide-nav__anchor" href="#slide_2"></a>
-        </li><!--
-        --><li class="slide-nav" data-order="3">
-          <a class="slide-nav__anchor" href="#slide_3"></a>
-        </li>
-      </ul>
-    </div>
+  <div class="demo demo--carousel">
+    <div class="app app--carousel">
+      <div class="carousel" data-group="main">
+        <ul class="carousel__main">
+          <li class="slide-banner" style="background-color: blue;"></li><!--
+          --><li class="slide-banner" style="background-color: green;"></li><!--
+          --><li class="slide-banner" style="background-color: red;"></li>
+        </ul>
+        <div class="carousel__nav">
+          <a href="#slide" class="slide-nav" data-order="1"></a><!--
+          --><a href="#slide" class="slide-nav" data-order="2"></a><!--
+          --><a href="#slide" class="slide-nav" data-order="3"></a>
+        </div>
+      </div>
 
-    <!-- 可自定义前后导航功能，Carousel.play(reverse)方法提供反向播放功能，但自动播放只能正向播放 -->
-    <ul class="custom-nav">
-      <li class="custom-nav__btn custom-nav__btn--l">
-        <a href="#prev" class="anchor" data-trigger="custom-nav" data-reverse="true">cL</a>
-      </li>
-      <li class="custom-nav__btn custom-nav__btn--r">
-        <a href="#prev" class="anchor" data-trigger="custom-nav" data-reverse="false">cR</a>
-      </li>
-    </ul>
+      <div class="custom-nav">
+        <button class="custom-nav__btn custom-nav__btn--l" data-trigger="customNav" data-reverse="true">cL</button>
+        <button class="custom-nav__btn custom-nav__btn--r" data-trigger="customNav">cR</button>
+      </div>
+    </div>
   </div>
 
   <!-- Carousel精简版 -->
-  <div class="app app--carousel-lite">
-    <div class="carousel" data-group="lite">
-      <ul class="carousel__main">
-        <li class="slide-pannel" style="background-color: red;"></li><!--
-        --><li class="slide-pannel" style="background-color: green;"></li><!--
-        --><li class="slide-pannel" style="background-color: blue;"></li>
-      </ul>
+  <div class="demo demo--carousel-lite">
+    <div class="app app--carousel">
+      <div class="carousel" data-group="lite">
+        <ul class="carousel__main">
+          <li class="slide-banner" style="background-color: blue;"></li><!--
+          --><li class="slide-banner" style="background-color: green;"></li><!--
+          --><li class="slide-banner" style="background-color: red;"></li>
+        </ul>
+      </div>
     </div>
-
-    <div class="main"></div>
   </div>
 </div>

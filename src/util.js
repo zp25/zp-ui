@@ -1,7 +1,7 @@
 /**
- * Super Class
+ * @class Util
  */
-export default class {
+class Util {
   constructor(group) {
     // 组
     this.group = group;
@@ -9,9 +9,10 @@ export default class {
 
   /**
    * 查找最近父节点
-   * @param  {element} elem 子节点
-   * @param  {string} parent 父节点class
+   * @param {element} elem - 子节点
+   * @param {string} parent - 父节点class
    * @return {(element|undefined)} 查找到的父节点或undefined
+   * @static
    */
   static parents(elem, parent) {
     let node = elem;
@@ -28,8 +29,9 @@ export default class {
   /**
    * escape HTML
    * @see {@link https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript/4835406#4835406}
-   * @param  {string} unsafe 需转义字符串
+   * @param {string} unsafe - 需转义字符串
    * @return {string} 转义后字符串
+   * @static
    */
   static escapeHtml(unsafe) {
     const map = {
@@ -43,3 +45,5 @@ export default class {
     return unsafe.replace(/[&<>"']/g, m => map[m]);
   }
 }
+
+export default Util;

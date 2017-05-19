@@ -1,0 +1,10 @@
+@import 'normalize';
+
+@import 'color.map';
+
+// utils
+@import 'global';
+@import 'utils/carousel.legacy';
+
+// custom
+@import 'app.legacy';

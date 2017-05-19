@@ -2,12 +2,12 @@
   font-size: fontSize();
   font-weight: normal;
   border: 1px solid color(grey);
-  border-radius: 4px;
+  border-radius: torem(5px);
   overflow: hidden;
 
   // black
   &.panel--black {
-    border: 1px solid color(black-hole);
+    border-color: color(black-hole);
 
     .panel__head {
       color: color(white);
@@ -15,7 +15,7 @@
     }
   }
   &.panel--black-reverse {
-    border: 1px solid color(black-hole);
+    border-color: color(black-hole);
 
     .panel__body {
       color: color(white);
@@ -26,16 +26,12 @@
   .panel__head {
     color: color(black);
     background-color: color(white);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 10px 15px;
+    padding: torem(10px) torem(15px);
   }
 
   .panel__body {
     color: color(black);
     background-color: color(white);
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    padding: 15px;
+    padding: torem(15px);
   }
 }

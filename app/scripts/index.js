@@ -1,43 +1,47 @@
-import { Carousel, CarouselLite } from './utils/carousel';
+import 'babel-polyfill';
+import { dispatcher } from './lib';
+import createClickHandler from './handlers';
+
+import ui from './ui';
+import {
+  Carousel,
+  CarouselLite,
+  Mask,
+  Menu,
+} from '../../index';
 
 /**
- * carousel自定义导航的处理函数
- * @param {Event} e 事件对象
- * @param {Object} carousel 受控制的carousel对象
+ * 首次呈现
  */
-function customNav(e, carousel) {
-  e.preventDefault();
+const render = () => {
+  const sec = ui();
 
-  const reverse = $(e.target).data('reverse');
-  carousel.play(reverse);
-}
+  Object.keys(sec).forEach((key) => {
+    sec[key]();
+  });
+};
 
-/**
- * 事件处理
- * @param {Object} e 事件对象
- * @param {Object} carousel 受控制的carousel对象
- */
-function eventHandler(e, carousel) {
-  const trigger = $(e.target).data('trigger');
+/** Events */
+document.addEventListener('DOMContentLoaded', () => {
+  render();
 
-  switch (trigger) {
-    case 'custom-nav':
-      customNav(e, carousel);
-      break;
-    default:
-      e.stopPropagation();
-  }
-}
-
-$(() => {
   // carousel
   const carousel = new Carousel('main', { focus: 2, delay: 8000 });
   carousel.autoplay();
 
   // carousel lite
-  const carousellite = new CarouselLite('lite', { focus: 3, delay: 4000 });
+  const carousellite = new CarouselLite('lite', { delay: 4000 });
   carousellite.autoplay();
 
+  // mask
+  const mask = new Mask('main');
+  mask.hide();
+
+  // menu
+  const menu = new Menu('main');
+  menu.open(2);
+
   // event listener
-  $('body').on('click', (e) => { eventHandler(e, carousel); });
-});
+  const handler = createClickHandler({ mask, carousel });
+  document.body.addEventListener('click', dispatcher(handler), false);
+}, false);

@@ -1,4 +1,4 @@
-const AUTOPREFIXER_CONFIG = { browsers: ['last 2 versions', 'chrome >= 49'] };
+const AUTOPREFIXER_CONFIG = { browsers: ['last 2 versions'] };
 
 const HTMLMINIFIER = {
   collapseWhitespace: true,
@@ -19,22 +19,22 @@ const PATHS = {
     dest: 'dist',
   },
   styles: {
-    src: 'app/styles/**/*.{scss,css}',
+    src: ['app/styles/**/*.{scss,css}', 'styles/**/*.{scss,css}'],
     tmp: '.tmp/styles',
     dest: 'dist/styles',
   },
   scripts: {
-    src: 'app/scripts/**/*.js',
+    src: ['app/scripts/**/*.js', 'src/**/*.js', 'legacy/**/*.js'],
     // browserify
-    entries: [
-      'app/scripts/index.js',
-      'app/scripts/legacy.js',
-    ],
+    entries: {
+      index: 'app/scripts/index.js',
+      legacy: 'app/scripts/legacy.js',
+    },
     // concat
     concat: [],
     // production不使用
     watch: [
-      'app/scripts/dev.js',
+      'app/scripts/misc/dev.js',
     ],
     tmp: '.tmp/scripts',
     dest: 'dist/scripts',
