@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="email=no">
+  <title>UI</title>
+  <!-- app icon -->
+  <link rel="apple-touch-icon" sizes="120x120" href="images/icon@iphone.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/icon@iphone-plus.png">
+  <!-- favicon -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon.png">
+  <!-- styles -->
+  <link rel="stylesheet" href="styles/index.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Carousel -->
+    <div class="demo demo--carousel"></div>
+    <!-- Carousel精简版 -->
+    <div class="demo demo--carousel-lite"></div>
+    <!-- Panel -->
+    <div class="demo demo--panel"></div>
+  
+    <!-- Btns(mask) -->
+    <div class="demo demo--btns-mask">
+      <div class="app app--btns">
+        <button class="btn btn--green" data-trigger="loading">Loading</button>
+        <button class="btn btn--blue" data-trigger="prompt">提示信息</button>
+        <button class="btn btn--red" data-trigger="switching">2s切换</button>
+      </div>
+    </div>
+  
+    <!-- Mask -->
+    <div class="demo demo--mask"></div>
+    <!-- Menu -->
+    <div class="demo demo--menu"></div>
+  </div>
+
+  <!-- build:remove -->
+  <script src="scripts/misc/dev.js"></script>
+  <!-- endbuild -->
+  <script src="scripts/vendor.js"></script>
+  <script src="scripts/bundle.index.js"></script>
+</body>
+</html>

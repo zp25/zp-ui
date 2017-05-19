@@ -47,7 +47,7 @@ const template = Handlebars.compile(source);
 // });
 
 Object.keys(pages).forEach((page) => {
-  const indexTo = `app/${page}.html`;
+  const indexTo = `example/${page}.html`;
   const { file, data } = pages[page];
 
   // Page

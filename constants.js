@@ -15,41 +15,41 @@ const HTMLMINIFIER = {
 const PATHS = {
   root: './',
   html: {
-    src: 'app/**/*.html',
+    src: 'example/**/*.html',
     dest: 'dist',
   },
   styles: {
-    src: ['app/styles/**/*.{scss,css}', 'styles/**/*.{scss,css}'],
+    src: ['example/styles/**/*.{scss,css}', 'styles/**/*.{scss,css}'],
     tmp: '.tmp/styles',
     dest: 'dist/styles',
   },
   scripts: {
-    src: ['app/scripts/**/*.js', 'src/**/*.js', 'legacy/**/*.js'],
+    src: ['example/scripts/**/*.js', 'src/**/*.js', 'legacy/**/*.js'],
     // browserify
     entries: {
-      index: 'app/scripts/index.js',
-      legacy: 'app/scripts/legacy.js',
+      index: 'example/scripts/index.js',
+      legacy: 'example/scripts/legacy.js',
     },
     // concat
     concat: [],
     // production不使用
     watch: [
-      'app/scripts/misc/dev.js',
+      'example/scripts/misc/dev.js',
     ],
     tmp: '.tmp/scripts',
     dest: 'dist/scripts',
   },
   images: {
-    src: 'app/images/**/*',
+    src: 'example/images/**/*',
     tmp: '.tmp/images',
     dest: 'dist/images',
   },
   templates: {
-    index: 'app/templates/index/*.hbs',
+    index: 'example/templates/index/*.hbs',
   },
-  copy: ['app/*', '!app/*.html'],
+  copy: ['example/*', '!example/*.html'],
   manifest: './rev-manifest.json',
-  assets: ['.tmp', 'app', 'node_modules'],
+  assets: ['.tmp', 'example', 'node_modules'],
 };
 
 const VENDOR = ['babel-polyfill'];
