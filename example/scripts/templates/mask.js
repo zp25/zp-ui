@@ -6,11 +6,14 @@ import 'babel-polyfill';
 import { templater } from '../lib';
 
 const circles = () => {
-  const arr = new Array(12);
+  let arr = new Array(12);
   arr.fill(0);
+  arr = arr.map((d, index) => ({
+    id: index + 1,
+  }));
 
-  return arr.reduce((prev, d, index) => (
-    `${prev}<span class="loading__circle loading__circle--${index + 1}"></span>`
+  return arr.reduce((prev, d) => (
+    `${prev}<span class="loading__circle loading__circle--${d.id + 1}"></span>`
   ), '');
 };
 
