@@ -50,8 +50,8 @@ class Mask extends Util {
 
   /**
    * 提示信息
-   * @param {string} name - panel名称
-   * @param {string} msg - 提示信息
+   * @param {string} [name='loading'] - panel名称
+   * @param {string} [msg='Loading'] - 提示信息
    * @public
    */
   prompt(type = 'loading', msg = 'Loading') {
@@ -69,9 +69,10 @@ class Mask extends Util {
 
   /**
    * loading效果
+   * @param {string} [msg='Loading'] - 提示信息
    */
-  loading() {
-    this.prompt();
+  loading(msg = 'Loading') {
+    this.prompt('loading', msg);
   }
 
   /**
