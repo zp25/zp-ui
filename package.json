@@ -4,9 +4,8 @@
   "description": "UI",
   "main": "index.js",
   "scripts": {
-    "start": "gulp serve",
     "copyindex": "node copyindex",
-    "postinstall": "npm run copyindex && npm run gulp vendor",
+    "start": "npm run copyindex && gulp serve",
     "gulp": "gulp",
     "build": "npm run copyindex && npm run gulp",
     "serve": "node server.js"
