@@ -38,18 +38,29 @@ ol, ul {
 }
 
 html {
-  height: 100%;
   font-size: 100px;
   // 取消移动浏览器缩放字体算法(inflation algorithm)
   text-size-adjust: none;
   // user-select: none;
 
   body {
-    height: 100%;
     font-family: Helvetica, Tahoma, Arial, sans-serif;
     font-size: fontSize();
     line-height: 1.5;
   }
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// http://www.cssmojo.com/latest_new_clearfix_so_far/
+.cf::after {
+  content: '';
+  display: table;
+  clear: both;
 }
 
 // iphone5

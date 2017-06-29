@@ -1,5 +1,3 @@
-const AUTOPREFIXER_CONFIG = { browsers: ['last 2 versions'] };
-
 const HTMLMINIFIER = {
   collapseWhitespace: true,
   collapseBooleanAttributes: true,
@@ -48,6 +46,7 @@ const PATHS = {
     index: 'example/templates/index/*.hbs',
   },
   copy: ['example/*', '!example/*.html'],
+  clean: ['.tmp', 'dist/*'],
   manifest: './rev-manifest.json',
   assets: ['.tmp', 'example', 'node_modules'],
 };
@@ -55,7 +54,6 @@ const PATHS = {
 const VENDOR = ['babel-polyfill'];
 
 export {
-  AUTOPREFIXER_CONFIG,
   HTMLMINIFIER,
   PATHS,
   VENDOR,

@@ -32,13 +32,13 @@
     // 设置banner数量
     .slide-banner {
       &:nth-child(1) {
-        background-color: blue;
+        background-color: color(blue);
       }
       &:nth-child(2) {
-        background-color: green;
+        background-color: color(green);
       }
       &:nth-child(3) {
-        background-color: red;
+        background-color: color(red);
       }
     }
 

@@ -1,14 +1,14 @@
 @import 'normalize';
 
 @import 'color.map';
+@import 'styles/global';
+@import 'styles/root';
 
 // utils
-@import 'global';
-@import 'root';
-@import 'utils/btn';
-@import 'utils/carousel';
-@import 'utils/panel';
-@import 'utils/mask';
-@import 'utils/menu';
+@import 'styles/btn';
+@import 'styles/carousel';
+@import 'styles/panel';
+@import 'styles/mask';
+@import 'styles/menu';
 
 @import 'app';

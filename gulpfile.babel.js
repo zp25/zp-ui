@@ -1,11 +1,10 @@
 import gulp from 'gulp';
-import del from 'del';
+import rimraf from 'rimraf';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import browserSync from 'browser-sync';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import {
-  AUTOPREFIXER_CONFIG,
   HTMLMINIFIER,
   PATHS,
 } from './constants';
@@ -67,7 +66,7 @@ function copy() {
 // Styles
 function tmpSass() {
   const processors = [
-    autoprefixer(AUTOPREFIXER_CONFIG)
+    autoprefixer(),
   ];
 
   return gulp.src(PATHS.styles.src)
@@ -77,7 +76,7 @@ function tmpSass() {
         $.sass({
           includePaths: [
             'node_modules/normalize.css',
-            'styles',
+            './',
           ],
           precision: 10,
         })
@@ -91,8 +90,8 @@ function tmpSass() {
 
 function sass() {
   const processors = [
-    autoprefixer(AUTOPREFIXER_CONFIG),
-    cssnano()
+    autoprefixer(),
+    cssnano(),
   ];
 
   return gulp.src(PATHS.styles.src)
@@ -101,7 +100,7 @@ function sass() {
         $.sass({
           includePaths: [
             'node_modules/normalize.css',
-            'styles',
+            './',
           ],
           precision: 10,
         })
@@ -120,27 +119,22 @@ function sass() {
 }
 
 // HTML
-function html() {
-  const processors = [
-    cssnano()
-  ];
-
-  return gulp.src(PATHS.html.src)
-    .pipe($.useref({ searchPath: PATHS.assets }))
-    .pipe($.if('*.html', $.htmlmin(HTMLMINIFIER)))
-    .pipe($.if('*.html', $.size({ title: 'html', showFiles: true })))
-    .pipe($.if('*.css', $.postcss(processors)))
-    .pipe($.replace({
-      manifest: gulp.src(PATHS.manifest),
-    }))
-    .pipe(gulp.dest(PATHS.html.dest));
-}
+const html = () => gulp.src(PATHS.html.src)
+  .pipe($.useref({
+    searchPath: PATHS.assets,
+  }))
+  .pipe($.replace({
+    manifest: gulp.src(PATHS.manifest),
+  }))
+  .pipe($.if('*.html', $.htmlmin(HTMLMINIFIER)))
+  .pipe($.if('*.html', $.size({ title: 'html', showFiles: true })))
+  .pipe(gulp.dest(PATHS.html.dest));
 
 // Serve
 function serve() {
   BS.init({
     notify: false,
-    logPrefix: 'work',
+    logPrefix: 'ui',
     server: {
       baseDir: PATHS.assets,
     },
@@ -157,8 +151,8 @@ function serve() {
 }
 
 // Clean output directory
-function clean() {
-  return del(['.tmp', 'dist/*']);
+function clean(done) {
+  rimraf(`{${PATHS.clean.join(',')}}`, done);
 }
 
 // Tasks
