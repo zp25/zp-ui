@@ -36,7 +36,7 @@
     "es5-shim": "^4.5.9",
     "eslint": "^4.1.1",
     "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-import": "^2.6.1",
     "event-stream": "^3.3.4",
     "express": "^4.15.3",
     "gulp": "github:gulpjs/gulp#4.0",
@@ -84,5 +84,10 @@
   "browserslist": [
     "last 2 versions",
     "not ie < 11"
-  ]
+  ],
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  }
 }
