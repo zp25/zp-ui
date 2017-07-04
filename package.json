@@ -4,6 +4,7 @@
   "description": "UI",
   "main": "index.js",
   "scripts": {
+    "start": "npm run gulp",
     "gulp": "gulp"
   },
   "repository": {
@@ -46,7 +47,7 @@
   ],
   "browserify": {
     "transform": [
-      "babelify"
+      ["babelify", { "presets": ["es2015", "stage-0"] }]
     ]
   }
 }
