@@ -46,16 +46,6 @@
     "not ie < 11"
   ],
   "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015",
-            "stage-0"
-          ]
-        }
-      ]
-    ]
+    "transform": ["babelify"]
   }
 }
