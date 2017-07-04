@@ -1,14 +1,8 @@
-# UI
+# UI工具
 
-前端组件
-
-## 目录
 目录结构
 
 ~~~
-+-- assets
-+-- dist
-+-- example
 +-- legacy
 |   +-- carousel.js
 +-- src
@@ -23,15 +17,8 @@
 |   +-- utils
 |   +-- _global.scss
 |   +-- _root.scss
-+-- views
-|   +-- layouts
-|   |   +-- main.hbs
-|   +-- index.hbs
-|   +-- legacy.hbs
 +-- index.js
-+-- server.js
 ~~~
-assets目录存放其他资源，example, views示例代码，dist示例代码打包
 
 src, styles组件源码，legacy支持gte IE8
 

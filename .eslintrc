@@ -5,10 +5,6 @@
     "jquery": true,
     "es6": true
   },
-  "globals": {
-    "Carousel": false,
-    "CarouselLite": false
-  },
   "rules": {
     "no-cond-assign": ["error", "except-parens"],
     "no-param-reassign": [
