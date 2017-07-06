@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 const carouselBase = Base => class extends Base {
   constructor(group = '', options = {}) {
     super(group);

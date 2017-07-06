@@ -4,6 +4,7 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 const $ = gulpLoadPlugins();
 const PATHS = {
   scripts: [
+    'index.js',
     'src/**/*.js',
     'legacy/**/*.js',
   ],

@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import Util from '../util';
 import carouselBase from './base';
 
