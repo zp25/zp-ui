@@ -11,10 +11,6 @@
     "type": "git",
     "url": "https://github.com/zp25/ui.git"
   },
-  "keywords": [
-    "gulp",
-    "UI"
-  ],
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -24,7 +20,7 @@
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^4.1.1",
     "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-import": "^2.7.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-eslint": "^4.0.0",
     "gulp-load-plugins": "^1.5.0"

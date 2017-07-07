@@ -6,10 +6,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-// http://www.outlinenone.com/
-:focus {
-  outline: none;
-}
+// @link http://www.outlinenone.com/
+// :focus {
+//   outline: none;
+// }
 
 html, button, input, textarea, select {
   padding: 0;
@@ -20,21 +20,18 @@ html, button, input, textarea, select {
 }
 
 a:link,
-a:hover,
 a:active,
 a:visited {
   text-decoration: none;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 a, img {
   // 禁止长按链接与图片弹出菜单，例如禁止保存图片，仅Safari
   -webkit-touch-callout: none;
-}
-
-ol, ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 html {
@@ -44,7 +41,11 @@ html {
   // user-select: none;
 
   body {
-    font-family: Helvetica, Tahoma, Arial, sans-serif;
+    // @link https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
+    font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
     font-size: fontSize();
     line-height: 1.5;
   }
