@@ -47,7 +47,7 @@ class Menu extends Util {
     const target = this.menu.querySelector(`.menu__nav[data-page="${id}"]`)
       || this.menu.querySelector('.menu__nav');
 
-    target.querySelector('.menu__nav__anchor').click();
+    target.querySelector('.menu__anchor').click();
   }
 }
 
