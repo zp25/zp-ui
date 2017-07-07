@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "zp-ui",
   "version": "0.0.1",
   "description": "UI",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zp25/ui.git"
+    "url": "https://github.com/zp25/zp-ui.git"
   },
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
