@@ -9,14 +9,14 @@
     margin-bottom: -1px;
 
     &.menu__nav--active {
-      .menu__nav__anchor {
+      .menu__anchor {
         background-color: color(white);
         border: 1px solid color(border);
         border-bottom-color: transparent;
       }
     }
 
-    .menu__nav__anchor {
+    .menu__anchor {
       display: block;
       color: color(black);
       font-size: fontSize();
@@ -25,6 +25,10 @@
       border: 1px solid transparent;
       border-radius: torem(4px) torem(4px) 0 0;
       padding: torem(10px) torem(15px) torem(9px);
+
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 }
