@@ -2,8 +2,11 @@
 assets/
 dist/
 node_modules/
+
 npm-debug.log
 yarn-error.log
 .DS_Store
+
 app/*.html
 .env
+yarn.lock
