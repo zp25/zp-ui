@@ -1,13 +1,22 @@
 import Util from '../util';
-import carouselBase from './base';
+import base from './base';
 
 /**
- * @class Carousel
- * @description Carousel，可自定义nav
+ * @class
+ * @description 新建Carousel实例，可自定义nav
+ * @implements {carouselBase}
+ * @implements {Util}
  */
-class Carousel extends carouselBase(Util) {
-  constructor(group, options) {
-    super(group, options);
+class Carousel extends base(Util) {
+  /**
+   * @param {string} group='' - 组件分类
+   * @param {Object} opts={} - Carousel配置
+   * @param {number} [opts.focus=1] - 初始聚焦页，没有上边界判断
+   * @param {number} [opts.delay=8000] - 轮播延时(ms)
+   * @augments {carouselBase}
+   */
+  constructor(group = '', opts = {}) {
+    super(group, opts);
 
     // 主要元素
     this.nav = this.carousel.querySelector('.carousel__nav');
@@ -29,7 +38,7 @@ class Carousel extends carouselBase(Util) {
   /**
    * nav切换
    * @param {number} next - 下一页编号
-   * @protected
+   * @private
    */
   navSwitch(next) {
     Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((item) => {
@@ -46,7 +55,7 @@ class Carousel extends carouselBase(Util) {
   /**
    * 完成切换任务
    * @param {number} next - 下一页编号
-   * @protected
+   * @private
    */
   combineSwitch(next) {
     this.clearTimeout();
@@ -65,7 +74,6 @@ class Carousel extends carouselBase(Util) {
   /**
    * 播放指定页
    * @param {boolean} reverse - 是否反向播放，反向指播放当前图片左侧的图片
-   * @public
    */
   play(reverse) {
     const next = super.play(reverse);
@@ -75,7 +83,6 @@ class Carousel extends carouselBase(Util) {
 
   /**
    * 自动播放，总是正向播放
-   * @public
    */
   autoplay() {
     this.isAutoplay = true;
@@ -86,7 +93,6 @@ class Carousel extends carouselBase(Util) {
 
   /**
    * 暂停自动播放
-   * @public
    */
   pause() {
     super.pause();

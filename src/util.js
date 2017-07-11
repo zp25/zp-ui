@@ -1,9 +1,13 @@
 /**
- * @class Util
+ * @interface Util
  */
+
 class Util {
   constructor(group) {
-    // 组
+    /**
+     * 实例分类，用于单页多实例间区分
+     * @type string
+     */
     this.group = group;
   }
 
@@ -12,7 +16,6 @@ class Util {
    * @param {element} elem - 子节点
    * @param {string} parent - 父节点class
    * @return {(element|undefined)} 查找到的父节点或undefined
-   * @static
    */
   static parents(elem, parent) {
     let node = elem;
@@ -31,7 +34,6 @@ class Util {
    * @see {@link https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript/4835406#4835406}
    * @param {string} unsafe - 需转义字符串
    * @return {string} 转义后字符串
-   * @static
    */
   static escapeHtml(unsafe) {
     const map = {

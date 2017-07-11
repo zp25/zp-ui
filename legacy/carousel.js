@@ -1,8 +1,8 @@
 /**
- * carouselBase
+ * @class
  * @param {string} group - 轮播组
  * @param {Object} options - 配置
- * @constructor
+ * @ignore
  */
 function carouselBase(group, options = {}) {
   const focus = Number(options.focus) || 1;
@@ -32,7 +32,7 @@ function carouselBase(group, options = {}) {
 /**
  * 定时器
  * @param {function} cb - 延时处理函数
- * @protected
+ * @ignore
  */
 carouselBase.prototype.setTimeout = function carouselSetTimeout(cb) {
   this.timeoutID = setTimeout(cb, this.options.delay);
@@ -40,7 +40,7 @@ carouselBase.prototype.setTimeout = function carouselSetTimeout(cb) {
 
 /**
  * 清理定时器
- * @protected
+ * @ignore
  */
 carouselBase.prototype.clearTimeout = function carouselClearTimeout() {
   if (this.timeoutID) {
@@ -52,7 +52,7 @@ carouselBase.prototype.clearTimeout = function carouselClearTimeout() {
 /**
  * banner切换
  * @param {number} next - 下一页编号
- * @protected
+ * @ignore
  */
 carouselBase.prototype.mainSwitch = function mainSwitch(next) {
   const offset = `${(1 - next) * 100}%`;
@@ -65,7 +65,7 @@ carouselBase.prototype.mainSwitch = function mainSwitch(next) {
  * 播放
  * @param {boolean} [reverse=false] - 是否反向播放，反向指播放当前图片左侧的图片
  * @return {number} 下一页编号
- * @protected
+ * @ignore
  */
 carouselBase.prototype.play = function play(reverse = false) {
   const focus = this.main.data('focus');
@@ -84,16 +84,18 @@ carouselBase.prototype.play = function play(reverse = false) {
 
 /**
  * 暂停轮播
- * @protected
+ * @ignore
  */
 carouselBase.prototype.pause = function pause() {
   this.clearTimeout();
 };
 
 /**
- * 轮播模块
+ * @class
+ * @description 轮播模块
  * @param {string} group   轮播组
  * @param {Object} options 配置
+ * @ignore
  */
 function Carousel(group, options = {}) {
   carouselBase.call(this, group, options);
@@ -121,7 +123,7 @@ Carousel.prototype.constructor = Carousel;
 /**
  * nav切换
  * @param {number} next - 下一页编号
- * @protected
+ * @private
  */
 Carousel.prototype.navSwitch = function navSwitch(next) {
   this.nav.children('.slide-nav')
@@ -132,7 +134,7 @@ Carousel.prototype.navSwitch = function navSwitch(next) {
 /**
  * 完成切换任务
  * @param {number} next - 下一页编号
- * @protected
+ * @private
  */
 Carousel.prototype.combineSwitch = function combineSwitch(next) {
   this.clearTimeout();
@@ -151,7 +153,7 @@ Carousel.prototype.combineSwitch = function combineSwitch(next) {
 /**
  * 播放指定页
  * @param {boolean} reverse 是否反向播放，反向指播放当前图片左侧的图片
- * @public
+ * @ignore
  */
 Carousel.prototype.play = function play(reverse) {
   const next = Object.getPrototypeOf(Carousel.prototype).play.call(this, reverse);
@@ -161,7 +163,7 @@ Carousel.prototype.play = function play(reverse) {
 
 /**
  * 自动播放，总是正向播放
- * @public
+ * @ignore
  */
 Carousel.prototype.autoplay = function autoplay() {
   this.isAutoplay = true;
@@ -172,7 +174,7 @@ Carousel.prototype.autoplay = function autoplay() {
 
 /**
  * 暂停自动播放
- * @public
+ * @ignore
  */
 Carousel.prototype.pause = function pause() {
   Object.getPrototypeOf(Carousel.prototype).pause.call(this);
@@ -181,10 +183,11 @@ Carousel.prototype.pause = function pause() {
 };
 
 /**
- * 精简轮播模块
+ * @class
+ * @description  精简轮播模块
  * @param {string} group   轮播组
  * @param {Object} options 配置
- * @constructor
+ * @ignore
  */
 function CarouselLite(group, options = {}) {
   carouselBase.call(this, group, options);
@@ -195,7 +198,7 @@ CarouselLite.prototype.constructor = CarouselLite;
 
 /**
  * 自动播放
- * @public
+ * @ignore
  */
 CarouselLite.prototype.play = function play() {
   this.clearTimeout();
@@ -208,7 +211,7 @@ CarouselLite.prototype.play = function play() {
 
 /**
  * 自动播放，play的别名
- * @public
+ * @ignore
  */
 CarouselLite.prototype.autoplay = function autoplay() {
   this.play();
@@ -216,7 +219,7 @@ CarouselLite.prototype.autoplay = function autoplay() {
 
 /**
  * 自动播放，play的别名
- * @public
+ * @ignore
  */
 CarouselLite.prototype.pause = function pause() {
   Object.getPrototypeOf(CarouselLite.prototype).pause.call(this);

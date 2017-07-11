@@ -6,20 +6,28 @@ import Util from './util';
  */
 class Mask extends Util {
   /**
-   * 向目标写入提示信息
+   * 写入提示信息
    * @param {Element} elem - 需写入信息的panel
    * @param {string} msg - 信息内容
-   * @static
+   * @private
    */
   static insertMsg(elem, msg) {
     const escapedMsg = this.escapeHtml(msg);
     elem.querySelector('.panel__body .message').innerHTML = escapedMsg;
   }
 
+  /**
+   * 新建Mask实例
+   * @param {string} group='' - 组件分类
+   * @augments {Util}
+   */
   constructor(group = '') {
     super(group);
 
-    // 主要元素
+    /**
+     * Mask组件容器
+     * @type {Element}
+     */
     this.mask = document.querySelector(
       `.mask${this.group ? `[data-group="${this.group}"]` : ''}`);
   }
@@ -27,7 +35,7 @@ class Mask extends Util {
   /**
    * panel切换
    * @param {Element} [elem] - 需显示的panel，未设置则隐藏全部panel
-   * @protected
+   * @private
    */
   panelSwitch(elem) {
     Array.from(this.mask.querySelectorAll('.mask__panel')).forEach((item) => {
@@ -40,8 +48,8 @@ class Mask extends Util {
   }
 
   /**
-   * mask显示
-   * @protected
+   * 显示Mask
+   * @private
    */
   show() {
     this.mask.classList.add('mask--active');
@@ -51,7 +59,6 @@ class Mask extends Util {
    * 提示信息
    * @param {string} [name='loading'] - panel名称
    * @param {string} [msg='Loading'] - 提示信息
-   * @public
    */
   prompt(type = 'loading', msg = 'Loading') {
     const panel = this.mask.querySelector(`.mask__panel--${type}`);
@@ -75,18 +82,12 @@ class Mask extends Util {
   }
 
   /**
-   * 隐藏并清理
-   * @public
+   * 隐藏Mask
    */
   hide() {
     this.mask.classList.remove('mask--active');
 
     this.panelSwitch();
-
-    if (this.intervalID) {
-      clearInterval(this.intervalID);
-      this.intervalID = NaN;
-    }
   }
 }
 

@@ -10,3 +10,4 @@ yarn-error.log
 
 app/*.html
 .env
+yarn.lock

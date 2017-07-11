@@ -19,6 +19,7 @@
 |   +-- _carousel.scss
 |   +-- _func.scss
 |   +-- _global.scss
+|   +-- _global.module.scss
 |   +-- _mask.scss
 |   +-- _menu.scss
 |   +-- _panel.scss
@@ -40,6 +41,14 @@ $colorMap: (
 ~~~
 
 若`black, white, grey, blue, green, red`未定义使用默认颜色
+
+~~~bash
+npm run jsdoc
+
+# darwin
+npm run open
+~~~
+生成和查看doc
 
 # 资源
 + [How to Build Your Own Progressive Image Loader](https://www.sitepoint.com/how-to-build-your-own-progressive-image-loader/ "How to Build Your Own Progressive Image Loader")

@@ -1,22 +1,40 @@
-const carouselBase = Base => class extends Base {
-  constructor(group = '', options = {}) {
+/**
+ * @ignore
+ */
+export default Base => class extends Base {
+  /**
+   * 新建Carousel实例
+   */
+  constructor(group = '', opts = {}) {
     super(group);
 
-    // 主要元素
+    /**
+     * Carousel组件容器
+     * @type {Element}
+     */
     this.carousel = document.querySelector(
       `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`);
+
+    /**
+     * Carousel组件banner区域
+     * @type {Element}
+     */
     this.main = this.carousel.querySelector('.carousel__main');
 
-    // 初始化后不应该被修改
+    /**
+     * Carousel配置
+     * @type {Object}
+     * @property {number} focus - 初始聚焦页，没有上边界判断
+     * @property {number} delay - 轮播延时
+     * @property {number} length - 总页数
+     * @property {boolean} supports - 是否支持css自定义属性
+     * @desc 配置初始化后不应该被修改
+     */
     this.options = Object.assign({}, {
-      // 初始聚焦页，没有上边界判断
       focus: 1,
-      // 轮播延时
       delay: 8000,
-    }, options, {
-      // 总页数
+    }, opts, {
       length: this.main.querySelectorAll('.slide-banner').length,
-      // 是否支持css自定义属性
       supports: (
         window.CSS && window.CSS.supports && window.CSS.supports('(--banner-translateX: 0%)')
       ),
@@ -24,7 +42,11 @@ const carouselBase = Base => class extends Base {
 
     Object.freeze(this.options);
 
-    // 定时器
+    /**
+     * 定时器
+     * @type {Number}
+     * @ignore
+     */
     this.timeoutID = NaN;
 
     this.play = this.play.bind(this);
@@ -32,17 +54,17 @@ const carouselBase = Base => class extends Base {
   }
 
   /**
-   * 定时器
+   * 轮播定时器
    * @param {function} cb - 延时处理函数
-   * @protected
+   * @ignore
    */
   setTimeout(cb) {
     this.timeoutID = setTimeout(cb, this.options.delay);
   }
 
   /**
-   * 清理定时器
-   * @protected
+   * 清理轮播定时器
+   * @ignore
    */
   clearTimeout() {
     if (this.timeoutID) {
@@ -54,7 +76,7 @@ const carouselBase = Base => class extends Base {
   /**
    * banner切换，若不支持css自定义变量，直接修改transform属性
    * @param {number} next - 下一页编号
-   * @protected
+   * @ignore
    */
   mainSwitch(next) {
     this.main.dataset.focus = next;
@@ -70,9 +92,10 @@ const carouselBase = Base => class extends Base {
 
   /**
    * 播放
-   * @param {boolean} [reverse=false] - 是否反向播放，反向指播放当前图片左侧的图片
+   * @param {boolean} reverse=false - 是否反向播放，反向指播放当前图片左侧的图片
    * @return {number} 下一页编号
-   * @protected
+   * @abstract
+   * @ignore
    */
   play(reverse = false) {
     // 当前聚焦页
@@ -92,11 +115,10 @@ const carouselBase = Base => class extends Base {
 
   /**
    * 暂停轮播
-   * @protected
+   * @abstract
+   * @ignore
    */
   pause() {
     this.clearTimeout();
   }
 };
-
-export default carouselBase;
