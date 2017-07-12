@@ -14,12 +14,16 @@
 |   +-- menu.js
 |   +-- util.js
 +-- styles
+|   +-- legacy
+|   |   +-- _carousel.scss
+|   |   +-- _func.scss
+|   |   +-- _global.scss
+|   |   +-- _root.scss
 |   +-- _btn.scss
-|   +-- _carousel.legacy.scss
 |   +-- _carousel.scss
 |   +-- _func.scss
-|   +-- _global.scss
 |   +-- _global.module.scss
+|   +-- _global.scss
 |   +-- _mask.scss
 |   +-- _menu.scss
 |   +-- _panel.scss
@@ -27,11 +31,11 @@
 +-- index.js
 ~~~
 
-src, styles组件源码，legacy支持gte IE8
+src, styles组件源码，legacy支持gte IE9，styles/legacy支持gte IE8
 
 `_func.scss, _global.scss, _root.scss`是依赖，需自定义`$colorMap`，例如
 
-~~~
+~~~scss
 $colorMap: (
   black-hole: #010101,
   grey-light: #ddd,

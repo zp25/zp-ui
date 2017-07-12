@@ -1,0 +1,12 @@
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// @link http://www.cssmojo.com/latest_new_clearfix_so_far/
+.cf:after {
+  content: '';
+  display: table;
+  clear: both;
+}

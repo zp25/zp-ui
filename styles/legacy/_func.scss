@@ -1,0 +1,33 @@
+@function color($key: normal) {
+  @if map-has-key($colorMap, $key) {
+    @return map-get($colorMap, $key);
+  }
+
+  @if type-of($key) == color {
+    @return #{$key};
+  }
+
+  @warn 'Unknown `#{$key}` in $colorMap.';
+  @return null;
+}
+
+// font-size(px): 12, 14, 16, 20, 34
+$sizeMap: (
+  light: 12px,
+  normal: 14px,
+  bold: 16px,
+  bolder: 20px,
+);
+
+@function fontSize($key: normal) {
+  @if map-has-key($sizeMap, $key) {
+    @return map-get($sizeMap, $key);
+  }
+
+  @if type-of($key) == number and unit($key) == 'px' {
+    @return $key;
+  }
+
+  @warn 'Unknown `#{$key}` in $sizeMap.';
+  @return null;
+}

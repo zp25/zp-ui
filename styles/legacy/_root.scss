@@ -1,0 +1,44 @@
+*,
+*:before,
+*:after {
+  box-sizing: content-box;
+  // 取消点击链接高亮
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, button, input, textarea, select {
+  padding: 0;
+  margin: 0;
+  // 文本平滑属性
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a:link,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a, img {
+  // 禁止长按链接与图片弹出菜单，例如禁止保存图片，仅Safari
+  -webkit-touch-callout: none;
+}
+
+html {
+  // 取消移动浏览器缩放字体算法(inflation algorithm)
+  text-size-adjust: none;
+
+  body {
+    // @link https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
+    font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.5;
+  }
+}
