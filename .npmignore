@@ -1,8 +1,10 @@
 .tmp/
+.nyc_output/
 assets/
 dist/
 docs/
 node_modules/
+coverage/
 
 npm-debug.log
 yarn-error.log
@@ -10,4 +12,10 @@ yarn-error.log
 
 app/*.html
 .env
+
+gulpfile.babel.js
+jsdoc.json
 yarn.lock
+.editorconfig
+.eslintrc
+.travis.yml

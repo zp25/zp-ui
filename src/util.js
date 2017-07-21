@@ -12,19 +12,27 @@ class Util {
   }
 
   /**
-   * 查找最近父节点
-   * @param {element} elem - 子节点
-   * @param {string} parent - 父节点class
-   * @return {(element|undefined)} 查找到的父节点或undefined
+   * 查找最近父元素或当前元素
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill}
+   * @param {Element} el - 子元素
+   * @param {string} parent - 父元素选择器
+   * @return {(Element|null)} 查找到的元素，无匹配返回null
    */
-  static parents(elem, parent) {
-    let node = elem;
-
-    while ((node = node.parentElement)) {
-      if (node.classList.contains(parent)) {
-        break;
-      }
+  static closest(el, parent) {
+    if (typeof el.closest === 'function') {
+      return el.closest(parent);
     }
+
+    const matches = Array.from((el.document || el.ownerDocument).querySelectorAll(parent));
+
+    let node = el;
+    let matchedArr = [];
+
+    const cb = m => node === m;
+
+    do {
+      matchedArr = matches.filter(cb);
+    } while (matchedArr.length === 0 && (node = node.parentElement));
 
     return node;
   }
