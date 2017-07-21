@@ -19,6 +19,6 @@ const watch = () => {
 };
 
 // Tasks
-gulp.task(lint);
+gulp.task('build', lint);
 
 gulp.task('default', watch);
