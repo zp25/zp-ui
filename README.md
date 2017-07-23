@@ -1,5 +1,7 @@
 # UI工具
 
+[![Build Status](https://travis-ci.org/zp25/zp-ui.svg?branch=master)](https://travis-ci.org/zp25/zp-ui)
+
 目录结构
 
 ~~~
@@ -37,8 +39,6 @@ src, styles组件源码，legacy支持gte IE9，styles/legacy支持gte IE8
 
 ~~~scss
 $colorMap: (
-  black-hole: #010101,
-  grey-light: #ddd,
   grey-bg: #f5f5f5,
   border: #ccc,
 );

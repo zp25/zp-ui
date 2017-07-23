@@ -7,19 +7,19 @@
 
   // black
   &.panel--black {
-    border-color: color(black-hole);
+    border-color: color(black);
 
     .panel__head {
       color: color(white);
-      background-color: color(black-hole);
+      background-color: color(black);
     }
   }
   &.panel--black-reverse {
-    border-color: color(black-hole);
+    border-color: color(black);
 
     .panel__body {
       color: color(white);
-      background-color: color(black-hole);
+      background-color: color(black);
     }
   }
 
