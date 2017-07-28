@@ -25,30 +25,29 @@ class Menu extends Util {
      * @type {Element}
      * @private
      */
-    this.nav = this.menu.querySelectorAll('.menu__nav');
+    this.anchor = this.menu.querySelectorAll('.menu__anchor');
 
     // 绑定事件监听
-    Array.from(this.nav).forEach((list) => {
-      list.onclick = (e) => {
-        e.preventDefault();
+    Array.from(this.anchor).forEach((item) => {
+      item.addEventListener('click', (e) => {
+        this.menuSwitch(e.currentTarget);
 
-        const elem = e.currentTarget;
-        this.navSwitch(elem);
-      };
+        e.preventDefault();
+      }, false);
     });
   }
 
   /**
-   * nav切换
-   * @param {Element} elem - 监听到点击的对象
+   * 导航样式切换
+   * @param {Element} elem - 监听到点击对象
    * @private
    */
-  navSwitch(elem) {
-    Array.from(this.nav).forEach((item) => {
+  menuSwitch(elem) {
+    Array.from(this.anchor).forEach((item) => {
       if (item === elem) {
-        item.classList.add('menu__nav--active');
+        item.classList.add('menu__anchor--active');
       } else {
-        item.classList.remove('menu__nav--active');
+        item.classList.remove('menu__anchor--active');
       }
     });
   }
@@ -58,10 +57,10 @@ class Menu extends Util {
    * @param {(number|string)} [id] - 页面id
    */
   open(id) {
-    const target = this.menu.querySelector(`.menu__nav[data-page="${id}"]`)
-      || this.menu.querySelector('.menu__nav');
+    const target = this.menu.querySelector(`.menu__anchor[data-page="${id}"]`)
+      || this.menu.querySelector('.menu__anchor');
 
-    target.querySelector('.menu__anchor').click();
+    target.click();
   }
 }
 
