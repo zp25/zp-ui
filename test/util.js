@@ -18,18 +18,18 @@ const domStr = `
 `;
 
 describe('Util', () => {
-  let utilObj = null;
   let $ = null;
+  let util = null;
 
   before(() => {
-    utilObj = new Util();
-
     const { document } = new JSDOM(domStr).window;
     $ = document.querySelector.bind(document);
+
+    util = new Util();
   });
 
   it('拥有属性group', () => {
-    utilObj.should.have.property('group');
+    util.should.have.property('group');
   });
 
   it('静态方法closest可获取匹配的父元素', () => {
