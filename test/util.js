@@ -28,24 +28,24 @@ describe('Util', () => {
     util = new Util();
   });
 
-  it('拥有属性group', () => {
+  it('Prop: group, exists', () => {
     util.should.have.property('group');
   });
 
-  it('静态方法closest可获取匹配的父元素', () => {
+  it('Static Method: closest, 获取匹配的父元素', () => {
     const text = $('.text');
     const parent = $('.parent');
 
     Util.closest(text, '.parent').should.eql(parent);
   });
 
-  it('若不存在匹配元素，静态方法closest返回null', () => {
+  it('Static Method: closest, 若不存在匹配元素返回null', () => {
     const text = $('.text');
 
     (Util.closest(text, '.noParent') === null).should.be.true;
   });
 
-  it('静态方法escapeHtml能够编码html特殊字符，包括[&<>"\']', () => {
+  it('Static Method: escapeHtml, 编码html特殊字符，包括[&<>"\']', () => {
     const raw = '&<>"\'';
     const escaped = '&amp;&lt;&gt;&quot;&#039;';
 
