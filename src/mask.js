@@ -8,20 +8,20 @@ class Mask extends Util {
   /**
    * 写入提示信息
    * @param {Element} elem - 需写入信息的panel
-   * @param {string} msg - 信息内容
+   * @param {string} [msg=''] - 信息内容
    * @private
    */
-  static insertMsg(elem, msg) {
+  static insertMsg(elem, msg = '') {
     const escapedMsg = this.escapeHtml(msg);
     elem.querySelector('.panel__body .message').innerHTML = escapedMsg;
   }
 
   /**
    * 新建Mask实例
-   * @param {string} group='' - 组件分类
+   * @param {string} [group] - 组件分类，区别单页中多个Mask组件，若单页仅一个Mask可忽略
    * @augments {Util}
    */
-  constructor(group = '') {
+  constructor(group) {
     super(group);
 
     /**
@@ -57,27 +57,30 @@ class Mask extends Util {
 
   /**
    * 提示信息
-   * @param {string} [name='loading'] - panel名称
-   * @param {string} [msg='Loading'] - 提示信息
+   * @param {string} name - panel名称，将查找.mask__penel--{name}
+   * @param {string} [msg] - 提示信息
+   * @throws {Error} 不存在匹配元素.mask__penel--{name}
    */
-  prompt(type = 'loading', msg = 'Loading') {
-    const panel = this.mask.querySelector(`.mask__panel--${type}`);
+  prompt(name, msg) {
+    const panel = this.mask.querySelector(`.mask__panel--${name}`);
 
-    if (panel) {
-      // 提示信息
-      this.constructor.insertMsg(panel, msg);
-
-      // 呈现
-      this.panelSwitch(panel);
-      this.show();
+    if (!panel) {
+      throw new Error(`.mask__panel--${name} not exists`);
     }
+
+    // 提示信息
+    this.constructor.insertMsg(panel, msg);
+
+    // 呈现
+    this.panelSwitch(panel);
+    this.show();
   }
 
   /**
    * loading效果
-   * @param {string} [msg='Loading'] - 提示信息
+   * @param {string} [msg] - 提示信息
    */
-  loading(msg = 'Loading') {
+  loading(msg) {
     this.prompt('loading', msg);
   }
 

@@ -40,8 +40,8 @@
     "jsdoc": "^3.5.3",
     "jsdoc-strip-async-await": "^0.1.0",
     "jsdom": "^11.1.0",
-    "mocha": "^3.4.2",
-    "nyc": "^11.0.3",
+    "mocha": "^3.5.0",
+    "nyc": "^11.1.0",
     "rimraf": "^2.6.1"
   },
   "engines": {

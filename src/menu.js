@@ -7,10 +7,10 @@ import Util from './util';
 class Menu extends Util {
   /**
    * 新建Menu实例
-   * @param {string} group='' - 组件分类
+   * @param {string} [group] - 组件分类，区别单页中多个Menu组件，若单页仅一个Menu可忽略
    * @augments {Util}
    */
-  constructor(group = '') {
+  constructor(group) {
     super(group);
 
     /**
@@ -53,8 +53,8 @@ class Menu extends Util {
   }
 
   /**
-   * 打开指定页
-   * @param {(number|string)} [id] - 页面id
+   * 打开指定页，通过点击匹配menu__anchor实现
+   * @param {(number|string)} [id] - 页面id，未设置或无匹配menu__anchor将点击Menu容器中第一个menu__anchor
    */
   open(id) {
     const target = this.menu.querySelector(`.menu__anchor[data-page="${id}"]`)
