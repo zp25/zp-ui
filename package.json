@@ -19,30 +19,31 @@
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^6.25.0"
+    "babel-runtime": "^6.26.0"
   },
   "peerDependencies": {
     "babel-runtime": "^6.25.0"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
+    "babel-core": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-0": "^6.24.1",
-    "chai": "^4.1.1",
+    "chai": "^4.1.2",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^4.4.1",
-    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint": "^4.6.0",
+    "eslint-config-airbnb-base": "^12.0.0",
     "eslint-plugin-import": "^2.7.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-eslint": "^4.0.0",
     "gulp-load-plugins": "^1.5.0",
     "jsdoc": "^3.5.4",
     "jsdoc-strip-async-await": "^0.1.0",
-    "jsdom": "^11.1.0",
+    "jsdom": "^11.2.0",
     "mocha": "^3.5.0",
     "nyc": "^11.1.0",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "sinon": "^3.2.1"
   },
   "engines": {
     "node": ">=7.0.0"
