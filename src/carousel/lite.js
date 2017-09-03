@@ -19,17 +19,11 @@ class CarouselLite extends base(Util) {
     this.clearTimeout();
 
     const next = super.play();
-    this.mainSwitch(next);
+    this.subject.state = {
+      next,
+    };
 
     this.setTimeout(this.play);
-  }
-
-  /**
-   * 自动播放，play的别名
-   * @see {@link CarouselLite#play}
-   */
-  autoplay() {
-    this.play();
   }
 
   /**

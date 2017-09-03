@@ -1,4 +1,30 @@
 /**
+ * 主区域(banner)观察者
+ * @param {Element} main - Carousel组件主区域(banner)
+ * @param {boolean} cssCustomProp - 浏览器环境是否支持css自定义参数
+ * @return {Observer}
+ */
+const bannerObserver = (main, cssCustomProp) => ({
+  /**
+   * banner切换，若不支持css自定义变量，直接修改transform属性
+   * @param {Object} state - 状态
+   * @param {number} state.next - 下一页编号
+   */
+  update: (state) => {
+    const { next } = state;
+    const offset = `${(1 - next) * 100}%`;
+
+    main.dataset.focus = next;
+
+    if (cssCustomProp) {
+      main.style.setProperty('--banner-translateX', offset);
+    } else {
+      main.style.transform = `translate3d(${offset}, 0, 0)`;
+    }
+  },
+});
+
+/**
  * @ignore
  */
 export default Base => class extends Base {
@@ -11,13 +37,14 @@ export default Base => class extends Base {
     /**
      * Carousel组件容器
      * @type {Element}
+     * @public
      */
     this.carousel = document.querySelector(
       `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`);
-
     /**
      * Carousel组件banner区域
      * @type {Element}
+     * @private
      */
     this.main = this.carousel.querySelector('.carousel__main');
 
@@ -51,6 +78,9 @@ export default Base => class extends Base {
 
     this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
+
+    // 添加主区域(banner)observer
+    this.attach(bannerObserver(this.main, this.options.supports));
   }
 
   /**
@@ -70,23 +100,6 @@ export default Base => class extends Base {
     if (this.timeoutID) {
       clearTimeout(this.timeoutID);
       this.timeoutID = NaN;
-    }
-  }
-
-  /**
-   * banner切换，若不支持css自定义变量，直接修改transform属性
-   * @param {number} next - 下一页编号
-   * @ignore
-   */
-  mainSwitch(next) {
-    this.main.dataset.focus = next;
-
-    const offset = `${(1 - next) * 100}%`;
-
-    if (this.options.supports) {
-      this.main.style.setProperty('--banner-translateX', offset);
-    } else {
-      this.main.style.transform = `translate3d(${offset}, 0, 0)`;
     }
   }
 

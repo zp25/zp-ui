@@ -2,6 +2,36 @@ import Util from '../util';
 import base from './base';
 
 /**
+ * 主区域(banner)观察者
+ * @param {Array.<Element>} anchors - Menu组件导航区域
+ * @return {Observer}
+ */
+const navObserver = (navBtns) => {
+  const activeName = 'slide-nav--active';
+
+  return {
+    /**
+     * nav切换
+     * @param {Object} state - 状态
+     * @param {number} state.next - 下一页编号
+     */
+    update: (state) => {
+      const { next } = state;
+
+      navBtns.forEach((btn) => {
+        const order = Number(btn.dataset.order);
+
+        if (order === next) {
+          btn.classList.add(activeName);
+        } else {
+          btn.classList.remove(activeName);
+        }
+      });
+    },
+  };
+};
+
+/**
  * @class
  * @description 新建Carousel实例，可自定义nav
  * @implements {carouselBase}
@@ -18,38 +48,37 @@ class Carousel extends base(Util) {
   constructor(group = '', opts = {}) {
     super(group, opts);
 
-    // 主要元素
+    /**
+     * 导航区域
+     * @type {Element}
+     * @public
+     */
     this.nav = this.carousel.querySelector('.carousel__nav');
+    /**
+     * 导航区域内按钮
+     * @type {Array.<Element>}
+     * @private
+     */
+    this.navBtns = Array.from(this.nav.querySelectorAll('.slide-nav'));
 
     // 是否自动播放
     this.isAutoplay = false;
 
-    // 绑定事件监听
+    // 添加导航区域observer
+    this.attach(navObserver(this.navBtns));
+    // 事件绑定
+    this.bind();
+  }
+
+  bind() {
     this.nav.onclick = (e) => {
       e.preventDefault();
 
       const next = Number(e.target.dataset.order);
-      if (next && next > 0) {
+      if (next && next > 0 && next <= this.options.length) {
         this.combineSwitch(next);
       }
     };
-  }
-
-  /**
-   * nav切换
-   * @param {number} next - 下一页编号
-   * @private
-   */
-  navSwitch(next) {
-    Array.from(this.nav.querySelectorAll('.slide-nav')).forEach((item) => {
-      const order = Number(item.dataset.order);
-
-      if (order === next) {
-        item.classList.add('slide-nav--active');
-      } else {
-        item.classList.remove('slide-nav--active');
-      }
-    });
   }
 
   /**
@@ -60,11 +89,9 @@ class Carousel extends base(Util) {
   combineSwitch(next) {
     this.clearTimeout();
 
-    // main样式、记录修改
-    this.mainSwitch(next);
-
-    // nav样式修改
-    this.navSwitch(next);
+    this.subject.state = {
+      next,
+    };
 
     if (this.isAutoplay) {
       this.setTimeout(this.play);
