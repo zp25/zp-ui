@@ -12,7 +12,7 @@ const maskObserver = (mask) => {
     /**
      * mask样式切换
      * @param {Object} state - 状态
-     * @param {string} state.hidden - mask是否显示
+     * @param {boolean} state.hidden - mask是否显示
      */
     update: (state) => {
       if (state.hidden) {
@@ -36,6 +36,7 @@ const panelObserver = (panels) => {
     /**
      * penel样式切换
      * @param {Object} state - 状态
+     * @param {boolean} state.hidden - mask是否显示
      * @param {string} state.panel - 当期聚焦页
      */
     update: (state) => {
@@ -62,7 +63,9 @@ const messageObserver = panels => ({
   /**
    * 写入提示信息
    * @param {Object} state - 状态
+   * @param {boolean} state.hidden - mask是否显示
    * @param {string} state.panel - 当期聚焦页
+   * @param {string} state.message - 提示信息
    */
   update: (state) => {
     const { hidden, panel, message } = state;

@@ -3,6 +3,7 @@ import Util from './util';
 /**
  * 导航区域观察者
  * @param {Array.<Element>} anchors - Menu组件导航区域
+ * @return {Observer}
  */
 const anchorsObserver = (anchors) => {
   const activeName = 'menu__anchor--active';
