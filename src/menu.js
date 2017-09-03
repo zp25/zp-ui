@@ -1,6 +1,35 @@
 import Util from './util';
 
 /**
+ * 导航区域观察者
+ * @param {Array.<Element>} anchors - Menu组件导航区域
+ */
+const anchorsObserver = (anchors) => {
+  const activeName = 'menu__anchor--active';
+
+  return {
+    /**
+     * 导航区域样式切换
+     * @param {Object} state - 状态
+     * @param {string} state.page - 当期聚焦页
+     */
+    update: (state) => {
+      const { page: currentPage } = state;
+
+      anchors.forEach((anchor) => {
+        const page = anchor.dataset.page;
+
+        if (page === currentPage) {
+          anchor.classList.add(activeName);
+        } else {
+          anchor.classList.remove(activeName);
+        }
+      });
+    },
+  };
+};
+
+/**
  * @class
  * @implements {Util}
  */
@@ -16,39 +45,35 @@ class Menu extends Util {
     /**
      * Menu组件容器
      * @type {Element}
+     * @public
      */
     this.menu = document.querySelector(
       `.menu${this.group ? `[data-group="${this.group}"]` : ''}`);
-
     /**
      * Menu组件导航区域
-     * @type {Element}
+     * @type {Array.<Element>}
      * @private
      */
-    this.anchor = this.menu.querySelectorAll('.menu__anchor');
+    this.anchors = Array.from(this.menu.querySelectorAll('.menu__anchor'));
 
-    // 绑定事件监听
-    Array.from(this.anchor).forEach((item) => {
-      item.addEventListener('click', (e) => {
-        this.menuSwitch(e.currentTarget);
-
-        e.preventDefault();
-      }, false);
-    });
+    // 添加默认observer
+    this.attach(anchorsObserver(this.anchors));
+    // 事件绑定
+    this.bind();
   }
 
   /**
-   * 导航样式切换
-   * @param {Element} elem - 监听到点击对象
+   * 事件绑定
    * @private
    */
-  menuSwitch(elem) {
-    Array.from(this.anchor).forEach((item) => {
-      if (item === elem) {
-        item.classList.add('menu__anchor--active');
-      } else {
-        item.classList.remove('menu__anchor--active');
-      }
+  bind() {
+    this.anchors.forEach((anchor) => {
+      anchor.addEventListener('click', (e) => {
+        // 状态存储导航按键的dataset
+        this.subject.state = e.currentTarget.dataset;
+
+        e.preventDefault();
+      }, false);
     });
   }
 
@@ -57,8 +82,8 @@ class Menu extends Util {
    * @param {(number|string)} [id] - 页面id，未设置或无匹配menu__anchor将点击Menu容器中第一个menu__anchor
    */
   open(id) {
-    const target = this.menu.querySelector(`.menu__anchor[data-page="${id}"]`)
-      || this.menu.querySelector('.menu__anchor');
+    const target = this.anchors.filter(anchor => anchor.dataset.page === String(id))[0]
+      || this.anchors[0];
 
     target.click();
   }

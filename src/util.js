@@ -1,3 +1,5 @@
+import Subject from './subject';
+
 /**
  * @interface Util
  */
@@ -9,6 +11,11 @@ class Util {
      * @type string
      */
     this.group = group;
+    /**
+     * 被观察者实例
+     * @type {Subject}
+     */
+    this.subject = new Subject();
   }
 
   /**
@@ -53,6 +60,36 @@ class Util {
     };
 
     return unsafe.replace(/[&<>"']/g, m => map[m]);
+  }
+
+  /**
+   * 为subject绑定observer
+   * @param {(Observer|Array.<Observer>)} observer - 观察者对象
+   * @return {number} 已绑定observer数量
+   */
+  attach(observer) {
+    const iterable = Array.isArray(observer) ? observer : [observer];
+
+    iterable.forEach((o) => {
+      this.subject.attach(o);
+    });
+
+    return this.subject.observers.length;
+  }
+
+  /**
+   * 为subject移除observer
+   * @param {(Observer|Array.<Observer>)} observer - 观察者对象
+   * @return {number} 已绑定observer数量
+   */
+  detach(observer) {
+    const iterable = Array.isArray(observer) ? observer : [observer];
+
+    iterable.forEach((o) => {
+      this.subject.detach(o);
+    });
+
+    return this.subject.observers.length;
   }
 }
 

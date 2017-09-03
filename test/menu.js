@@ -10,9 +10,9 @@ const domStr = `
 <html>
 <body>
   <menu class="menu" data-group="main">
-    <a href="#a" class="menu__anchor" data-page="你好"></p>
-    <a href="#a" class="menu__anchor" data-page="hello"></p>
-    <a href="#a" class="menu__anchor" data-page="hola"></p>
+    <a href="#a" class="menu__anchor" data-page="你好">你好</a>
+    <a href="#a" class="menu__anchor" data-page="hello">hello</a>
+    <a href="#a" class="menu__anchor" data-page="hola">hola</a>
   </menu>
 </body>
 </html>
@@ -20,6 +20,7 @@ const domStr = `
 
 describe('Menu', () => {
   let menu = null;
+  const activeName = 'menu__anchor--active';
 
   before(() => {
     const window = new JSDOM(domStr).window;
@@ -32,13 +33,19 @@ describe('Menu', () => {
     menu.should.be.an.instanceof(Util);
   });
 
+  /**
+   * Properties
+   */
   it('Prop: menu, 容器实例', () => {
     const target = document.querySelector('.menu');
 
     menu.menu.should.be.eql(target);
   });
 
-  it('Method: open, 传入参数可正确聚焦menu__anchor(添加menu__anchor--active类)', () => {
+  /**
+   * Methods
+   */
+  it(`Method: open, 传入参数可正确聚焦menu__anchor(添加${activeName}类)`, () => {
     const state = {
       '你好': false,
       'hello': false,
@@ -48,16 +55,16 @@ describe('Menu', () => {
     const page = 'hola';
     menu.open(page);
 
-    const result = Array.from(menu.anchor).reduce((prev, item) => (
+    const result = menu.anchors.reduce((prev, anchor) => (
       Object.assign({}, prev, {
-        [item.getAttribute('data-page')]: item.classList.contains('menu__anchor--active'),
+        [anchor.getAttribute('data-page')]: anchor.classList.contains(activeName),
       })
     ), {});
 
     result.should.be.eql(state);
   });
 
-  it('Method: open, 未传入参数或无匹配menu__anchor将聚焦容器中第一个menu__anchor', () => {
+  it('Method: open, 未传入参数或无匹配menu__anchor将聚焦容器中第一项', () => {
     const state = {
       '你好': true,
       'hello': false,
@@ -67,9 +74,9 @@ describe('Menu', () => {
     const page = 'empty';
     menu.open(page);
 
-    const result = Array.from(menu.anchor).reduce((prev, item) => (
+    const result = menu.anchors.reduce((prev, anchor) => (
       Object.assign({}, prev, {
-        [item.getAttribute('data-page')]: item.classList.contains('menu__anchor--active'),
+        [anchor.getAttribute('data-page')]: anchor.classList.contains(activeName),
       })
     ), {});
 

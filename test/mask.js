@@ -43,6 +43,8 @@ describe('Mask', () => {
   let loading = null;
   let prompt = null;
 
+  const maskActiveName = 'mask--active';
+  const panelActiveName = 'mask__panel--active';
   const msg = 'custome message';
 
   before(() => {
@@ -59,12 +61,18 @@ describe('Mask', () => {
     mask.should.be.an.instanceof(Util);
   });
 
+  /**
+   * Properties
+   */
   it('Prop: mask, 容器实例', () => {
     const target = document.querySelector('.mask');
 
     mask.mask.should.be.eql(target);
   });
 
+  /**
+   * Methods
+   */
   it('Method: loading, 显示mask并正确切换mask__panel，第一个参数自定义message', () => {
     const state = {
       'loading': true,
@@ -74,12 +82,12 @@ describe('Mask', () => {
     mask.loading(msg);
 
     const result = {
-      'loading': loading.classList.contains('mask__panel--active'),
-      'message': prompt.classList.contains('mask__panel--active'),
+      'loading': loading.classList.contains(panelActiveName),
+      'message': prompt.classList.contains(panelActiveName),
     };
 
     // mask状态
-    mask.mask.classList.contains('mask--active').should.be.true;
+    mask.mask.classList.contains(maskActiveName).should.be.true;
     // panel状态
     result.should.be.eql(state);
     // 自定义message
@@ -95,12 +103,12 @@ describe('Mask', () => {
     mask.prompt('message', msg);
 
     const result = {
-      'loading': loading.classList.contains('mask__panel--active'),
-      'message': prompt.classList.contains('mask__panel--active'),
+      'loading': loading.classList.contains(panelActiveName),
+      'message': prompt.classList.contains(panelActiveName),
     };
 
     // mask状态
-    mask.mask.classList.contains('mask--active').should.be.true;
+    mask.mask.classList.contains(maskActiveName).should.be.true;
     // panel状态
     result.should.be.eql(state);
     // 自定义message
@@ -116,6 +124,6 @@ describe('Mask', () => {
   it('Method: hide, 隐藏mask', () => {
     mask.hide();
 
-    mask.mask.classList.contains('mask--active').should.be.false;
+    mask.mask.classList.contains(maskActiveName).should.be.false;
   });
 });
