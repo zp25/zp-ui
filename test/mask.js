@@ -94,6 +94,11 @@ describe('Mask', () => {
     loading.querySelector('.message').innerHTML.should.equal(msg);
   });
 
+  it('Method: loading, 不传入参数message使用空字符串', () => {
+    mask.loading();
+    loading.querySelector('.message').innerHTML.should.equal('');
+  });
+
   it('Method: prompt, 显示mask，第一个参数选择显示的mask__penel，第二个参数自定义message', () => {
     const state = {
       'loading': false,
@@ -115,10 +120,13 @@ describe('Mask', () => {
     prompt.querySelector('.message').innerHTML.should.equal(msg);
   });
 
-  it('Method: prompt, 无匹配panel将抛出Error', () => {
+  it('Method: prompt, 无匹配panel将抛出Error，未传入message使用空字符串', () => {
     const func = () => { mask.prompt('nopanel', msg); };
 
     func.should.throw(Error);
+
+    mask.prompt('message');
+    prompt.querySelector('.message').innerHTML.should.equal('');
   });
 
   it('Method: hide, 隐藏mask', () => {

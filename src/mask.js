@@ -123,7 +123,7 @@ class Mask extends Util {
    * @param {string} [msg] - 提示信息
    * @throws {Error} 不存在匹配元素.mask__penel--{name}
    */
-  prompt(name, msg) {
+  prompt(name, msg = '') {
     // 呈现
     this.subject.state = {
       hidden: false,
@@ -136,7 +136,7 @@ class Mask extends Util {
    * loading效果
    * @param {string} [msg] - 提示信息
    */
-  loading(msg) {
+  loading(msg = '') {
     this.prompt('loading', msg);
   }
 
