@@ -18,7 +18,7 @@ const anchorsObserver = (anchors) => {
       const { page: currentPage } = state;
 
       anchors.forEach((anchor) => {
-        const page = anchor.dataset.page;
+        const { page } = anchor.dataset;
 
         if (page === currentPage) {
           anchor.classList.add(activeName);
@@ -43,13 +43,13 @@ class Menu extends Util {
   constructor(group) {
     super(group);
 
+    const query = `.menu${this.group ? `[data-group="${this.group}"]` : ''}`;
     /**
      * Menu组件容器
      * @type {Element}
      * @public
      */
-    this.menu = document.querySelector(
-      `.menu${this.group ? `[data-group="${this.group}"]` : ''}`);
+    this.menu = document.querySelector(query);
     /**
      * Menu组件导航区域
      * @type {Array.<Element>}

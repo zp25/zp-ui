@@ -34,13 +34,13 @@ export default Base => class extends Base {
   constructor(group = '', opts = {}) {
     super(group);
 
+    const query = `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`;
     /**
      * Carousel组件容器
      * @type {Element}
      * @public
      */
-    this.carousel = document.querySelector(
-      `.carousel${this.group ? `[data-group="${this.group}"]` : ''}`);
+    this.carousel = document.querySelector(query);
     /**
      * Carousel组件banner区域
      * @type {Element}

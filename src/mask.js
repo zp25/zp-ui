@@ -41,7 +41,7 @@ const panelObserver = (panels) => {
      */
     update: (state) => {
       const { hidden, panel } = state;
-      const panelName = `mask__panel--${state.panel}`;
+      const panelName = `mask__panel--${panel}`;
 
       panels.forEach((p) => {
         if (hidden || !p.classList.contains(panelName)) {
@@ -97,13 +97,13 @@ class Mask extends Util {
   constructor(group) {
     super(group);
 
+    const query = `.mask${this.group ? `[data-group="${this.group}"]` : ''}`;
     /**
      * Mask组件容器
      * @type {Element}
      * @public
      */
-    this.mask = document.querySelector(
-      `.mask${this.group ? `[data-group="${this.group}"]` : ''}`);
+    this.mask = document.querySelector(query);
     /**
      * Mask组件panel区域
      * @type {Array.<Element>}

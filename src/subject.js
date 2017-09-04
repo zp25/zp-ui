@@ -20,7 +20,7 @@ class Subject {
      * @type {Object}
      * @private
      */
-    this._state = null;
+    this._state = null; // eslint-disable-line no-underscore-dangle
   }
 
   /**
@@ -49,7 +49,7 @@ class Subject {
    * @public
    */
   get state() {
-    return Object.assign({}, this._state);
+    return Object.assign({}, this._state); // eslint-disable-line no-underscore-dangle
   }
 
   /**
@@ -58,7 +58,7 @@ class Subject {
    * @public
    */
   set state(obj) {
-    this._state = Object.assign({}, this._state, obj);
+    this._state = Object.assign({}, this._state, obj); // eslint-disable-line no-underscore-dangle
     this.notify();
   }
 
