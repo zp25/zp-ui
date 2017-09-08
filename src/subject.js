@@ -1,3 +1,5 @@
+/* eslint no-underscore-dangle:0 */
+
 /**
  * @typedef {Object} Observer
  * @property {Function} update - 更新状态
@@ -20,7 +22,7 @@ class Subject {
      * @type {Object}
      * @private
      */
-    this._state = null; // eslint-disable-line no-underscore-dangle
+    this._state = null;
   }
 
   /**
@@ -49,7 +51,7 @@ class Subject {
    * @public
    */
   get state() {
-    return Object.assign({}, this._state); // eslint-disable-line no-underscore-dangle
+    return Object.assign({}, this._state);
   }
 
   /**
@@ -58,8 +60,8 @@ class Subject {
    * @public
    */
   set state(newState) {
-    const prevState = Object.assign({}, this._state); // eslint-disable-line no-underscore-dangle
-    this._state = Object.assign({}, this.prevState, newState);
+    const prevState = Object.assign({}, this._state);
+    this._state = Object.assign({}, prevState, newState);
 
     this.notify(prevState);
   }
