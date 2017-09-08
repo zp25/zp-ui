@@ -10,7 +10,8 @@ describe('Subject', () => {
   let spyUpdate = null;
 
   const observer = { update: () => true };
-  const state = { foo: 1, bar: 2 };
+  const stateA = { foo: 1, bar: 2 };
+  const stateB = { foo: 2, bar: 3 };
 
   before(() => {
     subject = new Subject();
@@ -52,16 +53,19 @@ describe('Subject', () => {
   });
 
   it('Method: state, 读取和更新状态，状态存于subject._state，并触发subject.notify', () => {
-    subject.state = state;
+    subject.state = stateA;
 
+    subject.state.should.eql(stateA);
     subject.state.should.eql(subject._state);
+
     spyNotify.calledOnce.should.be.true;
   });
 
-  it('Method: notify, 调用所有observer的update方法', () => {
+  it('Method: notify, 调用所有observer的update方法，接收prevState, nextState', () => {
+    // 之前测试删除了observer
     subject.attach(observer);
-    subject.state = state;
+    subject.state = stateB;
 
-    spyUpdate.calledWith(subject.state).should.be.true;
+    spyUpdate.calledWithExactly(stateB, stateA).should.be.true;
   });
 });

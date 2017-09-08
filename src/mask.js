@@ -66,6 +66,7 @@ const messageObserver = panels => ({
    * @param {boolean} state.hidden - mask是否显示
    * @param {string} state.panel - 当期聚焦页
    * @param {string} state.message - 提示信息
+   * @throws {Error} 不存在匹配元素.mask__penel--{name}
    */
   update: (state) => {
     const { hidden, panel, message } = state;
@@ -121,10 +122,8 @@ class Mask extends Util {
    * 提示信息
    * @param {string} name - panel名称，将查找.mask__penel--{name}
    * @param {string} [msg] - 提示信息
-   * @throws {Error} 不存在匹配元素.mask__penel--{name}
    */
   prompt(name, msg = '') {
-    // 呈现
     this.subject.state = {
       hidden: false,
       panel: name,

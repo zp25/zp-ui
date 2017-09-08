@@ -41,7 +41,7 @@
     "jsdoc-strip-async-await": "^0.1.0",
     "jsdom": "^11.2.0",
     "mocha": "^3.5.0",
-    "nyc": "^11.1.0",
+    "nyc": "^11.2.1",
     "rimraf": "^2.6.1",
     "sinon": "^3.2.1"
   },

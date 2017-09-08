@@ -54,22 +54,25 @@ class Subject {
 
   /**
    * 更新状态
-   * @param {Object} obj - 更新
+   * @param {Object} newState - 更新状态
    * @public
    */
-  set state(obj) {
-    this._state = Object.assign({}, this._state, obj); // eslint-disable-line no-underscore-dangle
-    this.notify();
+  set state(newState) {
+    const prevState = Object.assign({}, this._state); // eslint-disable-line no-underscore-dangle
+    this._state = Object.assign({}, this.prevState, newState);
+
+    this.notify(prevState);
   }
 
   /**
    * 通知观察者状态变化
-   * @public
+   * @param {Object} prevState - 原状态
+   * @private
    */
-  notify() {
+  notify(prevState) {
     this.observers.forEach((o) => {
       if ({}.hasOwnProperty.call(o, 'update')) {
-        o.update(this.state);
+        o.update(this.state, prevState);
       }
     });
   }
