@@ -11,7 +11,7 @@ describe('Subject', () => {
 
   const observer = { update: () => true };
   const stateA = { foo: 1, bar: 2 };
-  const stateB = { foo: 2, bar: 3 };
+  const stateB = { baz: 3 };
 
   before(() => {
     subject = new Subject();
@@ -46,12 +46,6 @@ describe('Subject', () => {
     subject.observers.should.have.lengthOf(1);
   });
 
-  it('Method: detach, 从subject.observers移除observer实例', () => {
-    subject.detach(observer);
-
-    subject.observers.should.not.include(observer);
-  });
-
   it('Method: state, 读取和更新状态，状态存于subject._state，并触发subject.notify', () => {
     subject.state = stateA;
 
@@ -61,11 +55,16 @@ describe('Subject', () => {
     spyNotify.calledOnce.should.be.true;
   });
 
-  it('Method: notify, 调用所有observer的update方法，接收prevState, nextState', () => {
-    // 之前测试删除了observer
-    subject.attach(observer);
+  it('Method: notify, 调用所有observer的update方法，接收合并后的state和prevState', () => {
     subject.state = stateB;
 
-    spyUpdate.calledWithExactly(stateB, stateA).should.be.true;
+    const state = Object.assign({}, stateA, stateB);
+    spyUpdate.calledWithExactly(state, stateA).should.be.true;
+  });
+
+  it('Method: detach, 从subject.observers移除observer实例', () => {
+    subject.detach(observer);
+
+    subject.observers.should.not.include(observer);
   });
 });
