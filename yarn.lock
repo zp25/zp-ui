@@ -1357,7 +1357,7 @@ copy-props@^1.4.1:
     each-props "^1.2.1"
     is-plain-object "^2.0.1"
 
-core-js@^2.4.0:
+core-js@^2.4.0, core-js@^2.5.1:
   version "2.5.1"
   resolved "http://registry.npm.taobao.org/core-js/download/core-js-2.5.1.tgz#ae6874dc66937789b80754ff5428df66819ca50b"
 

@@ -19,10 +19,12 @@
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^7.0.0-beta.1"
+    "babel-runtime": "^7.0.0-beta.1",
+    "core-js": "^2.5.1"
   },
   "peerDependencies": {
-    "babel-runtime": "^7.0.0-beta.1"
+    "babel-runtime": "^7.0.0-beta.1",
+    "core-js": "^2.5.1"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-beta.1",
@@ -55,7 +57,9 @@
     }
   },
   "browserslist": [
+    "> 1%",
     "last 2 versions",
+    "Firefox ESR",
     "not ie < 11"
   ],
   "browserify": {
