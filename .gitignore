@@ -1,7 +1,6 @@
 .tmp/
 .nyc_output/
 assets/
-dist/
 docs/
 node_modules/
 coverage/
@@ -9,6 +8,3 @@ coverage/
 npm-debug.log
 yarn-error.log
 .DS_Store
-
-app/*.html
-.env

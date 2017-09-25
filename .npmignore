@@ -1,7 +1,6 @@
 .tmp/
 .nyc_output/
 assets/
-dist/
 docs/
 node_modules/
 coverage/
@@ -10,12 +9,13 @@ npm-debug.log
 yarn-error.log
 .DS_Store
 
-app/*.html
-.env
-
-gulpfile.babel.js
-jsdoc.json
-yarn.lock
+test/
+.babelrc
 .editorconfig
 .eslintrc
 .travis.yml
+index.js
+jsdoc.json
+legacy.js
+rollup.config.js
+yarn.lock
