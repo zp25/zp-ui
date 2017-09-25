@@ -32,6 +32,7 @@
 |   +-- _panel.scss
 |   +-- _root.scss
 +-- index.js
++-- legacy.js
 ~~~
 
 src, styles组件源码，legacy支持gte IE9，styles/legacy支持gte IE8
