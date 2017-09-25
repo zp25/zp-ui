@@ -3,7 +3,7 @@ node_js:
   - "7"
 cache: yarn
 script:
-  - npm run gulp build
+  - npm run build
   - npm test
 deploy:
   provider: npm
