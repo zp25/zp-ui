@@ -1,7 +1,5 @@
 /* eslint no-underscore-dangle:0 */
 
-import 'core-js/fn/array/includes';
-
 /**
  * @typedef {Object} Observer
  * @property {Function} update - 更新状态
