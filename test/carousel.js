@@ -40,6 +40,11 @@ const domStr = `
 </html>
 `;
 
+const window = new JSDOM(domStr).window;
+
+global.window = window;
+global.document = window.document;
+
 describe('Carousel', () => {
   let carousel = null;
   let clock = null;
@@ -50,11 +55,6 @@ describe('Carousel', () => {
   };
 
   before(() => {
-    const window = new JSDOM(domStr).window;
-
-    global.window = window;
-    global.document = window.document;
-
     carousel = new Carousel('main', opts);
 
     // fake time
@@ -164,11 +164,6 @@ describe('CarouselLite', () => {
   };
 
   before(() => {
-    const window = new JSDOM(domStr).window;
-
-    global.window = window;
-    global.document = window.document;
-
     carouselLite = new CarouselLite('lite', opts);
 
     // fake time
