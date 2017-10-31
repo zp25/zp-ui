@@ -5,9 +5,10 @@
   overflow: hidden;
 
   .carousel__main {
+    @include flexbox();
+
     width: 100%;
     height: 100%;
-    @include flexbox();
     overflow: visible;
     transition: transform 0.5s;
 
@@ -19,12 +20,13 @@
   }
 
   .carousel__nav {
+    @include flexbox(row, nowrap, center, center);
+
     position: absolute;
     left: 0;
     bottom: 0;
     width: 100%;
     height: torem(42px);
-    @include flexbox(row, nowrap, center, center);
 
     .slide-nav {
       width: torem(12px);
@@ -58,6 +60,7 @@
   .carousel {
     .carousel__main {
       --banner-translateX: 0%;
+
       transform: translate3d(var(--banner-translateX), 0, 0);
     }
   }

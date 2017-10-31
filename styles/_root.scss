@@ -11,7 +11,11 @@
 //   outline: none;
 // }
 
-html, button, input, textarea, select {
+html,
+button,
+input,
+textarea,
+select {
   padding: 0;
   margin: 0;
   // 文本平滑属性
@@ -29,7 +33,8 @@ a:hover {
   text-decoration: underline;
 }
 
-a, img {
+a,
+img {
   // 禁止长按链接与图片弹出菜单，例如禁止保存图片，仅Safari
   -webkit-touch-callout: none;
 }
@@ -43,9 +48,9 @@ html {
   body {
     // @link https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
     font-family: -apple-system, BlinkMacSystemFont,
-        "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-        "Fira Sans", "Droid Sans", "Helvetica Neue",
-        "PingFang SC", "Microsoft YaHei", sans-serif;
+      "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+      "Fira Sans", "Droid Sans", "Helvetica Neue",
+      "PingFang SC", "Microsoft YaHei", sans-serif;
     line-height: 1.5;
   }
 }

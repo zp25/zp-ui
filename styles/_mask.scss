@@ -34,8 +34,9 @@
     }
 
     .panel__body {
-      height: 100%;
       @include flexbox(column, nowrap, center, center);
+
+      height: 100%;
       font-size: fontSize(bold);
       text-align: center;
       overflow: hidden;
@@ -87,9 +88,12 @@
 }
 
 @keyframes circleDelay {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
+
   40% {
     transform: scale(1);
   }

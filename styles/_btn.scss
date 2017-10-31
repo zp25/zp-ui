@@ -20,20 +20,26 @@
     padding: 5px 10px;
   }
 
-  &.btn--green, &.btn--success {
+  &.btn--green,
+  &.btn--success {
     color: color(white);
     background-color: color(green);
   }
-  &.btn--blue, &.btn--info {
+
+  &.btn--blue,
+  &.btn--info {
     color: color(white);
     background-color: color(blue);
   }
-  &.btn--red, &.btn--danger {
+
+  &.btn--red,
+  &.btn--danger {
     color: color(white);
     background-color: color(red);
   }
 
-  &.btn--disabled, &[disabled] {
+  &.btn--disabled,
+  &[disabled] {
     color: color(white) !important;
     background-color: color(grey) !important;
     cursor: default !important;
