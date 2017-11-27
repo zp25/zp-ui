@@ -2,124 +2,16 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('babel-polyfill/lib/core-js/modules/es6.array.from');
-require('babel-polyfill/lib/core-js/modules/es6.object.assign');
-require('babel-polyfill/lib/core-js/modules/es7.array.includes');
-require('babel-polyfill/lib/core-js/modules/es6.string.includes');
-
-function AwaitValue(value) {
-  this.value = value;
-}
-
-function AsyncGenerator(gen) {
-  var front, back;
-
-  function send(key, arg) {
-    return new Promise(function (resolve, reject) {
-      var request = {
-        key: key,
-        arg: arg,
-        resolve: resolve,
-        reject: reject,
-        next: null
-      };
-
-      if (back) {
-        back = back.next = request;
-      } else {
-        front = back = request;
-        resume(key, arg);
-      }
-    });
-  }
-
-  function resume(key, arg) {
-    try {
-      var result = gen[key](arg);
-      var value = result.value;
-
-      if (value instanceof AwaitValue) {
-        Promise.resolve(value.value).then(function (arg) {
-          resume("next", arg);
-        }, function (arg) {
-          resume("throw", arg);
-        });
-      } else {
-        settle(result.done ? "return" : "normal", result.value);
-      }
-    } catch (err) {
-      settle("throw", err);
-    }
-  }
-
-  function settle(type, value) {
-    switch (type) {
-      case "return":
-        front.resolve({
-          value: value,
-          done: true
-        });
-        break;
-
-      case "throw":
-        front.reject(value);
-        break;
-
-      default:
-        front.resolve({
-          value: value,
-          done: false
-        });
-        break;
-    }
-
-    front = front.next;
-
-    if (front) {
-      resume(front.key, front.arg);
-    } else {
-      back = null;
-    }
-  }
-
-  this._invoke = send;
-
-  if (typeof gen.return !== "function") {
-    this.return = undefined;
-  }
-}
-
-if (typeof Symbol === "function" && Symbol.asyncIterator) {
-  AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-    return this;
-  };
-}
-
-AsyncGenerator.prototype.next = function (arg) {
-  return this._invoke("next", arg);
-};
-
-AsyncGenerator.prototype.throw = function (arg) {
-  return this._invoke("throw", arg);
-};
-
-AsyncGenerator.prototype.return = function (arg) {
-  return this._invoke("return", arg);
-};
-
-
-
-
-
-
+require('@babel/polyfill/lib/core-js/modules/es6.array.from');
+require('@babel/polyfill/lib/core-js/modules/es6.object.assign');
+require('@babel/polyfill/lib/core-js/modules/es7.array.includes');
+require('@babel/polyfill/lib/core-js/modules/es6.string.includes');
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
 }
-
-var classCallCheck = _classCallCheck;
 
 function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
@@ -136,14 +28,6 @@ function _createClass(Constructor, protoProps, staticProps) {
   if (staticProps) _defineProperties(Constructor, staticProps);
   return Constructor;
 }
-
-var createClass = _createClass;
-
-
-
-
-
-
 
 function _get(object, property, receiver) {
   if (object === null) object = Function.prototype;
@@ -170,8 +54,6 @@ function _get(object, property, receiver) {
   }
 }
 
-var get = _get;
-
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
@@ -188,20 +70,6 @@ function _inherits(subClass, superClass) {
   if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var inherits = _inherits;
-
-
-
-
-
-
-
-
-
-
-
-
-
 function _possibleConstructorReturn(self, call) {
   if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
@@ -213,8 +81,6 @@ function _possibleConstructorReturn(self, call) {
 
   return self;
 }
-
-var possibleConstructorReturn = _possibleConstructorReturn;
 
 /* eslint no-underscore-dangle:0 */
 
@@ -231,7 +97,7 @@ var Subject =
 /*#__PURE__*/
 function () {
   function Subject() {
-    classCallCheck(this, Subject);
+    _classCallCheck(this, Subject);
 
     /**
      * 观察者序列
@@ -254,7 +120,7 @@ function () {
    */
 
 
-  createClass(Subject, [{
+  _createClass(Subject, [{
     key: "attach",
     value: function attach(observer) {
       if (!this.observers.includes(observer)) {
@@ -299,7 +165,7 @@ function () {
     }
   }, {
     key: "state",
-    get: function get$$1() {
+    get: function get() {
       return Object.assign({}, this._state);
     }
     /**
@@ -308,7 +174,7 @@ function () {
      * @public
      */
     ,
-    set: function set$$1(newState) {
+    set: function set(newState) {
       var prevState = Object.assign({}, this._state);
       this._state = Object.assign({}, prevState, newState);
       this.notify(prevState);
@@ -325,7 +191,7 @@ var Util =
 /*#__PURE__*/
 function () {
   function Util(group) {
-    classCallCheck(this, Util);
+    _classCallCheck(this, Util);
 
     /**
      * 实例分类，用于单页多实例间区分
@@ -348,7 +214,7 @@ function () {
    */
 
 
-  createClass(Util, [{
+  _createClass(Util, [{
     key: "attach",
 
     /**
@@ -463,7 +329,7 @@ var base = (function (Base) {
   return (
     /*#__PURE__*/
     function (_Base) {
-      inherits(_class, _Base);
+      _inherits(_class, _Base);
 
       /**
        * 新建Carousel实例
@@ -473,8 +339,8 @@ var base = (function (Base) {
 
         var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
         var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        classCallCheck(this, _class);
-        _this = possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, group));
+        _classCallCheck(this, _class);
+        _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, group));
         var query = ".carousel".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
         /**
          * Carousel组件容器
@@ -529,7 +395,7 @@ var base = (function (Base) {
        */
 
 
-      createClass(_class, [{
+      _createClass(_class, [{
         key: "setTimeout",
         value: function (_setTimeout) {
           function setTimeout(_x) {
@@ -649,7 +515,7 @@ var navObserver = function navObserver(navBtns) {
 var Carousel =
 /*#__PURE__*/
 function (_base) {
-  inherits(Carousel, _base);
+  _inherits(Carousel, _base);
 
   /**
    * @param {string} group='' - 组件分类
@@ -663,8 +529,8 @@ function (_base) {
 
     var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    classCallCheck(this, Carousel);
-    _this = possibleConstructorReturn(this, (Carousel.__proto__ || Object.getPrototypeOf(Carousel)).call(this, group, opts));
+    _classCallCheck(this, Carousel);
+    _this = _possibleConstructorReturn(this, (Carousel.__proto__ || Object.getPrototypeOf(Carousel)).call(this, group, opts));
     /**
      * 导航区域
      * @type {Element}
@@ -690,7 +556,7 @@ function (_base) {
     return _this;
   }
 
-  createClass(Carousel, [{
+  _createClass(Carousel, [{
     key: "bind",
     value: function bind() {
       var _this2 = this;
@@ -730,7 +596,7 @@ function (_base) {
   }, {
     key: "play",
     value: function play(reverse) {
-      var next = get(Carousel.prototype.__proto__ || Object.getPrototypeOf(Carousel.prototype), "play", this).call(this, reverse);
+      var next = _get(Carousel.prototype.__proto__ || Object.getPrototypeOf(Carousel.prototype), "play", this).call(this, reverse);
       this.combineSwitch(next);
     }
     /**
@@ -751,7 +617,7 @@ function (_base) {
   }, {
     key: "pause",
     value: function pause() {
-      get(Carousel.prototype.__proto__ || Object.getPrototypeOf(Carousel.prototype), "pause", this).call(this);
+      _get(Carousel.prototype.__proto__ || Object.getPrototypeOf(Carousel.prototype), "pause", this).call(this);
       this.isAutoplay = false;
     }
   }]);
@@ -772,14 +638,14 @@ function (_base) {
 var CarouselLite =
 /*#__PURE__*/
 function (_base) {
-  inherits(CarouselLite, _base);
+  _inherits(CarouselLite, _base);
 
   function CarouselLite() {
-    classCallCheck(this, CarouselLite);
-    return possibleConstructorReturn(this, (CarouselLite.__proto__ || Object.getPrototypeOf(CarouselLite)).apply(this, arguments));
+    _classCallCheck(this, CarouselLite);
+    return _possibleConstructorReturn(this, (CarouselLite.__proto__ || Object.getPrototypeOf(CarouselLite)).apply(this, arguments));
   }
 
-  createClass(CarouselLite, [{
+  _createClass(CarouselLite, [{
     key: "play",
 
     /**
@@ -787,7 +653,7 @@ function (_base) {
      */
     value: function play() {
       this.clearTimeout();
-      var next = get(CarouselLite.prototype.__proto__ || Object.getPrototypeOf(CarouselLite.prototype), "play", this).call(this);
+      var next = _get(CarouselLite.prototype.__proto__ || Object.getPrototypeOf(CarouselLite.prototype), "play", this).call(this);
       this.subject.state = {
         next: next
       };
@@ -800,7 +666,7 @@ function (_base) {
   }, {
     key: "pause",
     value: function pause() {
-      get(CarouselLite.prototype.__proto__ || Object.getPrototypeOf(CarouselLite.prototype), "pause", this).call(this);
+      _get(CarouselLite.prototype.__proto__ || Object.getPrototypeOf(CarouselLite.prototype), "pause", this).call(this);
     }
   }]);
   return CarouselLite;
@@ -905,7 +771,7 @@ var messageObserver = function messageObserver(panels) {
 var Mask =
 /*#__PURE__*/
 function (_Util) {
-  inherits(Mask, _Util);
+  _inherits(Mask, _Util);
 
   /**
    * 新建Mask实例
@@ -915,8 +781,8 @@ function (_Util) {
   function Mask(group) {
     var _this;
 
-    classCallCheck(this, Mask);
-    _this = possibleConstructorReturn(this, (Mask.__proto__ || Object.getPrototypeOf(Mask)).call(this, group));
+    _classCallCheck(this, Mask);
+    _this = _possibleConstructorReturn(this, (Mask.__proto__ || Object.getPrototypeOf(Mask)).call(this, group));
     var query = ".mask".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
     /**
      * Mask组件容器
@@ -948,7 +814,7 @@ function (_Util) {
    */
 
 
-  createClass(Mask, [{
+  _createClass(Mask, [{
     key: "prompt",
     value: function prompt(name) {
       var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -1023,7 +889,7 @@ var anchorsObserver = function anchorsObserver(anchors) {
 var Menu =
 /*#__PURE__*/
 function (_Util) {
-  inherits(Menu, _Util);
+  _inherits(Menu, _Util);
 
   /**
    * 新建Menu实例
@@ -1033,8 +899,8 @@ function (_Util) {
   function Menu(group) {
     var _this;
 
-    classCallCheck(this, Menu);
-    _this = possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, group));
+    _classCallCheck(this, Menu);
+    _this = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, group));
     var query = ".menu".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
     /**
      * Menu组件容器
@@ -1064,7 +930,7 @@ function (_Util) {
    */
 
 
-  createClass(Menu, [{
+  _createClass(Menu, [{
     key: "bind",
     value: function bind() {
       var _this2 = this;
