@@ -12,7 +12,10 @@ export default [
     },
     plugins: [
       eslint(),
-      babel(),
+      babel({
+        exclude: 'node_modules/**',
+        externalHelpers: false,
+      }),
     ],
   },
   {
@@ -29,12 +32,16 @@ export default [
     ],
     sourcemap: true,
     plugins: [
+      resolve({
+        module: true,
+        main: true,
+      }),
       eslint(),
-      resolve(),
       babel({
         exclude: 'node_modules/**',
+        externalHelpers: false,
       }),
     ],
-    external: id => /babel-polyfill/.test(id),
+    external: id => /@babel\/polyfill|core-js/.test(id),
   },
 ];

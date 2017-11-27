@@ -9,7 +9,7 @@
     "start": "rollup -c -w",
     "stylelint": "stylelint 'styles/**/*.scss'",
     "build": "rollup -c && npm run stylelint",
-    "test": "cross-env BABEL_ENV=test nyc mocha --harmony --require babel-register",
+    "test": "cross-env BABEL_ENV=test nyc mocha --harmony --require @babel/register",
     "prejsdoc": "rimraf docs/*",
     "jsdoc": "jsdoc -r -c jsdoc.json -d docs",
     "open": "open docs/index.html"
@@ -20,39 +20,31 @@
   },
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "babel-polyfill": "^7.0.0-beta.3"
-  },
-  "peerDependencies": {
-    "babel-polyfill": "^7.0.0-beta.3"
-  },
   "devDependencies": {
-    "babel-core": "7.0.0-beta.2",
-    "babel-plugin-external-helpers": "^7.0.0-beta.3",
-    "babel-plugin-transform-runtime": "^7.0.0-beta.3",
-    "babel-preset-env": "2.0.0-beta.2",
-    "babel-preset-stage-0": "7.0.0-beta.2",
-    "babel-register": "^7.0.0-beta.3",
-    "babel-runtime": "^7.0.0-beta.3",
+    "@babel/core": "7.0.0-beta.5",
+    "@babel/polyfill": "7.0.0-beta.5",
+    "@babel/preset-env": "7.0.0-beta.5",
+    "@babel/preset-stage-0": "7.0.0-beta.5",
+    "@babel/register": "7.0.0-beta.5",
     "chai": "^4.1.2",
     "cross-env": "^5.1.1",
     "cz-conventional-changelog": "^2.1.0",
-    "eslint": "^4.10.0",
+    "eslint": "^4.12.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "jsdoc": "^3.5.5",
     "jsdoc-strip-async-await": "^0.1.0",
-    "jsdom": "^11.3.0",
+    "jsdom": "^11.5.1",
     "mocha": "^4.0.1",
-    "nyc": "^11.2.1",
+    "nyc": "^11.3.0",
     "rimraf": "^2.6.2",
-    "rollup": "^0.50.0",
-    "rollup-plugin-babel": "^3.0.2",
+    "rollup": "^0.52.0",
+    "rollup-plugin-babel": "^4.0.0-beta.0",
     "rollup-plugin-eslint": "^4.0.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "sinon": "^4.0.2",
-    "stylelint": "^8.2.0",
-    "stylelint-config-standard": "^17.0.0"
+    "sinon": "^4.1.2",
+    "stylelint": "^8.3.0",
+    "stylelint-config-standard": "^18.0.0"
   },
   "engines": {
     "node": ">=7.0.0"
@@ -61,5 +53,13 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "chrome >= 43",
+    "safari >= 8",
+    "ios >= 8",
+    "not ie < 11"
+  ]
 }
