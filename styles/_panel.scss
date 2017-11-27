@@ -5,6 +5,16 @@
   border-radius: torem(5px);
   overflow: hidden;
 
+  .panel__head {
+    background-color: color(white);
+    padding: torem(10px) torem(15px);
+  }
+
+  .panel__body {
+    background-color: color(white);
+    padding: torem(15px);
+  }
+
   // black
   &.panel--black {
     border-color: color(black);
@@ -22,15 +32,5 @@
       color: color(white);
       background-color: color(black);
     }
-  }
-
-  .panel__head {
-    background-color: color(white);
-    padding: torem(10px) torem(15px);
-  }
-
-  .panel__body {
-    background-color: color(white);
-    padding: torem(15px);
   }
 }

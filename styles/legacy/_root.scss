@@ -20,6 +20,12 @@ select {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a,
+img {
+  // 禁止长按链接与图片弹出菜单，例如禁止保存图片，仅Safari
+  -webkit-touch-callout: none;
+}
+
 a:link,
 a:active,
 a:visited {
@@ -28,12 +34,6 @@ a:visited {
 
 a:hover {
   text-decoration: underline;
-}
-
-a,
-img {
-  // 禁止长按链接与图片弹出菜单，例如禁止保存图片，仅Safari
-  -webkit-touch-callout: none;
 }
 
 html {
