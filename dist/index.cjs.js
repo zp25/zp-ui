@@ -661,12 +661,20 @@ function _inherits(subClass, superClass) {
   if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
 function _possibleConstructorReturn(self, call) {
   if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
   }
 
-  if (!self) {
+  if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   }
 
@@ -947,6 +955,8 @@ var base = (function (Base) {
          */
 
         _this.main = _this.carousel.querySelector('.carousel__main');
+
+        var slideBanner = _this.main.querySelectorAll('.slide-banner');
         /**
          * Carousel配置
          * @type {Object}
@@ -957,11 +967,12 @@ var base = (function (Base) {
          * @desc 配置初始化后不应该被修改
          */
 
+
         _this.options = Object.assign({}, {
           focus: 1,
-          delay: 8000
+          delay: 8000,
+          length: slideBanner ? slideBanner.length : 1
         }, opts, {
-          length: _this.main.querySelectorAll('.slide-banner').length,
           supports: window.CSS && window.CSS.supports && window.CSS.supports('(--banner-translateX: 0%)')
         });
         Object.freeze(_this.options);
@@ -972,8 +983,8 @@ var base = (function (Base) {
          */
 
         _this.timeoutID = NaN;
-        _this.play = _this.play.bind(_this);
-        _this.pause = _this.pause.bind(_this); // 添加主区域(banner)observer
+        _this.play = _this.play.bind(_assertThisInitialized(_this));
+        _this.pause = _this.pause.bind(_assertThisInitialized(_this)); // 添加主区域(banner)observer
 
         _this.attach(bannerObserver(_this.main, _this.options.supports));
 
@@ -1068,7 +1079,7 @@ var base = (function (Base) {
 });
 
 /**
- * 主区域(banner)观察者
+ * 导航区域(nav)观察者
  * @param {Array.<Element>} anchors - Menu组件导航区域
  * @return {Observer}
  */
