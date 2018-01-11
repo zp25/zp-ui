@@ -48,6 +48,8 @@ export default Base => class extends Base {
      */
     this.main = this.carousel.querySelector('.carousel__main');
 
+    const slideBanner = this.main.querySelectorAll('.slide-banner');
+
     /**
      * Carousel配置
      * @type {Object}
@@ -60,8 +62,8 @@ export default Base => class extends Base {
     this.options = Object.assign({}, {
       focus: 1,
       delay: 8000,
+      length: slideBanner ? slideBanner.length : 1,
     }, opts, {
-      length: this.main.querySelectorAll('.slide-banner').length,
       supports: (
         window.CSS && window.CSS.supports && window.CSS.supports('(--banner-translateX: 0%)')
       ),

@@ -2,7 +2,7 @@ import Util from '../util';
 import base from './base';
 
 /**
- * 主区域(banner)观察者
+ * 导航区域(nav)观察者
  * @param {Array.<Element>} anchors - Menu组件导航区域
  * @return {Observer}
  */
