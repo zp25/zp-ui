@@ -45,7 +45,23 @@ describe('Mask', () => {
 
   const maskActiveName = 'mask--active';
   const panelActiveName = 'mask__panel--active';
-  const msg = 'custome message';
+
+  const msgList = [
+    'custome message',
+    666,
+    false,
+    undefined,
+    null,
+    {},
+  ];
+  const innerHTMLList = [
+    'custome message',
+    '666',
+    'false',
+    '',
+    'null',
+    '[object Object]',
+  ];
 
   before(() => {
     const window = new JSDOM(domStr).window;
@@ -74,6 +90,7 @@ describe('Mask', () => {
    * Methods
    */
   it('Method: loading, 显示mask并正确切换mask__panel，第一个参数自定义message', () => {
+    const msg = msgList[0];
     const state = {
       'loading': true,
       'message': false,
@@ -100,6 +117,7 @@ describe('Mask', () => {
   });
 
   it('Method: prompt, 显示mask，第一个参数选择显示的mask__penel，第二个参数自定义message', () => {
+    const msg = msgList[0];
     const state = {
       'loading': false,
       'message': true,
@@ -120,13 +138,18 @@ describe('Mask', () => {
     prompt.querySelector('.message').innerHTML.should.equal(msg);
   });
 
-  it('Method: prompt, 无匹配panel将抛出Error，未传入message使用空字符串', () => {
+  it('Method: prompt, 无匹配panel将抛出Error', () => {
+    const msg = msgList[0];
     const func = () => { mask.prompt('nopanel', msg); };
 
     func.should.throw(Error);
+  });
 
-    mask.prompt('message');
-    prompt.querySelector('.message').innerHTML.should.equal('');
+  it('Method: prompt, 能处理多种数据类型message', () => {
+    msgList.forEach((msg, index) => {
+      mask.prompt('message', msg);
+      prompt.querySelector('.message').innerHTML.should.equal(innerHTMLList[index]);
+    });
   });
 
   it('Method: hide, 隐藏mask', () => {
