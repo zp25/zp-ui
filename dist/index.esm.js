@@ -1408,7 +1408,7 @@ function (_Util) {
   /**
    * 提示信息
    * @param {string} name - panel名称，将查找.mask__penel--{name}
-   * @param {string} [msg] - 提示信息
+   * @param {*} [msg=''] - 提示信息，注意0等值
    */
 
 
@@ -1419,7 +1419,7 @@ function (_Util) {
       this.subject.state = {
         hidden: false,
         panel: name,
-        message: this.constructor.escapeHtml(msg)
+        message: msg === null ? 'null' : this.constructor.escapeHtml(msg.toString())
       };
     }
     /**
