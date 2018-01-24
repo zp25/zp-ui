@@ -1,3 +1,30 @@
+/**
+ * placeholders
+ */
+%ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// @link http://www.cssmojo.com/latest_new_clearfix_so_far/
+%cf {
+  &:after { // stylelint-disable-line selector-pseudo-element-colon-notation
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+%inlineBlock {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+
+/**
+ * functions
+ */
 @function color($key: normal) {
   @if map-has-key($colorMap, $key) {
     @return map-get($colorMap, $key);
@@ -13,7 +40,7 @@
 
 // font-size(px): 12, 14, 16, 20, 34
 $sizeMap: (
-  light: 12px,
+  lighter: 12px,
   normal: 14px,
   bold: 16px,
   bolder: 20px,
