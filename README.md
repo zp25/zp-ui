@@ -20,15 +20,11 @@
 |   +-- legacy
 |   |   +-- _carousel.scss
 |   |   +-- _func.scss
-|   |   +-- _global.scss
 |   |   +-- _root.scss
 |   +-- _btn.scss
 |   +-- _carousel.scss
 |   +-- _func.scss
-|   +-- _global.module.scss
-|   +-- _global.scss
 |   +-- _mask.scss
-|   +-- _menu.scss
 |   +-- _panel.scss
 |   +-- _root.scss
 +-- index.js
@@ -41,7 +37,7 @@ src, styles组件源码，legacy支持gte IE9，styles/legacy支持gte IE8
 
 ~~~scss
 $colorMap: (
-  grey-bg: #f5f5f5,
+  black: #222,
   border: #ccc,
 );
 ~~~
@@ -78,6 +74,7 @@ browserslist配置
   "browserslist": [
     "> 1%",
     "last 2 versions",
+    "Firefox ESR",
     "chrome >= 43",
     "safari >= 8",
     "ios >= 8",
