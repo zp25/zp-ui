@@ -15,9 +15,8 @@
 
     .slide-banner {
       // lte IE 7
-      display: inline-block;
-      *display: inline;
-      zoom: 1;
+      @extend %inlineBlock;
+
       width: 100%;
       height: 100%;
       background: transparent center no-repeat;
@@ -39,9 +38,8 @@
 
     .slide-nav {
       // lte IE 7
-      display: inline-block;
-      *display: inline;
-      zoom: 1;
+      @extend %inlineBlock;
+
       width: 12px;
       height: 12px;
       vertical-align: top;
