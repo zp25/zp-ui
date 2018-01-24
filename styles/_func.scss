@@ -80,11 +80,11 @@ $sizeMap: (
  * mixins
  */
 @mixin flexbox(
-  $direction:row,
-  $wrap:nowrap,
-  $justify-content:flex-start,
-  $align-items:stretch，
-  $align-content:stretch
+  $direction: row,
+  $wrap: nowrap,
+  $justify-content: flex-start,
+  $align-items: stretch,
+  $align-content: stretch
 ) {
   display: flex;
   flex-flow: $direction $wrap;
