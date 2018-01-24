@@ -11,16 +11,13 @@
 //   outline: none;
 // }
 
-html,
 button,
 input,
-textarea,
-select {
+optgroup,
+select,
+textarea {
   padding: 0;
   margin: 0;
-  // 文本平滑属性
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 a,
@@ -41,9 +38,6 @@ a:hover {
 
 html {
   font-size: 100px;
-  // 取消移动浏览器缩放字体算法(inflation algorithm)
-  text-size-adjust: none;
-  // user-select: none;
 
   body {
     // @link https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
@@ -52,6 +46,13 @@ html {
       "Fira Sans", "Droid Sans", "Helvetica Neue",
       "PingFang SC", "Microsoft YaHei", sans-serif;
     line-height: 1.5;
+
+    /**
+     * 文本平滑属性, 仅Mac OS X/macOS
+     * @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth
+     */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 

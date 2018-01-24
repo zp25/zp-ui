@@ -38,8 +38,7 @@
     background-color: color(red);
   }
 
-  &.btn--disabled,
-  &[disabled] {
+  &:disabled {
     color: color(white) !important;
     background-color: color(grey) !important;
     cursor: default !important;
