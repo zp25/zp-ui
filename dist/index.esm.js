@@ -38,7 +38,7 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 });
 
 var _core = createCommonjsModule(function (module) {
-var core = module.exports = { version: '2.5.1' };
+var core = module.exports = { version: '2.5.3' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 });
 
@@ -369,6 +369,89 @@ _export(_export.S + _export.F * !_iterDetect(function (iter) {  }), 'Array', {
   }
 });
 
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return _get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
 var _fixReWks = function (KEY, length, exec) {
   var SYMBOL = _wks(KEY);
   var fns = exec(_defined, SYMBOL, ''[KEY]);
@@ -594,89 +677,6 @@ _export(_export.P + _export.F * _failsIsRegexp(INCLUDES), 'String', {
   }
 });
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-function _get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return _get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (typeof call === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
 /* eslint no-underscore-dangle:0 */
 
 /**
@@ -775,6 +775,7 @@ function () {
       this.notify(prevState);
     }
   }]);
+
   return Subject;
 }();
 
@@ -886,6 +887,7 @@ function () {
       });
     }
   }]);
+
   return Util;
 }();
 
@@ -934,7 +936,9 @@ var base = (function (Base) {
 
         var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
         var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
         _classCallCheck(this, _class);
+
         _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, group));
         var query = ".carousel".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
         /**
@@ -1069,6 +1073,7 @@ var base = (function (Base) {
           this.clearTimeout();
         }
       }]);
+
       return _class;
     }(Base)
   );
@@ -1127,7 +1132,9 @@ function (_base) {
 
     var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     _classCallCheck(this, Carousel);
+
     _this = _possibleConstructorReturn(this, (Carousel.__proto__ || Object.getPrototypeOf(Carousel)).call(this, group, opts));
     /**
      * 导航区域
@@ -1195,6 +1202,7 @@ function (_base) {
     key: "play",
     value: function play(reverse) {
       var next = _get(Carousel.prototype.__proto__ || Object.getPrototypeOf(Carousel.prototype), "play", this).call(this, reverse);
+
       this.combineSwitch(next);
     }
     /**
@@ -1216,9 +1224,11 @@ function (_base) {
     key: "pause",
     value: function pause() {
       _get(Carousel.prototype.__proto__ || Object.getPrototypeOf(Carousel.prototype), "pause", this).call(this);
+
       this.isAutoplay = false;
     }
   }]);
+
   return Carousel;
 }(base(Util));
 
@@ -1240,6 +1250,7 @@ function (_base) {
 
   function CarouselLite() {
     _classCallCheck(this, CarouselLite);
+
     return _possibleConstructorReturn(this, (CarouselLite.__proto__ || Object.getPrototypeOf(CarouselLite)).apply(this, arguments));
   }
 
@@ -1251,7 +1262,9 @@ function (_base) {
      */
     value: function play() {
       this.clearTimeout();
+
       var next = _get(CarouselLite.prototype.__proto__ || Object.getPrototypeOf(CarouselLite.prototype), "play", this).call(this);
+
       this.subject.state = {
         next: next
       };
@@ -1267,8 +1280,96 @@ function (_base) {
       _get(CarouselLite.prototype.__proto__ || Object.getPrototypeOf(CarouselLite.prototype), "pause", this).call(this);
     }
   }]);
+
   return CarouselLite;
 }(base(Util));
+
+// 7.2.2 IsArray(argument)
+
+var _isArray = Array.isArray || function isArray(arg) {
+  return _cof(arg) == 'Array';
+};
+
+var SPECIES = _wks('species');
+
+var _arraySpeciesConstructor = function (original) {
+  var C;
+  if (_isArray(original)) {
+    C = original.constructor;
+    // cross-realm fallback
+    if (typeof C == 'function' && (C === Array || _isArray(C.prototype))) C = undefined;
+    if (_isObject(C)) {
+      C = C[SPECIES];
+      if (C === null) C = undefined;
+    }
+  } return C === undefined ? Array : C;
+};
+
+// 9.4.2.3 ArraySpeciesCreate(originalArray, length)
+
+
+var _arraySpeciesCreate = function (original, length) {
+  return new (_arraySpeciesConstructor(original))(length);
+};
+
+// 0 -> Array#forEach
+// 1 -> Array#map
+// 2 -> Array#filter
+// 3 -> Array#some
+// 4 -> Array#every
+// 5 -> Array#find
+// 6 -> Array#findIndex
+
+
+
+
+
+var _arrayMethods = function (TYPE, $create) {
+  var IS_MAP = TYPE == 1;
+  var IS_FILTER = TYPE == 2;
+  var IS_SOME = TYPE == 3;
+  var IS_EVERY = TYPE == 4;
+  var IS_FIND_INDEX = TYPE == 6;
+  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+  var create = $create || _arraySpeciesCreate;
+  return function ($this, callbackfn, that) {
+    var O = _toObject($this);
+    var self = _iobject(O);
+    var f = _ctx(callbackfn, that, 3);
+    var length = _toLength(self.length);
+    var index = 0;
+    var result = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+    var val, res;
+    for (;length > index; index++) if (NO_HOLES || index in self) {
+      val = self[index];
+      res = f(val, index, O);
+      if (TYPE) {
+        if (IS_MAP) result[index] = res;   // map
+        else if (res) switch (TYPE) {
+          case 3: return true;             // some
+          case 5: return val;              // find
+          case 6: return index;            // findIndex
+          case 2: result.push(val);        // filter
+        } else if (IS_EVERY) return false; // every
+      }
+    }
+    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : result;
+  };
+};
+
+// 22.1.3.8 Array.prototype.find(predicate, thisArg = undefined)
+
+var $find = _arrayMethods(5);
+var KEY = 'find';
+var forced = true;
+// Shouldn't skip holes
+if (KEY in []) Array(1)[KEY](function () { forced = false; });
+_export(_export.P + _export.F * forced, 'Array', {
+  find: function find(callbackfn /* , that = undefined */) {
+    return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+_addToUnscopables(KEY);
 
 /**
  * mask观察者
@@ -1312,9 +1413,9 @@ var panelObserver = function panelObserver(panels) {
     update: function update(state) {
       var hidden = state.hidden,
           panel = state.panel;
-      var panelName = "mask__panel--".concat(panel);
+      var panelName = panel && "mask__panel--".concat(panel);
       panels.forEach(function (p) {
-        if (hidden || !p.classList.contains(panelName)) {
+        if (hidden || !panelName || !p.classList.contains(panelName)) {
           p.classList.remove(activeName);
         } else {
           p.classList.add(activeName);
@@ -1333,7 +1434,7 @@ var panelObserver = function panelObserver(panels) {
 var messageObserver = function messageObserver(panels) {
   return {
     /**
-     * 写入提示信息
+     * 写入提示信息，若没有message子元素暂时不做任何操作
      * @param {Object} state - 状态
      * @param {boolean} state.hidden - mask是否显示
      * @param {string} state.panel - 当期聚焦页
@@ -1344,18 +1445,22 @@ var messageObserver = function messageObserver(panels) {
       var hidden = state.hidden,
           panel = state.panel,
           message = state.message;
-      var panelName = "mask__panel--".concat(panel);
-      var target = panels.filter(function (p) {
+      var panelName = panel && "mask__panel--".concat(panel);
+      var panelTarget = panelName && panels.find(function (p) {
         return p.classList.contains(panelName);
       });
 
-      if (!hidden) {
+      if (!hidden && panelName) {
         // 提供提示
-        if (target.length === 0) {
+        if (!panelTarget) {
           throw new Error("".concat(panelName, " not exists"));
         }
 
-        target[0].querySelector('.panel__body .message').innerHTML = message;
+        var target = panelTarget.querySelector('.message');
+
+        if (target) {
+          target.innerHTML = message;
+        }
       }
     }
   };
@@ -1380,6 +1485,7 @@ function (_Util) {
     var _this;
 
     _classCallCheck(this, Mask);
+
     _this = _possibleConstructorReturn(this, (Mask.__proto__ || Object.getPrototypeOf(Mask)).call(this, group));
     var query = ".mask".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
     /**
@@ -1434,6 +1540,19 @@ function (_Util) {
       this.prompt('loading', msg);
     }
     /**
+     * 显示Mask，不显示任何panel
+     */
+
+  }, {
+    key: "show",
+    value: function show() {
+      this.subject.state = {
+        hidden: false,
+        panel: '',
+        message: ''
+      };
+    }
+    /**
      * 隐藏Mask
      */
 
@@ -1447,6 +1566,7 @@ function (_Util) {
       };
     }
   }]);
+
   return Mask;
 }(Util);
 
@@ -1498,6 +1618,7 @@ function (_Util) {
     var _this;
 
     _classCallCheck(this, Menu);
+
     _this = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, group));
     var query = ".menu".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
     /**
@@ -1555,6 +1676,7 @@ function (_Util) {
       target.click();
     }
   }]);
+
   return Menu;
 }(Util);
 

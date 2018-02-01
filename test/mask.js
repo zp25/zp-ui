@@ -152,6 +152,25 @@ describe('Mask', () => {
     });
   });
 
+  it('Method: show, 显示mask，不显示任何panel', () => {
+    const state = {
+      'loading': false,
+      'message': false,
+    };
+
+    mask.show();
+
+    const result = {
+      'loading': loading.classList.contains(panelActiveName),
+      'message': prompt.classList.contains(panelActiveName),
+    };
+
+    // mask状态
+    mask.mask.classList.contains(maskActiveName).should.be.true;
+    // panel状态
+    result.should.be.eql(state);
+  });
+
   it('Method: hide, 隐藏mask', () => {
     mask.hide();
 

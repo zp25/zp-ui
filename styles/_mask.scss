@@ -17,38 +17,45 @@
     background-color: rgba(1, 1, 1, 0);
   }
 
-  .mask__panel {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    width: torem(132px);
-    height: torem(104px);
-    border-radius: torem(12px);
-    margin-left: torem(-66px);
-    transform: translate3d(0, 0, -999px);
+  %panelHide {
+    transform: translateZ(-999px);
     opacity: 0;
+    pointer-events: none;
+  }
 
-    &.mask__panel--active {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-    }
+  %panelShow {
+    transform: translateZ(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mask__panel {
+    @extend %panelHide;
+
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: torem(80px);
+    height: torem(80px);
+    margin-top: torem(-40px);
+    margin-left: torem(-40px);
+    border-radius: torem(12px);
+    transition: opacity 0.08s ease-in-out;
 
     .panel__body {
       @include flexbox(column, nowrap, center, center);
 
       height: 100%;
-      font-size: fontSize(bold);
-      text-align: center;
       overflow: hidden;
 
+      /** @see {@link https://github.com/tobiasahlin/SpinKit} */
       .loading {
         position: relative;
-        width: torem(28px);
-        height: torem(28px);
-        margin: torem(10px) 0;
+        width: torem(32px);
+        height: torem(32px);
+        margin: torem(8px);
         overflow: hidden;
 
-        /** @see {@link https://github.com/tobiasahlin/SpinKit} */
         .loading__circle {
           position: absolute;
           left: 0;
@@ -65,7 +72,7 @@
             height: 15%;
             background-color: color(white);
             border-radius: 50%;
-            animation: circleDelay 1.2s infinite ease-in-out both;
+            animation: circleDelay 1.2s ease-in-out infinite both;
           }
 
           @for $i from 2 through 12 {
@@ -81,12 +88,53 @@
       }
 
       .message {
+        font-size: fontSize(bold);
+        text-align: center;
         margin: 0;
+      }
+    }
+
+    &.mask__panel--active {
+      @extend %panelShow;
+
+      &:not(.mask__panel--loading) {
+        width: torem(132px);
+        height: torem(104px);
+        margin-top: torem(-52px);
+        margin-left: torem(-66px);
+        animation: panelFadeIn 0.08s ease-in-out;
+
+        .message {
+          animation: contentFadeIn 0.1s ease-in-out;
+        }
       }
     }
   }
 }
 
+// panel过渡动画
+@keyframes panelFadeIn {
+  from {
+    transform: scale((80 / 132), (80 / 104));
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes contentFadeIn {
+  0%,
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+// loading效果
 @keyframes circleDelay {
   0%,
   80%,

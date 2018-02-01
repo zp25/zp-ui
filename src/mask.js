@@ -41,10 +41,10 @@ const panelObserver = (panels) => {
      */
     update: (state) => {
       const { hidden, panel } = state;
-      const panelName = `mask__panel--${panel}`;
+      const panelName = panel && `mask__panel--${panel}`;
 
       panels.forEach((p) => {
-        if (hidden || !p.classList.contains(panelName)) {
+        if (hidden || !panelName || !p.classList.contains(panelName)) {
           p.classList.remove(activeName);
         } else {
           p.classList.add(activeName);
@@ -61,7 +61,7 @@ const panelObserver = (panels) => {
  */
 const messageObserver = panels => ({
   /**
-   * 写入提示信息
+   * 写入提示信息，若没有message子元素暂时不做任何操作
    * @param {Object} state - 状态
    * @param {boolean} state.hidden - mask是否显示
    * @param {string} state.panel - 当期聚焦页
@@ -71,16 +71,19 @@ const messageObserver = panels => ({
   update: (state) => {
     const { hidden, panel, message } = state;
 
-    const panelName = `mask__panel--${panel}`;
-    const target = panels.filter(p => p.classList.contains(panelName));
+    const panelName = panel && `mask__panel--${panel}`;
+    const panelTarget = panelName && panels.find(p => p.classList.contains(panelName));
 
-    if (!hidden) {
+    if (!hidden && panelName) {
       // 提供提示
-      if (target.length === 0) {
+      if (!panelTarget) {
         throw new Error(`${panelName} not exists`);
       }
 
-      target[0].querySelector('.panel__body .message').innerHTML = message;
+      const target = panelTarget.querySelector('.message');
+      if (target) {
+        target.innerHTML = message;
+      }
     }
   },
 });
@@ -137,6 +140,17 @@ class Mask extends Util {
    */
   loading(msg = '') {
     this.prompt('loading', msg);
+  }
+
+  /**
+   * 显示Mask，不显示任何panel
+   */
+  show() {
+    this.subject.state = {
+      hidden: false,
+      panel: '',
+      message: '',
+    };
   }
 
   /**
