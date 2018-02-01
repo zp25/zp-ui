@@ -43,19 +43,6 @@
   }
 }
 
-// 使用mixin固定banner数量
-@mixin carousel($len: 3) {
-  .carousel {
-    .carousel__main {
-      @for $i from 1 through 3 {
-        &[data-focus='#{$i}'] {
-          transform: translate3d((1 - $i) * 100%, 0, 0);
-        }
-      }
-    }
-  }
-}
-
 @supports (--banner-translateX: 0) {
   .carousel {
     .carousel__main {
