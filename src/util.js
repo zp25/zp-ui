@@ -63,6 +63,19 @@ class Util {
   }
 
   /**
+   * 元素是否在y轴可视范围内
+   * @param {HTMLElement} item - 需要检测是否在可视范围的元素
+   * @return {boolean}
+   */
+  static inview(item) {
+    const rect = item.getBoundingClientRect();
+    const itemT = rect.top;
+    const itemB = itemT + rect.height;
+
+    return itemB > 0 && itemT < window.innerHeight;
+  }
+
+  /**
    * 为subject绑定observer
    * @param {(Observer|Array.<Observer>)} observer - 观察者对象
    * @return {number} 已绑定observer数量

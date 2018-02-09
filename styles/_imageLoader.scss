@@ -1,0 +1,48 @@
+.image-loader {
+  position: relative;
+  overflow: hidden;
+
+  .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    vertical-align: bottom;
+    transform-origin: 50% 50%;
+
+    &.image--thumbnail {
+      filter: blur(2vw);
+      transform: scale(1.05);
+    }
+
+    &.image--full {
+      position: absolute;
+      left: 0;
+      top: 0;
+      animation: reveal 1s ease-out;
+    }
+  }
+
+  &.loaded {
+    .image--thumbnail {
+      opacity: 0;
+    }
+  }
+
+  .aspect-ratio-fill {
+    opacity: 0;
+  }
+}
+
+@keyframes reveal {
+  0% {
+    transform: scale(1.05);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

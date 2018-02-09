@@ -5,6 +5,7 @@
 目录结构
 
 ~~~
++-- constants
 +-- legacy
 |   +-- carousel.js
 +-- src
@@ -12,6 +13,7 @@
 |   |   +-- base.js
 |   |   +-- index.js
 |   |   +-- lite.js
+|   +-- imageLoader.js
 |   +-- mask.js
 |   +-- menu.js
 |   +-- subject.js
@@ -24,6 +26,7 @@
 |   +-- _btn.scss
 |   +-- _carousel.scss
 |   +-- _func.scss
+|   +-- _imageLoader.scss
 |   +-- _mask.scss
 |   +-- _panel.scss
 |   +-- _root.scss
