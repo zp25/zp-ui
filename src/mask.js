@@ -69,7 +69,11 @@ const messageObserver = panels => ({
    * @throws {Error} 不存在匹配元素.mask__penel--{name}
    */
   update: (state) => {
-    const { hidden, panel, message } = state;
+    const {
+      hidden,
+      panel,
+      message,
+    } = state;
 
     const panelName = panel && `mask__panel--${panel}`;
     const panelTarget = panelName && panels.find(p => p.classList.contains(panelName));
@@ -116,9 +120,11 @@ class Mask extends Util {
     this.panels = Array.from(this.mask.querySelectorAll('.mask__panel'));
 
     // 添加默认observer
-    this.attach(maskObserver(this.mask));
-    this.attach(panelObserver(this.panels));
-    this.attach(messageObserver(this.panels));
+    this.attach([
+      maskObserver(this.mask),
+      panelObserver(this.panels),
+      messageObserver(this.panels),
+    ]);
   }
 
   /**
@@ -136,10 +142,9 @@ class Mask extends Util {
 
   /**
    * loading效果
-   * @param {string} [msg] - 提示信息
    */
-  loading(msg = '') {
-    this.prompt('loading', msg);
+  loading() {
+    this.prompt('loading');
   }
 
   /**
