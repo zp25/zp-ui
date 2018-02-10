@@ -6,10 +6,6 @@ import base from './base';
  * @description Carousel精简版，仅自动轮播，无nav(包括自定义nav)
  * @implements {carouselBase}
  * @implements {Util}
- * @param {string} group='' - 组件分类
- * @param {Object} opts={} - Carousel配置
- * @param {number} [opts.focus=1] - 初始聚焦页，没有上边界判断
- * @param {number} [opts.delay=8000] - 轮播延时(ms)
  */
 class CarouselLite extends base(Util) {
   /**
@@ -20,7 +16,7 @@ class CarouselLite extends base(Util) {
 
     const next = super.play();
     this.subject.state = {
-      next,
+      focus: next,
     };
 
     this.setTimeout(this.play);
@@ -28,9 +24,10 @@ class CarouselLite extends base(Util) {
 
   /**
    * 暂停自动播放
+   * @public
    */
   pause() {
-    super.pause();
+    this.clearTimeout();
   }
 }
 

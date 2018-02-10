@@ -44,7 +44,7 @@ describe('Carousel', () => {
   describe('Basic', () => {
     let carousel = null;
     const opts = {
-      focus: 1,
+      focus: 3,
       delay: 5000,
     };
 
@@ -81,6 +81,17 @@ describe('Carousel', () => {
       carousel.options.should.be.eql(result);
       Object.isFrozen(carousel.options).should.be.true;
     });
+
+    it('Getter: focus, 当前聚焦页', () => {
+      (carousel.focus === undefined).should.be.true;
+
+      const order = [3, 1, 2];
+
+      order.forEach((o) => {
+        carousel.go(o);
+        carousel.focus.should.be.equal(o);
+      });
+    });
   });
 
   describe('Methods', () => {
@@ -98,10 +109,10 @@ describe('Carousel', () => {
       global.window = window;
       global.document = window.document;
 
-      carousel = new Carousel('main', opts);
-
       // fake time
       clock = sinon.useFakeTimers();
+
+      carousel = new Carousel('main', opts);
     });
 
     after(() => {
@@ -109,20 +120,20 @@ describe('Carousel', () => {
     });
 
     it('play, 播放下一页', () => {
-      const order = ['1', '2', '3', '1'];
+      const order = [1, 2, 3, 1];
 
       order.forEach((o) => {
         carousel.play();
-        carousel.main.dataset.focus.should.equal(o);
+        carousel.focus.should.equal(o);
       });
     });
 
     it('play, 第一个参数传入true，播放上一页', () => {
-      const order = ['3', '2', '1'];
+      const order = [3, 2, 1, 3];
 
       order.forEach((o) => {
         carousel.play(true);
-        carousel.main.dataset.focus.should.equal(o);
+        carousel.focus.should.equal(o);
       });
     });
 
@@ -130,42 +141,48 @@ describe('Carousel', () => {
       carousel.autoplay();
 
       clock.tick(opts.delay - 1);
-      carousel.main.dataset.focus.should.equal('2');
+      carousel.focus.should.equal(1);
 
       clock.tick(1);
-      carousel.main.dataset.focus.should.equal('3');
+      carousel.focus.should.equal(2);
 
       clock.tick(opts.delay);
-      carousel.main.dataset.focus.should.equal('1');
+      carousel.focus.should.equal(3);
+
+      clock.tick(opts.delay);
+      carousel.focus.should.equal(1);
     });
 
     it('pause, 暂停自动播放', () => {
       carousel.pause();
 
       clock.tick(opts.delay);
-      carousel.main.dataset.focus.should.equal('1');
+      carousel.focus.should.equal(1);
+
+      clock.tick(opts.delay);
+      carousel.focus.should.equal(1);
     });
 
-    it('bind, 导航能正确切换，无匹配order将无反应', () => {
-      const order = ['3', '1', '2'];
+    it('bind, 导航能正确切换', () => {
+      const order = [3, 1, 2];
 
       order.forEach((o) => {
         const query = `.slide-nav[data-order="${o}"]`;
         carousel.nav.querySelector(query).click();
 
-        carousel.main.dataset.focus.should.equal(o);
+        carousel.focus.should.equal(o);
       });
     });
 
     it('bind, 无匹配order将无效', () => {
-      const order = '1';
+      const order = 1;
       carousel.nav.querySelector(`.slide-nav[data-order="${order}"]`).click();
 
       carousel.nav.querySelector('.slide-nav:not([data-order])').click();
-      carousel.main.dataset.focus.should.equal(order);
+      carousel.focus.should.equal(order);
 
       carousel.nav.querySelector('.slide-nav[data-order="10000"]').click();
-      carousel.main.dataset.focus.should.equal(order);
+      carousel.focus.should.equal(order);
     });
   });
 });
@@ -186,10 +203,10 @@ describe('CarouselLite', () => {
       global.window = window;
       global.document = window.document;
 
-      carouselLite = new CarouselLite('lite', opts);
-
       // fake time
       clock = sinon.useFakeTimers();
+
+      carouselLite = new CarouselLite('lite', opts);
     });
 
     after(() => {
@@ -197,26 +214,33 @@ describe('CarouselLite', () => {
     });
 
     it('play, 开始自动播放', () => {
+      const { delay } = opts;
+
       carouselLite.play();
 
-      clock.tick(opts.delay - 1);
-      carouselLite.main.dataset.focus.should.equal('1');
+      clock.tick(delay - 1);
+      carouselLite.focus.should.equal(1);
 
       clock.tick(1);
-      carouselLite.main.dataset.focus.should.equal('2');
+      carouselLite.focus.should.equal(2);
 
-      clock.tick(opts.delay);
-      carouselLite.main.dataset.focus.should.equal('3');
+      clock.tick(delay);
+      carouselLite.focus.should.equal(3);
 
-      clock.tick(opts.delay);
-      carouselLite.main.dataset.focus.should.equal('1');
+      clock.tick(delay);
+      carouselLite.focus.should.equal(1);
     });
 
     it('pause, 暂停自动播放', () => {
+      const { delay } = opts;
+
       carouselLite.pause();
 
-      clock.tick(opts.delay);
-      carouselLite.main.dataset.focus.should.equal('1');
+      clock.tick(delay);
+      carouselLite.focus.should.equal(1);
+
+      clock.tick(delay);
+      carouselLite.focus.should.equal(1);
     });
   });
 });

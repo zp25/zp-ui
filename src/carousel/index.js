@@ -3,28 +3,28 @@ import base from './base';
 
 /**
  * 导航区域(nav)观察者
- * @param {Array.<Element>} anchors - Menu组件导航区域
+ * @param {Element} nav - Menu组件导航区域
  * @return {Observer}
  */
-const navObserver = (navBtns) => {
-  const activeName = 'slide-nav--active';
+const navObserver = (nav) => {
+  const btnActiveName = 'slide-nav--active';
 
   return {
     /**
-     * nav切换
+     * nav样式切换
      * @param {Object} state - 状态
-     * @param {number} state.next - 下一页编号
+     * @param {number} state.focus - 聚焦页编号
      */
     update: (state) => {
-      const { next } = state;
+      const { focus } = state;
 
-      navBtns.forEach((btn) => {
+      Array.from(nav.querySelectorAll('.slide-nav')).forEach((btn) => {
         const order = Number(btn.dataset.order);
 
-        if (order === next) {
-          btn.classList.add(activeName);
+        if (order === focus) {
+          btn.classList.add(btnActiveName);
         } else {
-          btn.classList.remove(activeName);
+          btn.classList.remove(btnActiveName);
         }
       });
     },
@@ -54,18 +54,12 @@ class Carousel extends base(Util) {
      * @public
      */
     this.nav = this.carousel.querySelector('.carousel__nav');
-    /**
-     * 导航区域内按钮
-     * @type {Array.<Element>}
-     * @private
-     */
-    this.navBtns = Array.from(this.nav.querySelectorAll('.slide-nav'));
 
     // 是否自动播放
     this.isAutoplay = false;
 
     // 添加导航区域observer
-    this.attach(navObserver(this.navBtns));
+    this.attach(navObserver(this.nav));
     // 事件绑定
     this.bind();
   }
@@ -75,22 +69,22 @@ class Carousel extends base(Util) {
       e.preventDefault();
 
       const next = Number(e.target.dataset.order);
-      if (next && next > 0 && next <= this.options.length) {
-        this.combineSwitch(next);
+      if (next && next >= 1 && next <= this.options.length) {
+        this.go(next);
       }
     };
   }
 
   /**
-   * 完成切换任务
+   * 播放指定页，若autoplay启动延时函数
    * @param {number} next - 下一页编号
    * @private
    */
-  combineSwitch(next) {
+  go(next) {
     this.clearTimeout();
 
     this.subject.state = {
-      next,
+      focus: next,
     };
 
     if (this.isAutoplay) {
@@ -99,13 +93,13 @@ class Carousel extends base(Util) {
   }
 
   /**
-   * 播放指定页
+   * 播放下一页
    * @param {boolean} reverse - 是否反向播放，反向指播放当前图片左侧的图片
    */
   play(reverse) {
     const next = super.play(reverse);
 
-    this.combineSwitch(next);
+    this.go(next);
   }
 
   /**
@@ -122,9 +116,9 @@ class Carousel extends base(Util) {
    * 暂停自动播放
    */
   pause() {
-    super.pause();
-
     this.isAutoplay = false;
+
+    this.clearTimeout();
   }
 }
 

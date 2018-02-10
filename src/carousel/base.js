@@ -8,13 +8,11 @@ const bannerObserver = (main, cssCustomProp) => ({
   /**
    * banner切换，若不支持css自定义变量，直接修改transform属性
    * @param {Object} state - 状态
-   * @param {number} state.next - 下一页编号
+   * @param {number} state.focus - 聚焦页编号
    */
   update: (state) => {
-    const { next } = state;
-    const offset = `${(1 - next) * 100}%`;
-
-    main.dataset.focus = next;
+    const { focus } = state;
+    const offset = `${(1 - focus) * 100}%`;
 
     if (cssCustomProp) {
       main.style.setProperty('--banner-translateX', offset);
@@ -79,10 +77,18 @@ export default Base => class extends Base {
     this.timeoutID = NaN;
 
     this.play = this.play.bind(this);
-    this.pause = this.pause.bind(this);
 
     // 添加主区域(banner)observer
     this.attach(bannerObserver(this.main, this.options.supports));
+  }
+
+  /**
+   * 当前聚焦页
+   * @return {(number|undefined)}
+   * @public
+   */
+  get focus() {
+    return this.subject.state.focus;
   }
 
   /**
@@ -106,34 +112,28 @@ export default Base => class extends Base {
   }
 
   /**
-   * 播放
-   * @param {boolean} reverse=false - 是否反向播放，反向指播放当前图片左侧的图片
+   * 播放，实例化时虽然传入focus，但不默认聚焦；运行play时，若首次运行聚焦到focus，否则下一页
+   * @param {boolean} reverse=false - 是否反向播放，反向指播放编号比当前图片小1的图片
    * @return {number} 下一页编号
    * @abstract
    * @ignore
    */
   play(reverse = false) {
-    // 当前聚焦页
-    const focus = Number(this.main.dataset.focus);
+    const {
+      focus,
+      length: len,
+    } = this.options;
 
-    let next = this.options.focus;
-    if (focus > 0) {
+    let next = focus;
+
+    if (this.focus) {
       if (reverse) {
-        next = focus === 1 ? this.options.length : focus - 1;
+        next = this.focus <= 1 ? len : this.focus - 1;
       } else {
-        next = focus >= this.options.length ? 1 : focus + 1;
+        next = this.focus >= len ? 1 : this.focus + 1;
       }
     }
 
     return next;
-  }
-
-  /**
-   * 暂停轮播
-   * @abstract
-   * @ignore
-   */
-  pause() {
-    this.clearTimeout();
   }
 };
