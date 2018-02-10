@@ -60,7 +60,7 @@ describe('ImageLoader', () => {
       imageLoader = new ImageLoader();
     });
 
-    it('Extends Util', () => {
+    it('Extends: Util', () => {
       imageLoader.should.be.an.instanceof(Util);
     });
 
