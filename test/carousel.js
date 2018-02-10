@@ -103,7 +103,7 @@ describe('Carousel', () => {
       delay: 5000,
     };
 
-    before(() => {
+    beforeEach(() => {
       const window = new JSDOM(domStr).window;
 
       global.window = window;
@@ -115,7 +115,7 @@ describe('Carousel', () => {
       carousel = new Carousel('main', opts);
     });
 
-    after(() => {
+    afterEach(() => {
       clock.restore();
     });
 
@@ -129,7 +129,7 @@ describe('Carousel', () => {
     });
 
     it('play, 第一个参数传入true，播放上一页', () => {
-      const order = [3, 2, 1, 3];
+      const order = [1, 3, 2, 1];
 
       order.forEach((o) => {
         carousel.play(true);
@@ -154,6 +154,7 @@ describe('Carousel', () => {
     });
 
     it('pause, 暂停自动播放', () => {
+      carousel.autoplay();
       carousel.pause();
 
       clock.tick(opts.delay);
