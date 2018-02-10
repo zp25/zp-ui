@@ -19,67 +19,89 @@ const domStr = `
 `;
 
 describe('Menu', () => {
-  let menu = null;
-  const activeName = 'menu__anchor--active';
+  describe('Basic', () => {
+    let menu = null;
 
-  before(() => {
-    const window = new JSDOM(domStr).window;
-    global.document = window.document;
+    before(() => {
+      const window = new JSDOM(domStr).window;
+      global.document = window.document;
 
-    menu = new Menu('main');
+      menu = new Menu('main');
+    });
+
+    it('Extends: Util', () => {
+      menu.should.be.an.instanceof(Util);
+    });
+
+    /**
+     * Properties
+     */
+    it('Prop: menu, 容器实例', () => {
+      const target = document.querySelector('.menu');
+
+      menu.menu.should.be.eql(target);
+    });
   });
 
-  it('Extends: Util', () => {
-    menu.should.be.an.instanceof(Util);
-  });
+  describe('Methods', () => {
+    let menu = null;
+    const activeName = 'menu__anchor--active';
 
-  /**
-   * Properties
-   */
-  it('Prop: menu, 容器实例', () => {
-    const target = document.querySelector('.menu');
+    beforeEach(() => {
+      const window = new JSDOM(domStr).window;
+      global.document = window.document;
 
-    menu.menu.should.be.eql(target);
-  });
+      menu = new Menu('main');
+    });
 
-  /**
-   * Methods
-   */
-  it(`Method: open, 传入参数可正确聚焦menu__anchor(添加${activeName}类)`, () => {
-    const state = {
-      '你好': false,
-      'hello': false,
-      'hola': true,
-    };
+    it(`open, 传入参数可正确聚焦anchor(添加${activeName}类)`, () => {
+      const state = {
+        '你好': false,
+        'hello': false,
+        'hola': true,
+      };
 
-    const page = 'hola';
-    menu.open(page);
+      menu.open('hola', true);
 
-    const result = menu.anchors.reduce((prev, anchor) => (
-      Object.assign({}, prev, {
-        [anchor.getAttribute('data-page')]: anchor.classList.contains(activeName),
-      })
-    ), {});
+      const result = menu.anchors.reduce((prev, anchor) => (
+        Object.assign({}, prev, {
+          [anchor.dataset.page]: anchor.classList.contains(activeName),
+        })
+      ), {});
 
-    result.should.be.eql(state);
-  });
+      result.should.be.eql(state);
+    });
 
-  it('Method: open, 未传入参数或无匹配menu__anchor将聚焦容器中第一项', () => {
-    const state = {
-      '你好': true,
-      'hello': false,
-      'hola': false,
-    };
+    it('open, 无匹配anchor但设置fallback，将聚焦容器中第一项', () => {
+      const state = {
+        '你好': true,
+        'hello': false,
+        'hola': false,
+      };
 
-    const page = 'empty';
-    menu.open(page);
+      menu.open('empty', true);
 
-    const result = menu.anchors.reduce((prev, anchor) => (
-      Object.assign({}, prev, {
-        [anchor.getAttribute('data-page')]: anchor.classList.contains(activeName),
-      })
-    ), {});
+      const result = menu.anchors.reduce((prev, anchor) => (
+        Object.assign({}, prev, {
+          [anchor.getAttribute('data-page')]: anchor.classList.contains(activeName),
+        })
+      ), {});
 
-    result.should.be.eql(state);
+      result.should.be.eql(state);
+    });
+
+    it('open, 无匹配anchor且不使用fallback将抛出Error', () => {
+      const fn = () => { menu.open('empty'); };
+
+      fn.should.throw(Error);
+    });
+
+    it('page, 获取当前打开的page，未打开任何page返回空', () => {
+      menu.page.should.be.empty;
+
+      menu.open('hello');
+
+      menu.page.should.be.equal('hello');
+    });
   });
 });

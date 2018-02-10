@@ -59,34 +59,33 @@ class Menu extends Util {
 
     // 添加默认observer
     this.attach(anchorsObserver(this.anchors));
-    // 事件绑定
-    this.bind();
   }
 
   /**
-   * 事件绑定
-   * @private
+   * 打开指定页
+   * @param {(number|string)} id - 页面id，通过设置anchor的data-page确定
+   * @param {boolean} [fallback=false] - 无匹配id的anchor时是否使用fallback anchor，即第一个anchor
+   * @throws {Error} 无匹配id的anchor且不使用fallback anchor时抛出错误
    */
-  bind() {
-    this.anchors.forEach((anchor) => {
-      anchor.addEventListener('click', (e) => {
-        // 状态存储导航按键的dataset
-        this.subject.state = e.currentTarget.dataset;
+  open(id, fallback = false) {
+    let target = this.anchors.find(anchor => anchor.dataset.page === id.toString());
 
-        e.preventDefault();
-      }, false);
-    });
+    if (!target && !fallback) {
+      throw new Error(`Menu: ${id} not exists`);
+    }
+
+    target = target || this.anchors[0];
+
+    this.subject.state = Object.assign({}, target.dataset);
   }
 
   /**
-   * 打开指定页，通过点击匹配menu__anchor实现
-   * @param {(number|string)} [id] - 页面id，未设置或无匹配menu__anchor将点击Menu容器中第一个menu__anchor
+   * 当前聚焦的page
+   * @return {string}
+   * @public
    */
-  open(id) {
-    const target = this.anchors.filter(anchor => anchor.dataset.page === String(id))[0]
-      || this.anchors[0];
-
-    target.click();
+  get page() {
+    return this.subject.state.page || '';
   }
 }
 
