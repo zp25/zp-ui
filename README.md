@@ -36,7 +36,7 @@
 
 src, styles组件源码，legacy支持gte IE9，styles/legacy支持gte IE8
 
-`_func.scss, _global.scss, _root.scss`是依赖，需自定义`$colorMap`，例如
+`_func.scss, _root.scss`是依赖，需自定义`$colorMap`，例如
 
 ~~~scss
 $colorMap: (
