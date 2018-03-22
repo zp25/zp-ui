@@ -17,7 +17,7 @@
     }],
     "declaration-colon-newline-after": null,
     "function-name-case": ["lower", {
-      "ignoreFunctions": ["fontSize"]
+      "ignoreFunctions": ["fontSize", "rootFontSize"]
     }],
     "selector-pseudo-class-no-unknown": [true, {
       "ignorePseudoClasses": ["global"]
