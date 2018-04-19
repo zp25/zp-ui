@@ -1,46 +1,46 @@
 .btn {
   display: inline-block;
-  color: color(black);
+  color: var(--black, #151513);
   font-size: fontSize();
   font-weight: normal;
   line-height: 1.5;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: color(white);
+  background-color: var(--lightgrey, #d3d3d3);
   padding: torem(6px) torem(12px);
-  border: 1px solid transparent;
+  border: 1px solid var(--lightgrey, #d3d3d3);
   border-radius: torem(3px);
   touch-action: manipulation;
   user-select: none;
   cursor: pointer;
 
-  &.btn--s {
-    font-size: fontSize(lighter);
-    padding: 5px 10px;
-  }
-
   &.btn--green,
   &.btn--success {
-    color: color(white);
-    background-color: color(green);
+    color: var(--white, #fff);
+    background-color: var(--green, #008000);
+    border-color: var(--green, #008000);
   }
 
   &.btn--blue,
   &.btn--info {
-    color: color(white);
-    background-color: color(blue);
+    color: var(--white, #fff);
+    background-color: var(--blue, #00f);
+    border-color: var(--blue, #00f);
   }
 
   &.btn--red,
   &.btn--danger {
-    color: color(white);
-    background-color: color(red);
+    color: var(--white, #fff);
+    background-color: var(--red, #f00);
+    border-color: var(--red, #f00);
   }
 
+  &.btn--disabled,
   &:disabled {
     color: color(white) !important;
-    background-color: color(grey) !important;
+    background-color: var(--grey, #808080) !important;
+    border-color: var(--grey, #808080) !important;
     cursor: default !important;
     // opacity: 0.65;
   }

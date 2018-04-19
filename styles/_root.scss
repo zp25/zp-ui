@@ -60,6 +60,11 @@ html {
 :root {
   --black: #151513;
   --white: #fff;
+  --grey: #808080;
+  --lightgrey: #d3d3d3;
+  --red: #f00;
+  --green: #008000;
+  --blue: #00f;
 }
 
 @function rootFontSize($base) {
