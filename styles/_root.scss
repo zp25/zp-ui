@@ -57,6 +57,11 @@ html {
   }
 }
 
+:root {
+  --black: #151513;
+  --white: #fff;
+}
+
 @function rootFontSize($base) {
   $layout: 375;
   @return ($base / $layout) * 100px;

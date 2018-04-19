@@ -35,10 +35,10 @@
     "jsdoc": "^3.5.5",
     "jsdoc-strip-async-await": "^0.1.0",
     "jsdom": "^11.8.0",
-    "mocha": "^5.1.0",
-    "nyc": "^11.6.0",
+    "mocha": "^5.1.1",
+    "nyc": "^11.7.1",
     "rimraf": "^2.6.2",
-    "rollup": "^0.58.0",
+    "rollup": "^0.58.1",
     "rollup-plugin-babel": "^4.0.0-beta.4",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-eslint": "^4.0.0",
@@ -59,9 +59,7 @@
     "> 1%",
     "last 2 versions",
     "Firefox ESR",
-    "chrome >= 43",
-    "safari >= 8",
-    "ios >= 8",
+    "chrome >= 49",
     "not ie < 11"
   ]
 }
