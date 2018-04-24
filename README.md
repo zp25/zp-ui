@@ -2,41 +2,22 @@
 
 [![Build Status](https://travis-ci.org/zp25/zp-ui.svg?branch=master)](https://travis-ci.org/zp25/zp-ui)
 
-目录结构
+主要目录结构
 
-~~~
-+-- constants
-+-- legacy
-|   +-- carousel.js
-+-- src
-|   +-- carousel
-|   |   +-- base.js
-|   |   +-- index.js
-|   |   +-- lite.js
-|   +-- imageLoader.js
-|   +-- mask.js
-|   +-- menu.js
-|   +-- subject.js
-|   +-- util.js
-+-- styles
-|   +-- legacy
-|   |   +-- _carousel.scss
-|   |   +-- _func.scss
-|   |   +-- _root.scss
-|   +-- _btn.scss
-|   +-- _carousel.scss
-|   +-- _func.scss
-|   +-- _imageLoader.scss
-|   +-- _mask.scss
-|   +-- _panel.scss
-|   +-- _root.scss
-+-- index.js
-+-- legacy.js
-~~~
++ constants，常量
++ legacy，尝试IE9+
++ src
+  + carousel
+  + imageLoader
+  + menu
+  + modal
+  + subject
+  + util
++ styles
+  + _func.scss
+  + _root.scss
 
-src, styles组件源码，legacy支持gte IE9，styles/legacy支持gte IE8
-
-`_func.scss, _root.scss`是依赖，需自定义`$colorMap`，例如
+需自定义`$colorMap`，例如
 
 ~~~scss
 $colorMap: (
@@ -107,3 +88,4 @@ npm run open
 + [How to Build Your Own Progressive Image Loader](https://www.sitepoint.com/how-to-build-your-own-progressive-image-loader/ "How to Build Your Own Progressive Image Loader")
 + [How Medium does progressive image loading](https://jmperezperez.com/medium-image-progressive-loading-placeholder/ "How Medium does progressive image loading")
 + [SpinKit](http://tobiasahlin.com/spinkit/ "SpinKit")
++ [Simple Swipe With Vanilla JavaScript](https://css-tricks.com/simple-swipe-with-vanilla-javascript/ "Simple Swipe With Vanilla JavaScript")
