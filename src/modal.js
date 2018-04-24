@@ -13,6 +13,7 @@ const modalObserver = (modal) => {
      * modal样式切换
      * @param {Object} state - 状态
      * @param {boolean} state.hidden - modal是否显示
+     * @ignore
      */
     update: (state) => {
       if (state.hidden) {
@@ -38,6 +39,7 @@ const dialogObserver = (dialogs) => {
      * @param {Object} state - 状态
      * @param {boolean} state.hidden - modal是否显示
      * @param {string} state.dialog - 当期聚焦dialog
+     * @ignore
      */
     update: (state) => {
       const { hidden, dialog } = state;
@@ -67,6 +69,7 @@ const messageObserver = dialogs => ({
    * @param {string} state.dialog - 当期聚焦dialog
    * @param {string} state.message - 提示信息
    * @throws {Error} 不存在匹配元素.modal__dialog--{name}
+   * @ignore
    */
   update: (state) => {
     const {

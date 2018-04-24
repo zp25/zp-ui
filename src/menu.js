@@ -13,6 +13,7 @@ const anchorsObserver = (anchors) => {
      * 导航区域样式切换
      * @param {Object} state - 状态
      * @param {string} state.page - 当期聚焦页
+     * @ignore
      */
     update: (state) => {
       const { page: currentPage } = state;

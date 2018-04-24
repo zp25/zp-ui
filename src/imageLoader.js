@@ -17,6 +17,10 @@ const styleObserver = () => {
   return {
     /**
      * 控制image-loader样式
+     * @param {Object} state - 状态
+     * @param {HTMLElement} state.loader - 需加载的对象
+     * @param {number} status - 当前处于的加载阶段
+     * @ignore
      */
     update: (state) => {
       const {
