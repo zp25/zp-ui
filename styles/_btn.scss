@@ -38,7 +38,7 @@
 
   &.btn--disabled,
   &:disabled {
-    color: color(white) !important;
+    color: var(--white, #fff) !important;
     background-color: var(--darkgrey, #a9a9a9) !important;
     border-color: var(--darkgrey, #a9a9a9) !important;
     cursor: default !important;
