@@ -1,6 +1,19 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_options"] }] */
 
 /**
+ * @typedef {Object} SwipeEnd
+ * @property {number} sign - 1向右滑动作，-1向左滑动作
+ * @property {number} duration - 完成翻页剩余需滑动距离占总页宽的比例
+ */
+
+import {
+  PROP_LEN,
+  PROP_FOCUS,
+} from '../../constants';
+
+const CLASS_SWIPE = 'carousel__main--swipe';
+
+/**
  * 主区域(banner)观察者
  * @param {Element} main - Carousel组件主区域(banner)
  * @param {boolean} cssCustomProp - 浏览器环境是否支持css自定义参数
@@ -17,7 +30,7 @@ const bannerObserver = (main, cssCustomProp) => ({
     const { focus } = state;
 
     if (cssCustomProp) {
-      main.style.setProperty('--banner-focus', focus);
+      main.style.setProperty(PROP_FOCUS, focus);
     } else {
       const offset = `${(1 - focus) * 100}%`;
       main.style.transform = `translate3d(${offset}, 0, 0)`;
@@ -34,6 +47,18 @@ export default Base => /** @class CarouselBase */ class extends Base {
    */
   static unify(e) {
     return e.changedTouches ? e.changedTouches[0] : e;
+  }
+
+  /**
+   * 是否在边缘页且正在向空白部分滑动
+   * @param {number} length - 总页数
+   * @param {number} focus - 当前聚焦页编号
+   * @param {number} dx - 水平方向移动距离
+   * @return {boolean}
+   * @private
+   */
+  static isEdge(length, focus, dx) {
+    return (focus === 1 && dx > 0) || (focus === length && dx < 0);
   }
 
   constructor(group = '', opts = {}) {
@@ -59,6 +84,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
     /**
      * Carousel内部状态，可变
      * @type {Object}
+     * @property {number} offsetWidth - 容器宽，即banner宽
      * @property {(number|undefined)} timeoutID - 自动播放定时器
      * @property {boolean} lock - 是否在滑动操作中
      * @property {(number|undefined)} x0 - swipe起始x坐标
@@ -66,15 +92,22 @@ export default Base => /** @class CarouselBase */ class extends Base {
      * @protected
      */
     this.state = {
-      offsetWidth: this.offsetWidth,
+      offsetWidth: this.carousel.offsetWidth,
       timeoutID: undefined,
       lock: false,
       x0: undefined,
       y0: undefined,
     };
 
+    const { supports, length } = this.options;
+
+    // 初始化样式
+    if (supports) {
+      this.main.style.setProperty(PROP_LEN, length);
+    }
+
     // 添加主区域(banner)observer
-    this.attach(bannerObserver(this.main, this.options.supports));
+    this.attach(bannerObserver(this.main, supports));
 
     this.swipeStart = this.swipeStart.bind(this);
     this.swipeMove = this.swipeMove.bind(this);
@@ -116,11 +149,6 @@ export default Base => /** @class CarouselBase */ class extends Base {
     });
 
     Object.freeze(this._options);
-
-    // 初始化样式
-    if (this._options.supports) {
-      this.main.style.setProperty('--banner-length', this._options.length);
-    }
   }
 
   /**
@@ -132,27 +160,6 @@ export default Base => /** @class CarouselBase */ class extends Base {
    */
   get focus() {
     return this.subject.state.focus;
-  }
-
-  /**
-   * 获取容器宽
-   * @return {number} 容器宽
-   * @private
-   */
-  get offsetWidth() {
-    return this.carousel.offsetWidth;
-  }
-
-  /**
-   * 是否在边缘页且正在向空白部分滑动
-   * @param {number} dx - 水平方向移动距离
-   * @return {boolean}
-   * @private
-   */
-  isEdge(dx) {
-    const { length } = this.options;
-
-    return (this.focus === 1 && dx > 0) || (this.focus === length && dx < 0);
   }
 
   /**
@@ -174,9 +181,9 @@ export default Base => /** @class CarouselBase */ class extends Base {
     // 追踪容器宽
     window.addEventListener('resize', () => {
       this.state = Object.assign({}, this.state, {
-        offsetWidth: this.offsetWidth,
+        offsetWidth: this.carousel.offsetWidth,
       });
-    });
+    }, false);
   }
 
   /**
@@ -184,7 +191,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
    * @param {(MouseEvent|TouchEvent)} e - 事件对象
    * @memberOf CarouselBase
    * @instance
-   * @protected
+   * @abstract
    */
   swipeStart(e) {
     const {
@@ -198,14 +205,16 @@ export default Base => /** @class CarouselBase */ class extends Base {
       y0,
     });
 
-    this.main.classList.add('carousel__main--swipe');
+    this.main.classList.add(CLASS_SWIPE);
   }
 
   /**
-   * 滑动动作，水平夹角45deg内有效
+   * 滑动动作，水平夹角45deg内(含45deg)有效
    * @param {(MouseEvent|TouchEvent)} e - 事件对象
-   * @protected
-   * @ignore
+   * @return {(number|undefined)} 若滑动有效，返回水平轴滑动距离，否则返回undefined
+   * @memberOf CarouselBase
+   * @instance
+   * @abstract
    */
   swipeMove(e) {
     const {
@@ -215,33 +224,36 @@ export default Base => /** @class CarouselBase */ class extends Base {
       y0,
     } = this.state;
 
-    if (lock) {
-      const {
-        clientX: x1,
-        clientY: y1,
-      } = this.constructor.unify(e);
-
-      const dx = x1 - x0;
-      const [absDx, absDy] = [Math.abs(dx), Math.abs(y1 - y0)];
-
-      if (absDx >= absDy) {
-        let bannerDx = dx;
-
-        if (this.isEdge(dx)) {
-          // 计算滑动和移动比例，使边界滑动有阻力效果；方向有关
-          const ratio = (dx / offsetWidth).toFixed(2);
-          bannerDx = Math.sin(ratio * Math.PI * 0.5) * 0.42 * offsetWidth;
-        }
-
-        this.main.style.setProperty('--banner-dx', `${bannerDx}px`);
-      }
+    if (!lock) {
+      return undefined;
     }
+
+    const {
+      clientX: x1,
+      clientY: y1,
+    } = this.constructor.unify(e);
+
+    const dx = x1 - x0;
+    const [absDx, absDy] = [Math.abs(dx), Math.abs(y1 - y0)];
+
+    if (absDx >= absDy) {
+      let rDx = dx;
+
+      if (this.constructor.isEdge(this.options.length, this.focus, dx)) {
+        // 计算滑动和移动比例，使边界滑动有阻力效果；方向有关
+        rDx = Math.sin((dx / offsetWidth) * Math.PI * 0.5) * 0.42 * offsetWidth;
+      }
+
+      return rDx;
+    }
+
+    return undefined;
   }
 
   /**
-   * 滑动动作结束
+   * 滑动动作结束，水平夹角45deg内(含45deg)有效
    * @param {(MouseEvent|TouchEvent)} e - 事件对象
-   * @return {(number|undefined)} 0滑动距离小于阈值或滑动水平夹角小于45deg，忽略动作；-1向左滑动作；1向右滑动作；undefined无动作
+   * @return {(number|undefined|SwipeEnd)} 0滑动距离小于阈值或滑动水平夹角大于45deg，忽略动作；SwipeEnd有效滑动动作；undefined无动作
    * @memberOf CarouselBase
    * @instance
    * @abstract
@@ -254,35 +266,35 @@ export default Base => /** @class CarouselBase */ class extends Base {
       y0,
     } = this.state;
 
-    if (lock) {
-      this.state = Object.assign({}, this.state, {
-        lock: false,
-        x0: undefined,
-        y0: undefined,
-      });
-
-      this.main.classList.remove('carousel__main--swipe');
-      this.main.style.setProperty('--banner-dx', '0px');
-
-      // 定位
-      const {
-        clientX: x1,
-        clientY: y1,
-      } = this.constructor.unify(e);
-
-      const dx = x1 - x0;
-      const [absDx, absDy] = [Math.abs(dx), Math.abs(y1 - y0)];
-
-      // 调整duration，使动画时长和剩余滑动距离关联；方向无关
-      const ratio = (absDx / offsetWidth).toFixed(2);
-      const duration = this.isEdge(dx) ? 1 : 1 - ratio;
-
-      this.main.style.setProperty('--banner-duration', duration);
-
-      return (ratio < 0.1 || absDx < absDy) ? 0 : Math.sign(dx);
+    if (!lock) {
+      return undefined;
     }
 
-    return undefined;
+    this.state = Object.assign({}, this.state, {
+      lock: false,
+      x0: undefined,
+      y0: undefined,
+    });
+
+    this.main.classList.remove(CLASS_SWIPE);
+
+    const {
+      clientX: x1,
+      clientY: y1,
+    } = this.constructor.unify(e);
+
+    const dx = x1 - x0;
+    const [absDx, absDy] = [Math.abs(dx), Math.abs(y1 - y0)];
+
+    // 调整duration，使动画时长和剩余滑动距离关联；方向无关
+    const ratio = absDx / offsetWidth;
+    const duration =
+      this.constructor.isEdge(this.options.length, this.focus, dx) ? 1 : 1 - ratio;
+
+    return (ratio < 0.1 || absDx < absDy) ? 0 : {
+      sign: Math.sign(dx),
+      duration,
+    };
   }
 
   /**
@@ -305,7 +317,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
   clearTimeout() {
     const { timeoutID } = this.state;
 
-    if (typeof timeoutID === 'number') {
+    if (typeof timeoutID !== 'undefined') {
       clearTimeout(timeoutID);
       this.state.timeoutID = undefined;
     }

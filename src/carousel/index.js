@@ -1,5 +1,9 @@
 import Util from '../util';
 import base from './base';
+import {
+  PROP_DX,
+  PROP_DURATION,
+} from '../../constants';
 
 /**
  * 导航区域(nav)观察者
@@ -114,27 +118,46 @@ class Carousel extends base(Util) {
   }
 
   /**
-   * 滑动动作结束
+   * 滑动动作
+   * @param {(MouseEvent|TouchEvent)} e - 事件对象
+   */
+  swipeMove(e) {
+    const move = super.swipeMove(e);
+
+    if (typeof move === 'number') {
+      this.main.style.setProperty(PROP_DX, `${move}px`);
+    }
+  }
+
+  /**
+   * 滑动动作结束，设置动画效果，完成页面切换
    * @param {(MouseEvent|TouchEvent)} e - 事件对象
    * @return {(number|undefined)} 完成状态，0不播放，1播放，undefined无动作
    * @private
    */
   swipeEnd(e) {
-    const sign = super.swipeEnd(e);
+    const end = super.swipeEnd(e);
     const { isAutoplay } = this.state;
 
-    if (typeof sign === 'undefined') {
+    if (typeof end === 'undefined') {
       return undefined;
     }
 
+    // 重置swipeMove记录
+    this.main.style.setProperty(PROP_DX, '0px');
+
     // 忽略动作，启动自动播放
-    if (sign === 0) {
+    if (end === 0) {
       if (isAutoplay) {
         this.setTimeout(this.play);
       }
 
       return 0;
     }
+
+    const { sign, duration } = end;
+
+    this.main.style.setProperty(PROP_DURATION, duration);
 
     const next = sign > 0 ? this.next(true) : this.next();
     this.go(next);
@@ -163,7 +186,7 @@ class Carousel extends base(Util) {
    * @public
    */
   autoplay() {
-    this.isAutoplay = true;
+    this.state.isAutoplay = true;
 
     // 播放初始聚焦页
     this.play();
@@ -174,7 +197,7 @@ class Carousel extends base(Util) {
    * @public
    */
   pause() {
-    this.isAutoplay = false;
+    this.state.isAutoplay = false;
 
     this.clearTimeout();
   }
