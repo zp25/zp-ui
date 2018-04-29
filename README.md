@@ -17,7 +17,7 @@
   + _func.scss
   + _root.scss
 
-需自定义`$colorMap`，例如
+默认颜色通过css custom properties设置。legacy需自定义`$colorMap`，例如
 
 ~~~scss
 $colorMap: (
@@ -59,9 +59,7 @@ browserslist配置
     "> 1%",
     "last 2 versions",
     "Firefox ESR",
-    "chrome >= 43",
-    "safari >= 8",
-    "ios >= 8",
+    "chrome >= 49",
     "not ie < 11"
   ]
 }
