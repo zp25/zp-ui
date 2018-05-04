@@ -191,7 +191,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
    * @param {(MouseEvent|TouchEvent)} e - 事件对象
    * @memberOf CarouselBase
    * @instance
-   * @abstract
+   * @protected
    */
   swipeStart(e) {
     const {
@@ -214,7 +214,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
    * @return {(number|undefined)} 若滑动有效，返回水平轴滑动距离，否则返回undefined
    * @memberOf CarouselBase
    * @instance
-   * @abstract
+   * @protected
    */
   swipeMove(e) {
     const {
@@ -256,7 +256,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
    * @return {(number|undefined|SwipeEnd)} 0滑动距离小于阈值或滑动水平夹角大于45deg，忽略动作；SwipeEnd有效滑动动作；undefined无动作
    * @memberOf CarouselBase
    * @instance
-   * @abstract
+   * @protected
    */
   swipeEnd(e) {
     const {
