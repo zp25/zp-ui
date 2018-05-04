@@ -11,7 +11,6 @@
   + imageLoader
   + menu
   + modal
-  + subject
   + util
 + styles
   + _func.scss
@@ -31,7 +30,7 @@ $colorMap: (
 ## Observer
 使用观察者模式管理状态切换
 
-自定义观察者(observer)必须包含`update`方法，接收被观察者(subject)的当前状态和原状态。使用组件的实例方法`attach(), detach()`管理观察者，参数接收`(Observer|Array.<Observer>)`。
+自定义观察者(observer)必须包含`update`方法，接收被观察者(subject)的当前状态和原状态。使用Subject实例方法`attach(), detach()`管理观察者，参数接收`(Observer|Array.<Observer>)`。
 
 ~~~javascript
 const customObserver = () => ({
@@ -57,10 +56,9 @@ browserslist配置
 {
   "browserslist": [
     "> 1%",
-    "last 2 versions",
+    "last 1 version",
     "Firefox ESR",
-    "chrome >= 49",
-    "not ie < 11"
+    "chrome 49"
   ]
 }
 ~~~

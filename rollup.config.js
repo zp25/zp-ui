@@ -45,6 +45,6 @@ export default [
         externalHelpers: false,
       }),
     ],
-    // external: id => /@babel\/polyfill|core-js/.test(id),
+    external: id => /zp-lib/.test(id),
   },
 ];

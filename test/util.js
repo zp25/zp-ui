@@ -1,7 +1,7 @@
 import chai from 'chai';
 import { JSDOM } from 'jsdom';
 import Util from '../src/util';
-import Subject from '../src/subject';
+import { Subject } from 'zp-lib';
 
 chai.should();
 
