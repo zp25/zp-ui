@@ -26,7 +26,7 @@
  * functions
  */
 @function color($key: normal) {
-  @if map-has-key($colorMap, $key) {
+  @if global-variable-exists(colorMap) and map-has-key($colorMap, $key) {
     @return map-get($colorMap, $key);
   }
 
