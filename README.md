@@ -50,19 +50,14 @@ menu.attach(customObserver());
 menu添加自定义观察者示例。当menu状态切换到打开main页时将执行`doSth`函数。
 
 ## browserslist
-browserslist配置
-
-~~~json
-{
-  "browserslist": [
-    "> 1%",
-    "last 1 version",
-    "Firefox ESR",
-    "chrome 49"
-  ]
-}
-~~~
 浏览器支持情况
+
+~~~
+last 1 version
+> 0.2%
+not dead
+~~~
+.browserslistrc配置
 
 ## 测试和文档
 测试和文档
