@@ -2,6 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+require('core-js/modules/es6.number.constructor');
+
 /**
  * @class
  * @param {string} group - 轮播组
