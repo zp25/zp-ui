@@ -1,5 +1,6 @@
 # UI工具
 
+[![npm](https://img.shields.io/npm/v/zp-ui.svg)](https://www.npmjs.com/package/zp-ui)
 [![Build Status](https://travis-ci.org/zp25/zp-ui.svg?branch=master)](https://travis-ci.org/zp25/zp-ui)
 
 主要目录结构
@@ -54,7 +55,7 @@ menu添加自定义观察者示例。当menu状态切换到打开main页时将�
 
 ~~~
 last 1 version
-> 0.2%
+> 0.5%
 not dead
 ~~~
 .browserslistrc配置
