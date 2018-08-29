@@ -65,13 +65,6 @@ describe('Util', () => {
       (Util.closest(text, '.noParent') === null).should.be.true;
     });
 
-    it('Static: escapeHtml, 编码html特殊字符，包括[&<>"\']', () => {
-      const raw = '&<>"\'';
-      const escaped = '&amp;&lt;&gt;&quot;&#039;';
-
-      Util.escapeHtml(raw).should.equal(escaped);
-    });
-
     it('attach, 接收observer或observer数组绑定到subject，返回已绑定observer数量', () => {
       const lenA = util.attach(observer);
       const lenB = util.attach(observers);

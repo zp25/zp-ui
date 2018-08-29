@@ -1,3 +1,4 @@
+import { escapeHTML } from 'zp-lib';
 import Util from './util';
 
 /**
@@ -139,7 +140,7 @@ class Modal extends Util {
     this.subject.state = {
       hidden: false,
       dialog: name,
-      message: msg === null ? 'null' : this.constructor.escapeHtml(msg.toString()),
+      message: msg === null ? 'null' : escapeHTML(msg.toString()),
     };
   }
 
