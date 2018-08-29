@@ -288,8 +288,7 @@ export default Base => /** @class CarouselBase */ class extends Base {
 
     // 调整duration，使动画时长和剩余滑动距离关联；方向无关
     const ratio = absDx / offsetWidth;
-    const duration =
-      this.constructor.isEdge(this.options.length, this.focus, dx) ? 1 : 1 - ratio;
+    const duration = this.constructor.isEdge(this.options.length, this.focus, dx) ? 1 : 1 - ratio;
 
     return (ratio < 0.1 || absDx < absDy) ? 0 : {
       sign: Math.sign(dx),
