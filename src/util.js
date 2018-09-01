@@ -91,8 +91,6 @@ class Util {
    * 状态切换
    * @param {string} action - 输入
    * @param {Object} data - 额外数据，用于合并到state
-   * @protected
-   * @ignore
    */
   setState(data = {}) {
     if (!(data instanceof Object)) {

@@ -1,5 +1,4 @@
 import Carousel from './src/carousel';
-import CarouselLite from './src/carousel/lite';
 import ImageLoader from './src/imageLoader';
 import Menu from './src/menu';
 import Modal from './src/modal';
@@ -12,7 +11,6 @@ import {
 
 export {
   Carousel,
-  CarouselLite,
   ImageLoader,
   Menu,
   Modal,
