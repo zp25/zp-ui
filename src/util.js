@@ -5,19 +5,6 @@ import { Subject } from 'zp-lib';
  */
 
 class Util {
-  constructor(group) {
-    /**
-     * 实例分类，用于单页多实例间区分
-     * @type string
-     */
-    this.group = group;
-    /**
-     * 被观察者实例
-     * @type {Subject}
-     */
-    this.subject = new Subject();
-  }
-
   /**
    * 查找最近父元素或当前元素
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill}
@@ -57,6 +44,19 @@ class Util {
     return itemB > 0 && itemT < window.innerHeight;
   }
 
+  constructor(group) {
+    /**
+     * 实例分类，用于单页多实例间区分
+     * @type string
+     */
+    this.group = group;
+    /**
+     * 被观察者实例
+     * @type {Subject}
+     */
+    this.subject = new Subject();
+  }
+
   /**
    * 为subject绑定observer
    * @param {(Observer|Array.<Observer>)} observer - 观察者对象
@@ -85,6 +85,29 @@ class Util {
     });
 
     return this.subject.observers.length;
+  }
+
+  /**
+   * 状态切换
+   * @param {string} action - 输入
+   * @param {Object} data - 额外数据，用于合并到state
+   * @protected
+   * @ignore
+   */
+  setState(data = {}) {
+    if (!(data instanceof Object)) {
+      throw new TypeError('Not an Object');
+    }
+
+    const filtered = Object.entries(data).reduce((prev, [key, val]) => {
+      if ({}.hasOwnProperty.call(this.state, key)) {
+        return Object.assign({}, prev, { [key]: val });
+      }
+
+      return prev;
+    }, {});
+
+    this.state = Object.assign({}, this.state, filtered);
   }
 }
 
