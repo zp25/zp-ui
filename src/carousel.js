@@ -136,6 +136,12 @@ class Carousel extends Util {
    */
   timeoutID = NaN;
 
+  /**
+   * 新建Carousel实例
+   * @param {string} [group] - 组件分类，区别单页中多个Carousel组件，若单页仅一个Carousel可忽略
+   * @param {Object} opts - 自定义配置
+   * @augments {Util}
+   */
   constructor(group = '', opts = {}) {
     super(group);
 
