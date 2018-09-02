@@ -55,16 +55,21 @@ describe('Modal', () => {
 
       modal.modal.should.be.eql(target);
     });
+
+    it('Prop: state, 存储实例状态', () => {
+      modal.should.have.ownProperty('state');
+    });
   });
 
   describe('Methods', () => {
     let modal = null;
-    // dialog
+    // dialogs
     let loading = null;
     let prompt = null;
 
-    const modalActiveName = 'modal--active';
-    const dialogActiveName = 'modal__dialog--active';
+    const activeName = 'modal--active';
+    const dialogName = 'modal__dialog';
+    const dialogActive = 'modal__dialog--active';
 
     const msgList = [
       ['custome message', 'custome message'],
@@ -75,6 +80,7 @@ describe('Modal', () => {
       [null, 'null'],
       [[], ''],
       [{}, '[object Object]'],
+      ['<script>alert(\'&\');</script>', '&lt;script&gt;alert(\'&amp;\');&lt;/script&gt;'],
     ];
 
     before(() => {
@@ -87,7 +93,7 @@ describe('Modal', () => {
       prompt = document.querySelector('.modal__dialog--message');
     });
 
-    it('prompt, 显示modal并正确切换dialog，可自定义message', () => {
+    it('prompt, 正确显示modal并切换dialog，可自定义message', () => {
       const [raw, encoded] = msgList[0];
       const state = {
         'loading': false,
@@ -97,12 +103,12 @@ describe('Modal', () => {
       modal.prompt('message', raw);
 
       const result = {
-        'loading': loading.classList.contains(dialogActiveName),
-        'message': prompt.classList.contains(dialogActiveName),
+        'loading': loading.classList.contains(dialogActive),
+        'message': prompt.classList.contains(dialogActive),
       };
 
       // modal状态
-      modal.modal.classList.contains(modalActiveName).should.be.true;
+      modal.modal.classList.contains(activeName).should.be.true;
       // dialog状态
       result.should.be.eql(state);
       // 自定义message
@@ -122,9 +128,8 @@ describe('Modal', () => {
       });
     });
 
-    it('loading, prompt语法糖', () => {
-      const spy = sinon.spy();
-      modal.prompt = spy;
+    it('loading, loading效果，prompt语法糖', () => {
+      const spy = sinon.spy(modal, 'prompt');
 
       modal.loading();
 
@@ -140,20 +145,33 @@ describe('Modal', () => {
       modal.open();
 
       const result = {
-        'loading': loading.classList.contains(dialogActiveName),
-        'message': prompt.classList.contains(dialogActiveName),
+        'loading': loading.classList.contains(dialogActive),
+        'message': prompt.classList.contains(dialogActive),
       };
 
       // modal状态
-      modal.modal.classList.contains(modalActiveName).should.be.true;
+      modal.modal.classList.contains(activeName).should.be.true;
       // dialog状态
       result.should.be.eql(state);
     });
 
-    it('close, 隐藏modal', () => {
+    it('close, 隐藏modal，不显示任何dialog', () => {
+      const state = {
+        'loading': false,
+        'message': false,
+      };
+
       modal.close();
 
-      modal.modal.classList.contains(modalActiveName).should.be.false;
+      const result = {
+        'loading': loading.classList.contains(dialogActive),
+        'message': prompt.classList.contains(dialogActive),
+      };
+
+      // modal状态
+      modal.modal.classList.contains(activeName).should.be.false;
+      // dialog状态
+      result.should.be.eql(state);
     });
   });
 });
