@@ -12,11 +12,16 @@ export default [
       format: 'cjs',
     },
     plugins: [
+      resolve({
+        module: true,
+        main: true,
+      }),
       eslint(),
       babel({
         exclude: 'node_modules/**',
         externalHelpers: false,
       }),
+      commonjs(),
     ],
   },
   {
