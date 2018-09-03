@@ -44,12 +44,12 @@ class Util {
     return itemB > 0 && itemT < window.innerHeight;
   }
 
-  constructor(group) {
+  constructor(group = '') {
     /**
      * 实例分类，用于单页多实例间区分
      * @type string
      */
-    this.group = group;
+    this.group = String(group);
     /**
      * 被观察者实例
      * @type {Subject}

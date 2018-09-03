@@ -48,8 +48,8 @@ describe('Util', () => {
       util = new Util();
     });
 
-    it('group, exists', () => {
-      util.should.have.property('group');
+    it('group, 是string', () => {
+      util.group.should.be.a('string');
     });
 
     it('subject, Subject类的实例', () => {
