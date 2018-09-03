@@ -9,8 +9,8 @@
 + legacy，尝试IE9+
 + src
   + carousel
+  + group，通用类，示例见example分支的menu
   + imageLoader
-  + menu
   + modal
   + util
 + styles
@@ -81,3 +81,4 @@ npm run open
 + [How Medium does progressive image loading](https://jmperezperez.com/medium-image-progressive-loading-placeholder/ "How Medium does progressive image loading")
 + [SpinKit](http://tobiasahlin.com/spinkit/ "SpinKit")
 + [Simple Swipe With Vanilla JavaScript](https://css-tricks.com/simple-swipe-with-vanilla-javascript/ "Simple Swipe With Vanilla JavaScript")
++ [The Rise Of The State Machines](https://www.smashingmagazine.com/2018/01/rise-state-machines/ "The Rise Of The State Machines")

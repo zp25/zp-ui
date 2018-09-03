@@ -1,26 +1,22 @@
-import { Subject } from 'zp-lib';
+import { Subject, machine, escapeHTML } from 'zp-lib';
+
+var _isObject = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var _global = createCommonjsModule(function (module) {
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-});
+var id = 0;
+var px = Math.random();
+var _uid = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
 
-var _core = createCommonjsModule(function (module) {
-var core = module.exports = { version: '2.5.7' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-});
-var _core_1 = _core.version;
-
-var _isObject = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
+var hasOwnProperty = {}.hasOwnProperty;
+var _has = function (it, key) {
+  return hasOwnProperty.call(it, key);
 };
 
 var _anObject = function (it) {
@@ -39,6 +35,15 @@ var _fails = function (exec) {
 // Thank's IE8 for his funny defineProperty
 var _descriptors = !_fails(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+var _global = createCommonjsModule(function (module) {
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 });
 
 var document$1 = _global.document;
@@ -83,6 +88,73 @@ var _objectDp = {
 	f: f
 };
 
+var _meta = createCommonjsModule(function (module) {
+var META = _uid('meta');
+
+
+var setDesc = _objectDp.f;
+var id = 0;
+var isExtensible = Object.isExtensible || function () {
+  return true;
+};
+var FREEZE = !_fails(function () {
+  return isExtensible(Object.preventExtensions({}));
+});
+var setMeta = function (it) {
+  setDesc(it, META, { value: {
+    i: 'O' + ++id, // object ID
+    w: {}          // weak collections IDs
+  } });
+};
+var fastKey = function (it, create) {
+  // return primitive with prefix
+  if (!_isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
+  if (!_has(it, META)) {
+    // can't set metadata to uncaught frozen object
+    if (!isExtensible(it)) return 'F';
+    // not necessary to add metadata
+    if (!create) return 'E';
+    // add missing metadata
+    setMeta(it);
+  // return object ID
+  } return it[META].i;
+};
+var getWeak = function (it, create) {
+  if (!_has(it, META)) {
+    // can't set metadata to uncaught frozen object
+    if (!isExtensible(it)) return true;
+    // not necessary to add metadata
+    if (!create) return false;
+    // add missing metadata
+    setMeta(it);
+  // return hash weak collections IDs
+  } return it[META].w;
+};
+// add metadata on freeze-family methods calling
+var onFreeze = function (it) {
+  if (FREEZE && meta.NEED && isExtensible(it) && !_has(it, META)) setMeta(it);
+  return it;
+};
+var meta = module.exports = {
+  KEY: META,
+  NEED: false,
+  fastKey: fastKey,
+  getWeak: getWeak,
+  onFreeze: onFreeze
+};
+});
+var _meta_1 = _meta.KEY;
+var _meta_2 = _meta.NEED;
+var _meta_3 = _meta.fastKey;
+var _meta_4 = _meta.getWeak;
+var _meta_5 = _meta.onFreeze;
+
+var _core = createCommonjsModule(function (module) {
+var core = module.exports = { version: '2.5.7' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+});
+var _core_1 = _core.version;
+
 var _propertyDesc = function (bitmap, value) {
   return {
     enumerable: !(bitmap & 1),
@@ -97,17 +169,6 @@ var _hide = _descriptors ? function (object, key, value) {
 } : function (object, key, value) {
   object[key] = value;
   return object;
-};
-
-var hasOwnProperty = {}.hasOwnProperty;
-var _has = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-var id = 0;
-var px = Math.random();
-var _uid = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 };
 
 var _redefine = createCommonjsModule(function (module) {
@@ -205,6 +266,27 @@ $export.W = 32;  // wrap
 $export.U = 64;  // safe
 $export.R = 128; // real proto method for `library`
 var _export = $export;
+
+// most Object methods by ES6 should accept primitives
+
+
+
+var _objectSap = function (KEY, exec) {
+  var fn = (_core.Object || {})[KEY] || Object[KEY];
+  var exp = {};
+  exp[KEY] = exec(fn);
+  _export(_export.S + _export.F * _fails(function () { fn(1); }), 'Object', exp);
+};
+
+// 19.1.2.5 Object.freeze(O)
+
+var meta = _meta.onFreeze;
+
+_objectSap('freeze', function ($freeze) {
+  return function freeze(it) {
+    return $freeze && _isObject(it) ? $freeze(meta(it)) : it;
+  };
+});
 
 var toString = {}.toString;
 
@@ -384,6 +466,17 @@ var _objectAssign = !$assign || _fails(function () {
 
 _export(_export.S + _export.F, 'Object', { assign: _objectAssign });
 
+// 20.2.2.28 Math.sign(x)
+var _mathSign = Math.sign || function sign(x) {
+  // eslint-disable-next-line no-self-compare
+  return (x = +x) == 0 || x != x ? x : x < 0 ? -1 : 1;
+};
+
+// 20.2.2.28 Math.sign(x)
+
+
+_export(_export.S, 'Math', { sign: _mathSign });
+
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -404,6 +497,21 @@ function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
   return Constructor;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
 }
 
 function _inherits(subClass, superClass) {
@@ -453,36 +561,6 @@ function _possibleConstructorReturn(self, call) {
   return _assertThisInitialized(self);
 }
 
-function _superPropBase(object, property) {
-  while (!Object.prototype.hasOwnProperty.call(object, property)) {
-    object = _getPrototypeOf(object);
-    if (object === null) break;
-  }
-
-  return object;
-}
-
-function _get(target, property, receiver) {
-  if (typeof Reflect !== "undefined" && Reflect.get) {
-    _get = Reflect.get;
-  } else {
-    _get = function _get(target, property, receiver) {
-      var base = _superPropBase(target, property);
-
-      if (!base) return;
-      var desc = Object.getOwnPropertyDescriptor(base, property);
-
-      if (desc.get) {
-        return desc.get.call(receiver);
-      }
-
-      return desc.value;
-    };
-  }
-
-  return _get(target, property, receiver || target);
-}
-
 function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
 }
@@ -521,97 +599,33 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance");
 }
 
-var gOPD = Object.getOwnPropertyDescriptor;
+var _wks = createCommonjsModule(function (module) {
+var store = _shared('wks');
 
-var f$3 = _descriptors ? gOPD : function getOwnPropertyDescriptor(O, P) {
-  O = _toIobject(O);
-  P = _toPrimitive(P, true);
-  if (_ie8DomDefine) try {
-    return gOPD(O, P);
-  } catch (e) { /* empty */ }
-  if (_has(O, P)) return _propertyDesc(!_objectPie.f.call(O, P), O[P]);
+var Symbol = _global.Symbol;
+var USE_SYMBOL = typeof Symbol == 'function';
+
+var $exports = module.exports = function (name) {
+  return store[name] || (store[name] =
+    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : _uid)('Symbol.' + name));
 };
 
-var _objectGopd = {
-	f: f$3
+$exports.store = store;
+});
+
+// 22.1.3.31 Array.prototype[@@unscopables]
+var UNSCOPABLES = _wks('unscopables');
+var ArrayProto = Array.prototype;
+if (ArrayProto[UNSCOPABLES] == undefined) _hide(ArrayProto, UNSCOPABLES, {});
+var _addToUnscopables = function (key) {
+  ArrayProto[UNSCOPABLES][key] = true;
 };
 
-// Works with __proto__ only. Old v8 can't work with null proto objects.
-/* eslint-disable no-proto */
-
-
-var check = function (O, proto) {
-  _anObject(O);
-  if (!_isObject(proto) && proto !== null) throw TypeError(proto + ": can't set as prototype!");
-};
-var _setProto = {
-  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
-    function (test, buggy, set) {
-      try {
-        set = _ctx(Function.call, _objectGopd.f(Object.prototype, '__proto__').set, 2);
-        set(test, []);
-        buggy = !(test instanceof Array);
-      } catch (e) { buggy = true; }
-      return function setPrototypeOf(O, proto) {
-        check(O, proto);
-        if (buggy) O.__proto__ = proto;
-        else set(O, proto);
-        return O;
-      };
-    }({}, false) : undefined),
-  check: check
+var _iterStep = function (done, value) {
+  return { value: value, done: !!done };
 };
 
-var setPrototypeOf = _setProto.set;
-var _inheritIfRequired = function (that, target, C) {
-  var S = target.constructor;
-  var P;
-  if (S !== C && typeof S == 'function' && (P = S.prototype) !== C.prototype && _isObject(P) && setPrototypeOf) {
-    setPrototypeOf(that, P);
-  } return that;
-};
-
-// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-
-var hiddenKeys = _enumBugKeys.concat('length', 'prototype');
-
-var f$4 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-  return _objectKeysInternal(O, hiddenKeys);
-};
-
-var _objectGopn = {
-	f: f$4
-};
-
-var _stringWs = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
-  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
-
-var space = '[' + _stringWs + ']';
-var non = '\u200b\u0085';
-var ltrim = RegExp('^' + space + space + '*');
-var rtrim = RegExp(space + space + '*$');
-
-var exporter = function (KEY, exec, ALIAS) {
-  var exp = {};
-  var FORCE = _fails(function () {
-    return !!_stringWs[KEY]() || non[KEY]() != non;
-  });
-  var fn = exp[KEY] = FORCE ? exec(trim) : _stringWs[KEY];
-  if (ALIAS) exp[ALIAS] = fn;
-  _export(_export.P + _export.F * FORCE, 'String', exp);
-};
-
-// 1 -> String#trimLeft
-// 2 -> String#trimRight
-// 3 -> String#trim
-var trim = exporter.trim = function (string, TYPE) {
-  string = String(_defined(string));
-  if (TYPE & 1) string = string.replace(ltrim, '');
-  if (TYPE & 2) string = string.replace(rtrim, '');
-  return string;
-};
-
-var _stringTrim = exporter;
+var _iterators = {};
 
 var _objectDps = _descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
   _anObject(O);
@@ -668,211 +682,12 @@ var _objectCreate = Object.create || function create(O, Properties) {
   return Properties === undefined ? result : _objectDps(result, Properties);
 };
 
-var gOPN = _objectGopn.f;
-var gOPD$1 = _objectGopd.f;
-var dP$1 = _objectDp.f;
-var $trim = _stringTrim.trim;
-var NUMBER = 'Number';
-var $Number = _global[NUMBER];
-var Base = $Number;
-var proto = $Number.prototype;
-// Opera ~12 has broken Object#toString
-var BROKEN_COF = _cof(_objectCreate(proto)) == NUMBER;
-var TRIM = 'trim' in String.prototype;
-
-// 7.1.3 ToNumber(argument)
-var toNumber = function (argument) {
-  var it = _toPrimitive(argument, false);
-  if (typeof it == 'string' && it.length > 2) {
-    it = TRIM ? it.trim() : $trim(it, 3);
-    var first = it.charCodeAt(0);
-    var third, radix, maxCode;
-    if (first === 43 || first === 45) {
-      third = it.charCodeAt(2);
-      if (third === 88 || third === 120) return NaN; // Number('+0x1') should be NaN, old V8 fix
-    } else if (first === 48) {
-      switch (it.charCodeAt(1)) {
-        case 66: case 98: radix = 2; maxCode = 49; break; // fast equal /^0b[01]+$/i
-        case 79: case 111: radix = 8; maxCode = 55; break; // fast equal /^0o[0-7]+$/i
-        default: return +it;
-      }
-      for (var digits = it.slice(2), i = 0, l = digits.length, code; i < l; i++) {
-        code = digits.charCodeAt(i);
-        // parseInt parses a string to a first unavailable symbol
-        // but ToNumber should return NaN if a string contains unavailable symbols
-        if (code < 48 || code > maxCode) return NaN;
-      } return parseInt(digits, radix);
-    }
-  } return +it;
-};
-
-if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
-  $Number = function Number(value) {
-    var it = arguments.length < 1 ? 0 : value;
-    var that = this;
-    return that instanceof $Number
-      // check on 1..constructor(foo) case
-      && (BROKEN_COF ? _fails(function () { proto.valueOf.call(that); }) : _cof(that) != NUMBER)
-        ? _inheritIfRequired(new Base(toNumber(it)), that, $Number) : toNumber(it);
-  };
-  for (var keys = _descriptors ? gOPN(Base) : (
-    // ES3:
-    'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
-    // ES6 (in case, if modules with ES6 Number statics required before):
-    'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
-    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
-  ).split(','), j = 0, key; keys.length > j; j++) {
-    if (_has(Base, key = keys[j]) && !_has($Number, key)) {
-      dP$1($Number, key, gOPD$1(Base, key));
-    }
-  }
-  $Number.prototype = proto;
-  proto.constructor = $Number;
-  _redefine(_global, NUMBER, $Number);
-}
-
-// call something on iterator step with safe closing on error
-
-var _iterCall = function (iterator, fn, value, entries) {
-  try {
-    return entries ? fn(_anObject(value)[0], value[1]) : fn(value);
-  // 7.4.6 IteratorClose(iterator, completion)
-  } catch (e) {
-    var ret = iterator['return'];
-    if (ret !== undefined) _anObject(ret.call(iterator));
-    throw e;
-  }
-};
-
-var _iterators = {};
-
-var _wks = createCommonjsModule(function (module) {
-var store = _shared('wks');
-
-var Symbol = _global.Symbol;
-var USE_SYMBOL = typeof Symbol == 'function';
-
-var $exports = module.exports = function (name) {
-  return store[name] || (store[name] =
-    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : _uid)('Symbol.' + name));
-};
-
-$exports.store = store;
-});
-
-// check on default Array iterator
-
-var ITERATOR = _wks('iterator');
-var ArrayProto = Array.prototype;
-
-var _isArrayIter = function (it) {
-  return it !== undefined && (_iterators.Array === it || ArrayProto[ITERATOR] === it);
-};
-
-var _createProperty = function (object, index, value) {
-  if (index in object) _objectDp.f(object, index, _propertyDesc(0, value));
-  else object[index] = value;
-};
-
-// getting tag from 19.1.3.6 Object.prototype.toString()
-
-var TAG = _wks('toStringTag');
-// ES3 wrong here
-var ARG = _cof(function () { return arguments; }()) == 'Arguments';
-
-// fallback for IE11 Script Access Denied error
-var tryGet = function (it, key) {
-  try {
-    return it[key];
-  } catch (e) { /* empty */ }
-};
-
-var _classof = function (it) {
-  var O, T, B;
-  return it === undefined ? 'Undefined' : it === null ? 'Null'
-    // @@toStringTag case
-    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
-    // builtinTag case
-    : ARG ? _cof(O)
-    // ES3 arguments fallback
-    : (B = _cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-};
-
-var ITERATOR$1 = _wks('iterator');
-
-var core_getIteratorMethod = _core.getIteratorMethod = function (it) {
-  if (it != undefined) return it[ITERATOR$1]
-    || it['@@iterator']
-    || _iterators[_classof(it)];
-};
-
-var ITERATOR$2 = _wks('iterator');
-var SAFE_CLOSING = false;
-
-try {
-  var riter = [7][ITERATOR$2]();
-  riter['return'] = function () { SAFE_CLOSING = true; };
-} catch (e) { /* empty */ }
-
-var _iterDetect = function (exec, skipClosing) {
-  if (!skipClosing && !SAFE_CLOSING) return false;
-  var safe = false;
-  try {
-    var arr = [7];
-    var iter = arr[ITERATOR$2]();
-    iter.next = function () { return { done: safe = true }; };
-    arr[ITERATOR$2] = function () { return iter; };
-    exec(arr);
-  } catch (e) { /* empty */ }
-  return safe;
-};
-
-_export(_export.S + _export.F * !_iterDetect(function (iter) { }), 'Array', {
-  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-  from: function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
-    var O = _toObject(arrayLike);
-    var C = typeof this == 'function' ? this : Array;
-    var aLen = arguments.length;
-    var mapfn = aLen > 1 ? arguments[1] : undefined;
-    var mapping = mapfn !== undefined;
-    var index = 0;
-    var iterFn = core_getIteratorMethod(O);
-    var length, result, step, iterator;
-    if (mapping) mapfn = _ctx(mapfn, aLen > 2 ? arguments[2] : undefined, 2);
-    // if object isn't iterable or it's array with default iterator - use simple case
-    if (iterFn != undefined && !(C == Array && _isArrayIter(iterFn))) {
-      for (iterator = iterFn.call(O), result = new C(); !(step = iterator.next()).done; index++) {
-        _createProperty(result, index, mapping ? _iterCall(iterator, mapfn, [step.value, index], true) : step.value);
-      }
-    } else {
-      length = _toLength(O.length);
-      for (result = new C(length); length > index; index++) {
-        _createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
-      }
-    }
-    result.length = index;
-    return result;
-  }
-});
-
-// 22.1.3.31 Array.prototype[@@unscopables]
-var UNSCOPABLES = _wks('unscopables');
-var ArrayProto$1 = Array.prototype;
-if (ArrayProto$1[UNSCOPABLES] == undefined) _hide(ArrayProto$1, UNSCOPABLES, {});
-var _addToUnscopables = function (key) {
-  ArrayProto$1[UNSCOPABLES][key] = true;
-};
-
-var _iterStep = function (done, value) {
-  return { value: value, done: !!done };
-};
-
 var def = _objectDp.f;
 
-var TAG$1 = _wks('toStringTag');
+var TAG = _wks('toStringTag');
 
 var _setToStringTag = function (it, tag, stat) {
-  if (it && !_has(it = stat ? it : it.prototype, TAG$1)) def(it, TAG$1, { configurable: true, value: tag });
+  if (it && !_has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
 };
 
 var IteratorPrototype = {};
@@ -899,7 +714,7 @@ var _objectGpo = Object.getPrototypeOf || function (O) {
   } return O instanceof Object ? ObjectProto : null;
 };
 
-var ITERATOR$3 = _wks('iterator');
+var ITERATOR = _wks('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -920,7 +735,7 @@ var _iterDefine = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORC
   var DEF_VALUES = DEFAULT == VALUES;
   var VALUES_BUG = false;
   var proto = Base.prototype;
-  var $native = proto[ITERATOR$3] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
+  var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
   var $default = $native || getMethod(DEFAULT);
   var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined;
   var $anyNative = NAME == 'Array' ? proto.entries || $native : $native;
@@ -932,7 +747,7 @@ var _iterDefine = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORC
       // Set @@toStringTag to native iterators
       _setToStringTag(IteratorPrototype, TAG, true);
       // fix for some old engines
-      if (!_library && typeof IteratorPrototype[ITERATOR$3] != 'function') _hide(IteratorPrototype, ITERATOR$3, returnThis);
+      if (!_library && typeof IteratorPrototype[ITERATOR] != 'function') _hide(IteratorPrototype, ITERATOR, returnThis);
     }
   }
   // fix Array#{values, @@iterator}.name in V8 / FF
@@ -941,8 +756,8 @@ var _iterDefine = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORC
     $default = function values() { return $native.call(this); };
   }
   // Define iterator
-  if ((!_library || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR$3])) {
-    _hide(proto, ITERATOR$3, $default);
+  if ((!_library || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])) {
+    _hide(proto, ITERATOR, $default);
   }
   // Plug for library
   _iterators[NAME] = $default;
@@ -989,7 +804,32 @@ _addToUnscopables('keys');
 _addToUnscopables('values');
 _addToUnscopables('entries');
 
-var ITERATOR$4 = _wks('iterator');
+var isEnum = _objectPie.f;
+var _objectToArray = function (isEntries) {
+  return function (it) {
+    var O = _toIobject(it);
+    var keys = _objectKeys(O);
+    var length = keys.length;
+    var i = 0;
+    var result = [];
+    var key;
+    while (length > i) if (isEnum.call(O, key = keys[i++])) {
+      result.push(isEntries ? [key, O[key]] : O[key]);
+    } return result;
+  };
+};
+
+// https://github.com/tc39/proposal-object-values-entries
+
+var $entries = _objectToArray(true);
+
+_export(_export.S, 'Object', {
+  entries: function entries(it) {
+    return $entries(it);
+  }
+});
+
+var ITERATOR$1 = _wks('iterator');
 var TO_STRING_TAG = _wks('toStringTag');
 var ArrayValues = _iterators.Array;
 
@@ -1031,48 +871,122 @@ for (var collections = _objectKeys(DOMIterables), i = 0; i < collections.length;
   var NAME = collections[i];
   var explicit = DOMIterables[NAME];
   var Collection = _global[NAME];
-  var proto$1 = Collection && Collection.prototype;
-  var key$1;
-  if (proto$1) {
-    if (!proto$1[ITERATOR$4]) _hide(proto$1, ITERATOR$4, ArrayValues);
-    if (!proto$1[TO_STRING_TAG]) _hide(proto$1, TO_STRING_TAG, NAME);
+  var proto = Collection && Collection.prototype;
+  var key;
+  if (proto) {
+    if (!proto[ITERATOR$1]) _hide(proto, ITERATOR$1, ArrayValues);
+    if (!proto[TO_STRING_TAG]) _hide(proto, TO_STRING_TAG, NAME);
     _iterators[NAME] = ArrayValues;
-    if (explicit) for (key$1 in es6_array_iterator) if (!proto$1[key$1]) _redefine(proto$1, key$1, es6_array_iterator[key$1], true);
+    if (explicit) for (key in es6_array_iterator) if (!proto[key]) _redefine(proto, key, es6_array_iterator[key], true);
   }
 }
 
-var _fixReWks = function (KEY, length, exec) {
-  var SYMBOL = _wks(KEY);
-  var fns = exec(_defined, SYMBOL, ''[KEY]);
-  var strfn = fns[0];
-  var rxfn = fns[1];
-  if (_fails(function () {
-    var O = {};
-    O[SYMBOL] = function () { return 7; };
-    return ''[KEY](O) != 7;
-  })) {
-    _redefine(String.prototype, KEY, strfn);
-    _hide(RegExp.prototype, SYMBOL, length == 2
-      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-      ? function (string, arg) { return rxfn.call(string, this, arg); }
-      // 21.2.5.6 RegExp.prototype[@@match](string)
-      // 21.2.5.9 RegExp.prototype[@@search](string)
-      : function (string) { return rxfn.call(string, this); }
-    );
+// call something on iterator step with safe closing on error
+
+var _iterCall = function (iterator, fn, value, entries) {
+  try {
+    return entries ? fn(_anObject(value)[0], value[1]) : fn(value);
+  // 7.4.6 IteratorClose(iterator, completion)
+  } catch (e) {
+    var ret = iterator['return'];
+    if (ret !== undefined) _anObject(ret.call(iterator));
+    throw e;
   }
 };
 
-// @@replace logic
-_fixReWks('replace', 2, function (defined, REPLACE, $replace) {
-  // 21.1.3.14 String.prototype.replace(searchValue, replaceValue)
-  return [function replace(searchValue, replaceValue) {
-    var O = defined(this);
-    var fn = searchValue == undefined ? undefined : searchValue[REPLACE];
-    return fn !== undefined
-      ? fn.call(searchValue, O, replaceValue)
-      : $replace.call(String(O), searchValue, replaceValue);
-  }, $replace];
+// check on default Array iterator
+
+var ITERATOR$2 = _wks('iterator');
+var ArrayProto$1 = Array.prototype;
+
+var _isArrayIter = function (it) {
+  return it !== undefined && (_iterators.Array === it || ArrayProto$1[ITERATOR$2] === it);
+};
+
+var _createProperty = function (object, index, value) {
+  if (index in object) _objectDp.f(object, index, _propertyDesc(0, value));
+  else object[index] = value;
+};
+
+// getting tag from 19.1.3.6 Object.prototype.toString()
+
+var TAG$1 = _wks('toStringTag');
+// ES3 wrong here
+var ARG = _cof(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (e) { /* empty */ }
+};
+
+var _classof = function (it) {
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = tryGet(O = Object(it), TAG$1)) == 'string' ? T
+    // builtinTag case
+    : ARG ? _cof(O)
+    // ES3 arguments fallback
+    : (B = _cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+};
+
+var ITERATOR$3 = _wks('iterator');
+
+var core_getIteratorMethod = _core.getIteratorMethod = function (it) {
+  if (it != undefined) return it[ITERATOR$3]
+    || it['@@iterator']
+    || _iterators[_classof(it)];
+};
+
+var ITERATOR$4 = _wks('iterator');
+var SAFE_CLOSING = false;
+
+try {
+  var riter = [7][ITERATOR$4]();
+  riter['return'] = function () { SAFE_CLOSING = true; };
+} catch (e) { /* empty */ }
+
+var _iterDetect = function (exec, skipClosing) {
+  if (!skipClosing && !SAFE_CLOSING) return false;
+  var safe = false;
+  try {
+    var arr = [7];
+    var iter = arr[ITERATOR$4]();
+    iter.next = function () { return { done: safe = true }; };
+    arr[ITERATOR$4] = function () { return iter; };
+    exec(arr);
+  } catch (e) { /* empty */ }
+  return safe;
+};
+
+_export(_export.S + _export.F * !_iterDetect(function (iter) { }), 'Array', {
+  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+  from: function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
+    var O = _toObject(arrayLike);
+    var C = typeof this == 'function' ? this : Array;
+    var aLen = arguments.length;
+    var mapfn = aLen > 1 ? arguments[1] : undefined;
+    var mapping = mapfn !== undefined;
+    var index = 0;
+    var iterFn = core_getIteratorMethod(O);
+    var length, result, step, iterator;
+    if (mapping) mapfn = _ctx(mapfn, aLen > 2 ? arguments[2] : undefined, 2);
+    // if object isn't iterable or it's array with default iterator - use simple case
+    if (iterFn != undefined && !(C == Array && _isArrayIter(iterFn))) {
+      for (iterator = iterFn.call(O), result = new C(); !(step = iterator.next()).done; index++) {
+        _createProperty(result, index, mapping ? _iterCall(iterator, mapfn, [step.value, index], true) : step.value);
+      }
+    } else {
+      length = _toLength(O.length);
+      for (result = new C(length); length > index; index++) {
+        _createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
+      }
+    }
+    result.length = index;
+    return result;
+  }
 });
 
 /**
@@ -1082,14 +996,61 @@ _fixReWks('replace', 2, function (defined, REPLACE, $replace) {
 var Util =
 /*#__PURE__*/
 function () {
-  function Util(group) {
+  _createClass(Util, null, [{
+    key: "closest",
+
+    /**
+     * 查找最近父元素或当前元素
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill}
+     * @param {Element} el - 子元素
+     * @param {string} parent - 父元素选择器
+     * @return {(Element|null)} 查找到的元素，无匹配返回null
+     */
+    value: function closest(el, parent) {
+      if (typeof el.closest === 'function') {
+        return el.closest(parent);
+      }
+
+      var matches = Array.from((el.document || el.ownerDocument).querySelectorAll(parent));
+      var node = el;
+      var matchedArr = [];
+
+      var cb = function cb(m) {
+        return node === m;
+      };
+
+      do {
+        matchedArr = matches.filter(cb);
+      } while (matchedArr.length === 0 && (node = node.parentElement));
+
+      return node;
+    }
+    /**
+     * 元素是否在y轴可视范围内
+     * @param {HTMLElement} item - 需要检测是否在可视范围的元素
+     * @return {boolean}
+     */
+
+  }, {
+    key: "inview",
+    value: function inview(item) {
+      var rect = item.getBoundingClientRect();
+      var itemT = rect.top;
+      var itemB = itemT + rect.height;
+      return itemB > 0 && itemT < window.innerHeight;
+    }
+  }]);
+
+  function Util() {
+    var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
     _classCallCheck(this, Util);
 
     /**
      * 实例分类，用于单页多实例间区分
      * @type string
      */
-    this.group = group;
+    this.group = String(group);
     /**
      * 被观察者实例
      * @type {Subject}
@@ -1098,22 +1059,14 @@ function () {
     this.subject = new Subject();
   }
   /**
-   * 查找最近父元素或当前元素
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill}
-   * @param {Element} el - 子元素
-   * @param {string} parent - 父元素选择器
-   * @return {(Element|null)} 查找到的元素，无匹配返回null
+   * 为subject绑定observer
+   * @param {(Observer|Array.<Observer>)} observer - 观察者对象
+   * @return {number} 已绑定observer数量
    */
 
 
   _createClass(Util, [{
     key: "attach",
-
-    /**
-     * 为subject绑定observer
-     * @param {(Observer|Array.<Observer>)} observer - 观察者对象
-     * @return {number} 已绑定observer数量
-     */
     value: function attach(observer) {
       var _this = this;
 
@@ -1140,199 +1093,40 @@ function () {
       });
       return this.subject.observers.length;
     }
-  }], [{
-    key: "closest",
-    value: function closest(el, parent) {
-      if (typeof el.closest === 'function') {
-        return el.closest(parent);
+    /**
+     * 状态切换
+     * @param {string} action - 输入
+     * @param {Object} data - 额外数据，用于合并到state
+     */
+
+  }, {
+    key: "setState",
+    value: function setState() {
+      var _this3 = this;
+
+      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      if (!(data instanceof Object)) {
+        throw new TypeError('Not an Object');
       }
 
-      var matches = Array.from((el.document || el.ownerDocument).querySelectorAll(parent));
-      var node = el;
-      var matchedArr = [];
+      var filtered = Object.entries(data).reduce(function (prev, _ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            key = _ref2[0],
+            val = _ref2[1];
 
-      var cb = function cb(m) {
-        return node === m;
-      };
+        if ({}.hasOwnProperty.call(_this3.state, key)) {
+          return Object.assign({}, prev, _defineProperty({}, key, val));
+        }
 
-      do {
-        matchedArr = matches.filter(cb);
-      } while (matchedArr.length === 0 && (node = node.parentElement));
-
-      return node;
-    }
-    /**
-     * escape HTML
-     * @see {@link https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript/4835406#4835406}
-     * @param {string} unsafe - 需转义字符串
-     * @return {string} 转义后字符串
-     */
-
-  }, {
-    key: "escapeHtml",
-    value: function escapeHtml(unsafe) {
-      var map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return unsafe.replace(/[&<>"']/g, function (m) {
-        return map[m];
-      });
-    }
-    /**
-     * 元素是否在y轴可视范围内
-     * @param {HTMLElement} item - 需要检测是否在可视范围的元素
-     * @return {boolean}
-     */
-
-  }, {
-    key: "inview",
-    value: function inview(item) {
-      var rect = item.getBoundingClientRect();
-      var itemT = rect.top;
-      var itemB = itemT + rect.height;
-      return itemB > 0 && itemT < window.innerHeight;
+        return prev;
+      }, {});
+      this.state = Object.assign({}, this.state, filtered);
     }
   }]);
 
   return Util;
 }();
-
-var _meta = createCommonjsModule(function (module) {
-var META = _uid('meta');
-
-
-var setDesc = _objectDp.f;
-var id = 0;
-var isExtensible = Object.isExtensible || function () {
-  return true;
-};
-var FREEZE = !_fails(function () {
-  return isExtensible(Object.preventExtensions({}));
-});
-var setMeta = function (it) {
-  setDesc(it, META, { value: {
-    i: 'O' + ++id, // object ID
-    w: {}          // weak collections IDs
-  } });
-};
-var fastKey = function (it, create) {
-  // return primitive with prefix
-  if (!_isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-  if (!_has(it, META)) {
-    // can't set metadata to uncaught frozen object
-    if (!isExtensible(it)) return 'F';
-    // not necessary to add metadata
-    if (!create) return 'E';
-    // add missing metadata
-    setMeta(it);
-  // return object ID
-  } return it[META].i;
-};
-var getWeak = function (it, create) {
-  if (!_has(it, META)) {
-    // can't set metadata to uncaught frozen object
-    if (!isExtensible(it)) return true;
-    // not necessary to add metadata
-    if (!create) return false;
-    // add missing metadata
-    setMeta(it);
-  // return hash weak collections IDs
-  } return it[META].w;
-};
-// add metadata on freeze-family methods calling
-var onFreeze = function (it) {
-  if (FREEZE && meta.NEED && isExtensible(it) && !_has(it, META)) setMeta(it);
-  return it;
-};
-var meta = module.exports = {
-  KEY: META,
-  NEED: false,
-  fastKey: fastKey,
-  getWeak: getWeak,
-  onFreeze: onFreeze
-};
-});
-var _meta_1 = _meta.KEY;
-var _meta_2 = _meta.NEED;
-var _meta_3 = _meta.fastKey;
-var _meta_4 = _meta.getWeak;
-var _meta_5 = _meta.onFreeze;
-
-// most Object methods by ES6 should accept primitives
-
-
-
-var _objectSap = function (KEY, exec) {
-  var fn = (_core.Object || {})[KEY] || Object[KEY];
-  var exp = {};
-  exp[KEY] = exec(fn);
-  _export(_export.S + _export.F * _fails(function () { fn(1); }), 'Object', exp);
-};
-
-// 19.1.2.5 Object.freeze(O)
-
-var meta = _meta.onFreeze;
-
-_objectSap('freeze', function ($freeze) {
-  return function freeze(it) {
-    return $freeze && _isObject(it) ? $freeze(meta(it)) : it;
-  };
-});
-
-// 21.2.5.3 get RegExp.prototype.flags
-
-var _flags = function () {
-  var that = _anObject(this);
-  var result = '';
-  if (that.global) result += 'g';
-  if (that.ignoreCase) result += 'i';
-  if (that.multiline) result += 'm';
-  if (that.unicode) result += 'u';
-  if (that.sticky) result += 'y';
-  return result;
-};
-
-// 21.2.5.3 get RegExp.prototype.flags()
-if (_descriptors && /./g.flags != 'g') _objectDp.f(RegExp.prototype, 'flags', {
-  configurable: true,
-  get: _flags
-});
-
-var TO_STRING = 'toString';
-var $toString = /./[TO_STRING];
-
-var define = function (fn) {
-  _redefine(RegExp.prototype, TO_STRING, fn, true);
-};
-
-// 21.2.5.14 RegExp.prototype.toString()
-if (_fails(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
-  define(function toString() {
-    var R = _anObject(this);
-    return '/'.concat(R.source, '/',
-      'flags' in R ? R.flags : !_descriptors && R instanceof RegExp ? _flags.call(R) : undefined);
-  });
-// FF44- RegExp#toString has a wrong name
-} else if ($toString.name != TO_STRING) {
-  define(function toString() {
-    return $toString.call(this);
-  });
-}
-
-// 20.2.2.28 Math.sign(x)
-var _mathSign = Math.sign || function sign(x) {
-  // eslint-disable-next-line no-self-compare
-  return (x = +x) == 0 || x != x ? x : x < 0 ? -1 : 1;
-};
-
-// 20.2.2.28 Math.sign(x)
-
-
-_export(_export.S, 'Math', { sign: _mathSign });
 
 /**
  * 页数
@@ -1410,419 +1204,97 @@ var bannerObserver = function bannerObserver(main, cssCustomProp) {
     }
   };
 };
-
-var base = (function (Base) {
-  return (
-    /*#__PURE__*/
-
-    /** @class CarouselBase */
-    function (_Base) {
-      _inherits(_class, _Base);
-
-      _createClass(_class, null, [{
-        key: "unify",
-
-        /**
-         * 统一定位时使用的对象
-         * @param {(MouseEvent|TouchEvent)} e - 事件对象
-         * @return {(MouseEvent|Touch)}
-         * @private
-         */
-        value: function unify(e) {
-          return e.changedTouches ? e.changedTouches[0] : e;
-        }
-        /**
-         * 是否在边缘页且正在向空白部分滑动
-         * @param {number} length - 总页数
-         * @param {number} focus - 当前聚焦页编号
-         * @param {number} dx - 水平方向移动距离
-         * @return {boolean}
-         * @private
-         */
-
-      }, {
-        key: "isEdge",
-        value: function isEdge(length, focus, dx) {
-          return focus === 1 && dx > 0 || focus === length && dx < 0;
-        }
-      }]);
-
-      function _class() {
-        var _this;
-
-        var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-        var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        _classCallCheck(this, _class);
-
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(_class).call(this, group));
-        var query = ".carousel".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
-        /**
-         * Carousel组件容器
-         * @type {Element}
-         * @protected
-         */
-
-        _this.carousel = document.querySelector(query);
-        /**
-         * Carousel组件banner区域
-         * @type {Element}
-         * @protected
-         */
-
-        _this.main = _this.carousel.querySelector('.carousel__main'); // setter
-
-        _this.options = opts;
-        /**
-         * Carousel内部状态，可变
-         * @type {Object}
-         * @property {number} offsetWidth - 容器宽，即banner宽
-         * @property {(number|undefined)} timeoutID - 自动播放定时器
-         * @property {boolean} lock - 是否在滑动操作中
-         * @property {(number|undefined)} x0 - swipe起始x坐标
-         * @property {(number|undefined)} y0 - swipe起始y坐标
-         * @protected
-         */
-
-        _this.state = {
-          offsetWidth: _this.carousel.offsetWidth,
-          timeoutID: undefined,
-          lock: false,
-          x0: undefined,
-          y0: undefined
-        };
-        var _this$options = _this.options,
-            supports = _this$options.supports,
-            length = _this$options.length; // 初始化样式
-
-        if (supports) {
-          _this.main.style.setProperty(PROP_LEN, length);
-        } // 添加主区域(banner)observer
-
-
-        _this.attach(bannerObserver(_this.main, supports));
-
-        _this.swipeStart = _this.swipeStart.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-        _this.swipeMove = _this.swipeMove.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-        _this.swipeEnd = _this.swipeEnd.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-        return _this;
-      }
-      /**
-       * Carousel配置，不可变
-       * @type {Object}
-       * @property {number} length - 总页数
-       * @property {number} focus - 初始聚焦页，没有上边界判断
-       * @property {number} delay - 轮播延时
-       * @property {boolean} supports - 是否支持css自定义属性
-       * @desc 配置初始化后不应该被修改
-       * @memberOf CarouselBase
-       * @instance
-       * @public
-       */
-
-
-      _createClass(_class, [{
-        key: "bindListeners",
-
-        /**
-         * 事件绑定
-         * @memberOf CarouselBase
-         * @instance
-         * @protected
-         */
-        value: function bindListeners() {
-          var _this2 = this;
-
-          this.main.addEventListener('mousedown', this.swipeStart, false);
-          this.main.addEventListener('touchstart', this.swipeStart, false);
-          this.main.addEventListener('mousemove', this.swipeMove, false);
-          this.main.addEventListener('touchmove', this.swipeMove, false);
-          this.main.addEventListener('mouseup', this.swipeEnd, false);
-          this.main.addEventListener('touchend', this.swipeEnd, false); // 追踪容器宽
-
-          window.addEventListener('resize', function () {
-            _this2.state = Object.assign({}, _this2.state, {
-              offsetWidth: _this2.carousel.offsetWidth
-            });
-          }, false);
-        }
-        /**
-         * 滑动动作开始
-         * @param {(MouseEvent|TouchEvent)} e - 事件对象
-         * @memberOf CarouselBase
-         * @instance
-         * @protected
-         */
-
-      }, {
-        key: "swipeStart",
-        value: function swipeStart(e) {
-          var _this$constructor$uni = this.constructor.unify(e),
-              x0 = _this$constructor$uni.clientX,
-              y0 = _this$constructor$uni.clientY;
-
-          this.state = Object.assign({}, this.state, {
-            lock: true,
-            x0: x0,
-            y0: y0
-          });
-          this.main.classList.add(CLASS_SWIPE);
-        }
-        /**
-         * 滑动动作，水平夹角45deg内(含45deg)有效
-         * @param {(MouseEvent|TouchEvent)} e - 事件对象
-         * @return {(number|undefined)} 若滑动有效，返回水平轴滑动距离，否则返回undefined
-         * @memberOf CarouselBase
-         * @instance
-         * @protected
-         */
-
-      }, {
-        key: "swipeMove",
-        value: function swipeMove(e) {
-          var _this$state = this.state,
-              offsetWidth = _this$state.offsetWidth,
-              lock = _this$state.lock,
-              x0 = _this$state.x0,
-              y0 = _this$state.y0;
-
-          if (!lock) {
-            return undefined;
-          }
-
-          var _this$constructor$uni2 = this.constructor.unify(e),
-              x1 = _this$constructor$uni2.clientX,
-              y1 = _this$constructor$uni2.clientY;
-
-          var dx = x1 - x0;
-          var _ref = [Math.abs(dx), Math.abs(y1 - y0)],
-              absDx = _ref[0],
-              absDy = _ref[1];
-
-          if (absDx >= absDy) {
-            var rDx = dx;
-
-            if (this.constructor.isEdge(this.options.length, this.focus, dx)) {
-              // 计算滑动和移动比例，使边界滑动有阻力效果；方向有关
-              rDx = Math.sin(dx / offsetWidth * Math.PI * 0.5) * 0.42 * offsetWidth;
-            }
-
-            return rDx;
-          }
-
-          return undefined;
-        }
-        /**
-         * 滑动动作结束，水平夹角45deg内(含45deg)有效
-         * @param {(MouseEvent|TouchEvent)} e - 事件对象
-         * @return {(number|undefined|SwipeEnd)} 0滑动距离小于阈值或滑动水平夹角大于45deg，忽略动作；SwipeEnd有效滑动动作；undefined无动作
-         * @memberOf CarouselBase
-         * @instance
-         * @protected
-         */
-
-      }, {
-        key: "swipeEnd",
-        value: function swipeEnd(e) {
-          var _this$state2 = this.state,
-              offsetWidth = _this$state2.offsetWidth,
-              lock = _this$state2.lock,
-              x0 = _this$state2.x0,
-              y0 = _this$state2.y0;
-
-          if (!lock) {
-            return undefined;
-          }
-
-          this.state = Object.assign({}, this.state, {
-            lock: false,
-            x0: undefined,
-            y0: undefined
-          });
-          this.main.classList.remove(CLASS_SWIPE);
-
-          var _this$constructor$uni3 = this.constructor.unify(e),
-              x1 = _this$constructor$uni3.clientX,
-              y1 = _this$constructor$uni3.clientY;
-
-          var dx = x1 - x0;
-          var _ref2 = [Math.abs(dx), Math.abs(y1 - y0)],
-              absDx = _ref2[0],
-              absDy = _ref2[1]; // 调整duration，使动画时长和剩余滑动距离关联；方向无关
-
-          var ratio = absDx / offsetWidth;
-          var duration = this.constructor.isEdge(this.options.length, this.focus, dx) ? 1 : 1 - ratio;
-          return ratio < 0.1 || absDx < absDy ? 0 : {
-            sign: Math.sign(dx),
-            duration: duration
-          };
-        }
-        /**
-         * 轮播定时器
-         * @param {function} cb - 延时处理函数
-         * @protected
-         * @ignore
-         */
-
-      }, {
-        key: "setTimeout",
-        value: function (_setTimeout) {
-          function setTimeout(_x) {
-            return _setTimeout.apply(this, arguments);
-          }
-
-          setTimeout.toString = function () {
-            return _setTimeout.toString();
-          };
-
-          return setTimeout;
-        }(function (cb) {
-          var timeoutID = setTimeout(cb, this.options.delay);
-          this.state.timeoutID = timeoutID;
-        })
-        /**
-         * 清理轮播定时器
-         * @protected
-         * @ignore
-         */
-
-      }, {
-        key: "clearTimeout",
-        value: function (_clearTimeout) {
-          function clearTimeout() {
-            return _clearTimeout.apply(this, arguments);
-          }
-
-          clearTimeout.toString = function () {
-            return _clearTimeout.toString();
-          };
-
-          return clearTimeout;
-        }(function () {
-          var timeoutID = this.state.timeoutID;
-
-          if (typeof timeoutID !== 'undefined') {
-            clearTimeout(timeoutID);
-            this.state.timeoutID = undefined;
-          }
-        })
-        /**
-         * 获取下一播放页编号；若首次运行(this.focus空)，聚焦到this.options.focus
-         * @param {boolean} reverse=false - 是否反向播放，反向指播放页编号比当前页小1
-         * @return {number} 下一页编号
-         * @protected
-         * @ignore
-         */
-
-      }, {
-        key: "next",
-        value: function next() {
-          var reverse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-          var _this$options2 = this.options,
-              focus = _this$options2.focus,
-              len = _this$options2.length;
-          var result = focus;
-
-          if (this.focus) {
-            if (reverse) {
-              result = this.focus <= 1 ? len : this.focus - 1;
-            } else {
-              result = this.focus >= len ? 1 : this.focus + 1;
-            }
-          }
-
-          return result;
-        }
-      }, {
-        key: "options",
-        get: function get() {
-          return this._options;
-        }
-        /**
-         * 设置Carousel配置
-         * @param {Object} opts - 自定义配置
-         * @private
-         */
-        ,
-        set: function set(opts) {
-          var slideBanner = this.main.querySelectorAll('.slide-banner');
-          this._options = Object.assign({}, {
-            length: slideBanner ? slideBanner.length : 1,
-            focus: 1,
-            delay: 8000
-          }, opts, {
-            supports: window.CSS && window.CSS.supports && window.CSS.supports('(--banner-focus: 1)')
-          });
-          Object.freeze(this._options);
-        }
-        /**
-         * 当前聚焦页
-         * @type {(number|undefined)}
-         * @memberOf CarouselBase
-         * @instance
-         * @protected
-         */
-
-      }, {
-        key: "focus",
-        get: function get() {
-          return this.subject.state.focus;
-        }
-      }]);
-
-      return _class;
-    }(Base)
-  );
-});
-
 /**
- * 导航区域(nav)观察者
- * @param {Element} nav - Menu组件导航区域
- * @return {Observer}
+ * 滑动动作状态查询字典
+ * @type {Object}
+ * @ignore
  */
 
-var navObserver = function navObserver(nav) {
-  var btnActiveName = 'slide-nav--active';
-  return {
-    /**
-     * nav样式切换
-     * @param {Object} state - 状态
-     * @param {number} state.focus - 聚焦页编号
-     * @ignore
-     */
-    update: function update(state) {
-      var focus = state.focus;
-      Array.from(nav.querySelectorAll('.slide-nav')).forEach(function (btn) {
-        var order = Number(btn.dataset.order);
 
-        if (order === focus) {
-          btn.classList.add(btnActiveName);
-        } else {
-          btn.classList.remove(btnActiveName);
-        }
-      });
-    }
-  };
+var SwipeDict = {
+  start: {
+    SWIPEMOVE: 'move',
+    SWIPEEND: 'end'
+  },
+  move: {
+    SWIPEMOVE: 'move',
+    SWIPEEND: 'end'
+  },
+  end: {
+    SWIPESTART: 'start'
+  }
 };
 /**
  * @class
- * @description 新建Carousel实例，可自定义nav。共3种操作：自动轮播和自定义nav，总是连续播放；swipe有滑动效果；播放指定页
- * @implements {carouselBase}
  * @implements {Util}
  */
 
-
 var Carousel =
 /*#__PURE__*/
-function (_base) {
-  _inherits(Carousel, _base);
+function (_Util) {
+  _inherits(Carousel, _Util);
+
+  _createClass(Carousel, null, [{
+    key: "unify",
+
+    /**
+     * 统一定位时使用的对象
+     * @param {(MouseEvent|TouchEvent)} e - 事件对象
+     * @return {(MouseEvent|Touch)}
+     * @private
+     */
+    value: function unify(e) {
+      return e.changedTouches ? e.changedTouches[0] : e;
+    }
+    /**
+     * 获取尺寸信息
+     * @return {Dimention} 尺寸信息
+     * @private
+     */
+
+  }, {
+    key: "dimention",
+    value: function dimention(x0, y0, x1, y1) {
+      var dx = x1 - x0;
+      var dy = y1 - y0;
+      return {
+        dx: dx,
+        dy: dy,
+        absDx: Math.abs(dx),
+        absDy: Math.abs(dy)
+      };
+    }
+    /**
+     * 是否在边缘页且正在向空白部分滑动
+     * @param {number} length - 总页数
+     * @param {number} focus - 当前聚焦页编号
+     * @param {number} dx - 水平方向移动距离
+     * @return {boolean}
+     * @private
+     */
+
+  }, {
+    key: "isEdge",
+    value: function isEdge(length, focus, dx) {
+      return focus === 1 && dx > 0 || focus === length && dx < 0;
+    }
+    /**
+     * Carousel内部状态，可变
+     * @type {Object}
+     * @property {boolean} isAutoplay - 是否自动播放状态
+     * @property {string} swipe - swipe当前状态
+     * @property {number} x0 - swipe起始x坐标
+     * @property {number} y0 - swipe起始y坐标
+     * @private
+     */
+
+  }]);
 
   /**
-   * @param {string} group='' - 组件分类
-   * @param {Object} opts={} - Carousel配置
-   * @param {number} [opts.focus=1] - 初始聚焦页，没有上边界判断
-   * @param {number} [opts.delay=8000] - 轮播延时(ms)
-   * @augments {carouselBase}
+   * 新建Carousel实例
+   * @param {string} [group] - 组件分类，区别单页中多个Carousel组件，若单页仅一个Carousel可忽略
+   * @param {Object} opts - 自定义配置
+   * @augments {Util}
    */
   function Carousel() {
     var _this;
@@ -1832,21 +1304,48 @@ function (_base) {
 
     _classCallCheck(this, Carousel);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Carousel).call(this, group, opts));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Carousel).call(this, group));
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "state", {
+      isAutoplay: false,
+      swipe: 'end',
+      x0: 0,
+      y0: 0
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "timeoutID", NaN);
+
+    var query = ".carousel".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
     /**
-     * 导航区域
+     * Carousel组件容器
      * @type {Element}
-     * @public
+     * @protected
      */
 
-    _this.nav = _this.carousel.querySelector('.carousel__nav'); // 添加是否自动播放状态
+    _this.carousel = document.querySelector(query);
+    /**
+     * Carousel组件banner区域
+     * @type {Element}
+     * @protected
+     */
 
-    _this.state = Object.assign({}, _this.state, {
-      isAutoplay: false
-    }); // 添加导航区域observer
+    _this.main = _this.carousel.querySelector('.carousel__main'); // setter
 
-    _this.attach(navObserver(_this.nav));
+    _this.options = opts;
+    var _this$options = _this.options,
+        supports = _this$options.supports,
+        length = _this$options.length; // 初始化样式
 
+    if (supports) {
+      _this.main.style.setProperty(PROP_LEN, length);
+    } // 添加主区域(banner)observer
+
+
+    _this.attach(bannerObserver(_this.main, supports)); // 添加状态机
+
+
+    _this.machine = machine(SwipeDict);
+    _this.dispatch = _this.dispatch.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.play = _this.play.bind(_assertThisInitialized(_assertThisInitialized(_this))); // 事件绑定
 
     _this.bindListeners();
@@ -1854,107 +1353,259 @@ function (_base) {
     return _this;
   }
   /**
-   * 事件绑定
-   * @private
+   * Carousel配置，不可变
+   * @type {Object}
+   * @property {number} length - 总页数
+   * @property {number} focus - 初始聚焦页，没有上边界判断
+   * @property {number} delay - 轮播延时
+   * @property {boolean} supports - 是否支持css自定义属性
+   * @desc 配置初始化后不应该被修改
+   * @memberOf CarouselBase
+   * @instance
+   * @public
    */
 
 
   _createClass(Carousel, [{
     key: "bindListeners",
+
+    /**
+     * 事件绑定
+     * @private
+     */
     value: function bindListeners() {
+      this.main.addEventListener('mousedown', this.dispatch('SWIPESTART'), false);
+      this.main.addEventListener('touchstart', this.dispatch('SWIPESTART'), false);
+      this.main.addEventListener('mousemove', this.dispatch('SWIPEMOVE'), false);
+      this.main.addEventListener('touchmove', this.dispatch('SWIPEMOVE'), false);
+      this.main.addEventListener('mouseup', this.dispatch('SWIPEEND'), false);
+      this.main.addEventListener('touchend', this.dispatch('SWIPEEND'), false);
+    }
+    /**
+     * 事件调度
+     * @description 绑定fsm和对象实例，依照fsm信息完成匹配动作
+     * @param {string} action - fsm输入
+     * @return {Function}
+     * @private
+     */
+
+  }, {
+    key: "dispatch",
+    value: function dispatch(action) {
       var _this2 = this;
 
-      _get(_getPrototypeOf(Carousel.prototype), "bindListeners", this).call(this);
+      /**
+       * @param {(MouseEvent|TouchEvent)} e - 事件对象
+       * @ignore
+       */
+      return function (e) {
+        var _this2$constructor$un = _this2.constructor.unify(e),
+            clientX = _this2$constructor$un.clientX,
+            clientY = _this2$constructor$un.clientY;
 
-      this.nav.onclick = function (e) {
-        e.preventDefault();
-        var next = Number(e.target.dataset.order);
+        var pos = {
+          clientX: clientX,
+          clientY: clientY
+        };
+        var currentState = _this2.state.swipe;
 
-        _this2.play(next);
+        var nextState = _this2.machine(currentState)(action);
+
+        if (nextState === 'start') {
+          _this2.swipeStart(pos);
+        } else if (nextState === 'move') {
+          _this2.swipeMove(pos);
+        } else if (nextState === 'end') {
+          _this2.swipeEnd(pos);
+        }
       };
     }
     /**
-     * 播放指定页，若autoplay启动自动播放
+     * 滑动动作开始
+     * @description 清理自动播放，更新状态，修改样式
+     * @param {Position} pos - 位置信息
+     * @protected
+     * @ignore
+     */
+
+  }, {
+    key: "swipeStart",
+    value: function swipeStart(pos) {
+      // 总应该尝试清理旧的自动播放
+      this.clearAutoplay();
+      var x0 = pos.clientX,
+          y0 = pos.clientY;
+      this.setState({
+        swipe: 'start',
+        x0: x0,
+        y0: y0
+      });
+      this.main.classList.add(CLASS_SWIPE);
+    }
+    /**
+     * 滑动动作，水平夹角45deg内(含45deg)有效
+     * @param {Position} pos - 位置信息
+     * @return {(number|undefined)} 若滑动有效，返回水平轴滑动距离，否则返回undefined
+     * @protected
+     * @ignore
+     */
+
+  }, {
+    key: "swipeMove",
+    value: function swipeMove(pos) {
+      var _this$state = this.state,
+          x0 = _this$state.x0,
+          y0 = _this$state.y0;
+      var x1 = pos.clientX,
+          y1 = pos.clientY;
+
+      var _this$constructor$dim = this.constructor.dimention(x0, y0, x1, y1),
+          dx = _this$constructor$dim.dx,
+          absDx = _this$constructor$dim.absDx,
+          absDy = _this$constructor$dim.absDy;
+
+      this.setState({
+        swipe: 'move'
+      });
+
+      if (absDx >= absDy) {
+        var length = this.options.length;
+        var rDx = dx;
+
+        if (this.constructor.isEdge(length, this.focus, dx)) {
+          // 计算滑动和移动比例，使边界滑动有阻力效果；方向有关
+          rDx = Math.sin(dx / this.offsetWidth * Math.PI * 0.5) * 0.42 * this.offsetWidth;
+        } // 记录移动距离
+
+
+        this.main.style.setProperty(PROP_DX, "".concat(rDx, "px"));
+        return rDx;
+      }
+
+      return undefined;
+    }
+    /**
+     * 滑动动作结束，水平夹角45deg内(含45deg)有效，有总宽度0.1的滑动阈值
+     * @param {Position} pos - 位置信息
+     * @return {(number|undefined)} 完成状态，0不播放，1播放，undefined无动作
+     * @protected
+     * @ignore
+     */
+
+  }, {
+    key: "swipeEnd",
+    value: function swipeEnd(pos) {
+      var _this$state2 = this.state,
+          x0 = _this$state2.x0,
+          y0 = _this$state2.y0;
+      var x1 = pos.clientX,
+          y1 = pos.clientY;
+      this.setState({
+        swipe: 'end',
+        x0: 0,
+        y0: 0
+      });
+      this.main.classList.remove(CLASS_SWIPE);
+
+      var _this$constructor$dim2 = this.constructor.dimention(x0, y0, x1, y1),
+          dx = _this$constructor$dim2.dx,
+          absDx = _this$constructor$dim2.absDx,
+          absDy = _this$constructor$dim2.absDy;
+
+      var length = this.options.length; // 调整duration，使动画时长和剩余滑动距离关联；方向无关
+
+      var ratio = absDx / this.offsetWidth;
+      var duration = this.constructor.isEdge(length, this.focus, dx) ? 1 : 1 - ratio; // 重置移动距离
+
+      this.main.style.setProperty(PROP_DX, '0px'); // 设置剩余时间
+
+      this.main.style.setProperty(PROP_DURATION, duration);
+
+      if (ratio < 0.1 || absDx < absDy) {
+        // 不播放时，需要判断是否重启autoplay
+        this.setAutoplay();
+        return 0;
+      }
+
+      var next = Math.sign(dx) > 0 ? this.next(true) : this.next();
+      this.go(next);
+      return 1;
+    }
+    /**
+     * 初始化自动播放
+     * @protected
+     * @ignore
+     */
+
+  }, {
+    key: "setAutoplay",
+    value: function setAutoplay() {
+      var isAutoplay = this.state.isAutoplay;
+
+      if (isAutoplay) {
+        var delay = this.options.delay;
+        this.timeoutID = setTimeout(this.play, delay);
+      }
+    }
+    /**
+     * 清理自动播放
+     * @protected
+     * @ignore
+     */
+
+  }, {
+    key: "clearAutoplay",
+    value: function clearAutoplay() {
+      if (this.timeoutID) {
+        clearTimeout(this.timeoutID);
+        this.timeoutID = NaN;
+      }
+    }
+    /**
+     * 播放指定页，尝试启动自动播放
+     * @description play和swipe共同入口
      * @param {number} next - 下一页编号
-     * @private
+     * @protected
+     * @ignore
      */
 
   }, {
     key: "go",
     value: function go(next) {
-      var length = this.options.length;
-      var isAutoplay = this.state.isAutoplay;
+      var _this$options2 = this.options,
+          initFocus = _this$options2.focus,
+          length = _this$options2.length;
       this.subject.state = {
-        focus: next > 0 && next <= length ? next : 1
+        focus: next > 0 && next <= length ? next : initFocus
       };
-
-      if (isAutoplay) {
-        this.setTimeout(this.play);
-      }
+      this.setAutoplay();
     }
     /**
-     * 滑动动作开始
-     * @param {(MouseEvent|TouchEvent)} e - 事件对象
-     * @private
+     * 获取下一播放页编号，若首次运行(this.focus空)，聚焦到this.options.focus
+     * @param {boolean} reverse=false - 是否反向播放，反向指播放页编号比当前页小1
+     * @return {number} 下一页编号
+     * @protected
+     * @ignore
      */
 
   }, {
-    key: "swipeStart",
-    value: function swipeStart(e) {
-      _get(_getPrototypeOf(Carousel.prototype), "swipeStart", this).call(this, e); // 总应该尝试清理存在的延时函数
+    key: "next",
+    value: function next() {
+      var reverse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var _this$options3 = this.options,
+          initFocus = _this$options3.focus,
+          length = _this$options3.length;
+      var result = initFocus;
 
-
-      this.clearTimeout();
-    }
-    /**
-     * 滑动动作
-     * @param {(MouseEvent|TouchEvent)} e - 事件对象
-     */
-
-  }, {
-    key: "swipeMove",
-    value: function swipeMove(e) {
-      var move = _get(_getPrototypeOf(Carousel.prototype), "swipeMove", this).call(this, e);
-
-      if (typeof move === 'number') {
-        this.main.style.setProperty(PROP_DX, "".concat(move, "px"));
-      }
-    }
-    /**
-     * 滑动动作结束，设置动画效果，完成页面切换
-     * @param {(MouseEvent|TouchEvent)} e - 事件对象
-     * @return {(number|undefined)} 完成状态，0不播放，1播放，undefined无动作
-     * @private
-     */
-
-  }, {
-    key: "swipeEnd",
-    value: function swipeEnd(e) {
-      var end = _get(_getPrototypeOf(Carousel.prototype), "swipeEnd", this).call(this, e);
-
-      var isAutoplay = this.state.isAutoplay;
-
-      if (typeof end === 'undefined') {
-        return undefined;
-      } // 重置swipeMove记录
-
-
-      this.main.style.setProperty(PROP_DX, '0px'); // 忽略动作，启动自动播放
-
-      if (end === 0) {
-        if (isAutoplay) {
-          this.setTimeout(this.play);
+      if (this.focus) {
+        if (reverse) {
+          result = this.focus <= 1 ? length : this.focus - 1;
+        } else {
+          result = this.focus >= length ? 1 : this.focus + 1;
         }
-
-        return 0;
       }
 
-      var sign = end.sign,
-          duration = end.duration;
-      this.main.style.setProperty(PROP_DURATION, duration);
-      var next = sign > 0 ? this.next(true) : this.next();
-      this.go(next);
-      return 1;
+      return result;
     }
     /**
      * 播放下一页
@@ -1966,25 +1617,26 @@ function (_base) {
     key: "play",
     value: function play() {
       var reverse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      // 总应该尝试清理存在的延时函数
-      this.clearTimeout();
+      // 总应该尝试清理旧的自动播放
+      this.clearAutoplay();
 
-      if (typeof reverse === 'number') {
-        this.go(reverse);
-      } else {
+      if (typeof reverse === 'boolean') {
         this.go(this.next(reverse));
+      } else {
+        this.go(reverse);
       }
     }
     /**
-     * 自动播放下一页
+     * 开启自动播放，并播放下一页
      * @public
      */
 
   }, {
     key: "autoplay",
     value: function autoplay() {
-      this.state.isAutoplay = true; // 播放初始聚焦页
-
+      this.setState({
+        isAutoplay: true
+      });
       this.play();
     }
     /**
@@ -1995,142 +1647,127 @@ function (_base) {
   }, {
     key: "pause",
     value: function pause() {
-      this.state.isAutoplay = false;
-      this.clearTimeout();
+      this.setState({
+        isAutoplay: false
+      });
+      this.clearAutoplay();
+    }
+  }, {
+    key: "options",
+    get: function get() {
+      return this._options;
+    }
+    /**
+     * 设置Carousel配置
+     * @param {Object} opts - 自定义配置
+     * @private
+     */
+    ,
+    set: function set(opts) {
+      var slideBanner = this.main.querySelectorAll('.slide-banner');
+      this._options = Object.assign({}, {
+        length: slideBanner ? slideBanner.length : 1,
+        focus: 1,
+        delay: 8000
+      }, opts, {
+        supports: window.CSS && window.CSS.supports && window.CSS.supports('(--banner-focus: 1)')
+      });
+      Object.freeze(this._options);
+    }
+    /**
+     * 当前聚焦页
+     * @type {(number|undefined)}
+     * @protected
+     */
+
+  }, {
+    key: "focus",
+    get: function get() {
+      return this.subject.state.focus;
+    }
+    /**
+     * 容器宽，即banner宽
+     * @type {number}
+     * @protected
+     */
+
+  }, {
+    key: "offsetWidth",
+    get: function get() {
+      return this.carousel.offsetWidth;
     }
   }]);
 
   return Carousel;
-}(base(Util));
+}(Util);
 
 /**
  * @class
- * @description Carousel精简版，总是自动轮播。共两种操作：play总是正向播放；swipe可正反向播放，有滑动效果
- * @implements {carouselBase}
  * @implements {Util}
  */
 
-var CarouselLite =
+var Group =
 /*#__PURE__*/
-function (_base) {
-  _inherits(CarouselLite, _base);
+function (_Util) {
+  _inherits(Group, _Util);
 
-  function CarouselLite() {
+  /**
+   * 新建Group实例，通用类
+   * @param {string} [group] - 组件分类
+   * @augments {Util}
+   */
+  function Group(group) {
     var _this;
 
-    var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-    var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    _classCallCheck(this, Group);
 
-    _classCallCheck(this, CarouselLite);
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, group));
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(CarouselLite).call(this, group, opts));
-    _this.play = _this.play.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-
-    _this.bindListeners();
+    if (!_this.group) {
+      throw new Error('Please choose a group');
+    }
 
     return _this;
   }
   /**
-   * 播放指定页，总是启动自动播放
-   * @param {number} next - 下一页编号
-   * @private
+   * 所有当前组元素组成的NodeList
+   * @return {NodeList}
+   * @public
    */
 
 
-  _createClass(CarouselLite, [{
-    key: "go",
-    value: function go(next) {
-      var length = this.options.length;
-      this.subject.state = {
-        focus: next > 0 && next <= length ? next : 1
-      };
-      this.setTimeout(this.play);
+  _createClass(Group, [{
+    key: "members",
+    value: function members() {
+      var query = "[data-group~=\"".concat(this.group, "\"]");
+      return document.querySelectorAll(query);
     }
     /**
-     * 滑动动作开始
-     * @param {(MouseEvent|TouchEvent)} e - 事件对象
-     * @private
+     * 更新状态
+     * @param {Object} state - 状态
      */
 
   }, {
-    key: "swipeStart",
-    value: function swipeStart(e) {
-      _get(_getPrototypeOf(CarouselLite.prototype), "swipeStart", this).call(this, e); // 总应该尝试清理存在的延时函数
-
-
-      this.clearTimeout();
+    key: "update",
+    value: function update() {
+      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      this.subject.state = Object.assign({}, state);
     }
     /**
-     * 滑动动作
-     * @param {(MouseEvent|TouchEvent)} e - 事件对象
-     */
-
-  }, {
-    key: "swipeMove",
-    value: function swipeMove(e) {
-      var move = _get(_getPrototypeOf(CarouselLite.prototype), "swipeMove", this).call(this, e);
-
-      if (typeof move === 'number') {
-        this.main.style.setProperty(PROP_DX, "".concat(move, "px"));
-      }
-    }
-    /**
-     * 滑动动作结束，设置动画效果，完成页面切换
-     * @param {(MouseEvent|TouchEvent)} e - 事件对象
-     * @return {(number|undefined)} 完成状态，0不播放，1播放，undefined无动作
-     * @private
-     */
-
-  }, {
-    key: "swipeEnd",
-    value: function swipeEnd(e) {
-      var end = _get(_getPrototypeOf(CarouselLite.prototype), "swipeEnd", this).call(this, e);
-
-      if (typeof end === 'undefined') {
-        return undefined;
-      } // 重置swipeMove记录
-
-
-      this.main.style.setProperty(PROP_DX, '0px'); // 忽略动作，启动自动播放
-
-      if (end === 0) {
-        this.setTimeout(this.play);
-        return 0;
-      }
-
-      var sign = end.sign,
-          duration = end.duration;
-      this.main.style.setProperty(PROP_DURATION, duration);
-      var next = sign > 0 ? this.next(true) : this.next();
-      this.go(next);
-      return 1;
-    }
-    /**
-     * 自动播放下一页
+     * 获取当前状态
+     * @return {Object}
      * @public
      */
 
   }, {
-    key: "play",
-    value: function play() {
-      // 总应该尝试清理存在的延时函数
-      this.clearTimeout();
-      this.go(this.next());
-    }
-    /**
-     * 暂停自动播放
-     * @public
-     */
-
-  }, {
-    key: "pause",
-    value: function pause() {
-      this.clearTimeout();
+    key: "getState",
+    value: function getState() {
+      return this.subject.state;
     }
   }]);
 
-  return CarouselLite;
-}(base(Util));
+  return Group;
+}(Util);
 
 // https://github.com/tc39/Array.prototype.includes
 
@@ -2143,31 +1780,6 @@ _export(_export.P, 'Array', {
 });
 
 _addToUnscopables('includes');
-
-var isEnum = _objectPie.f;
-var _objectToArray = function (isEntries) {
-  return function (it) {
-    var O = _toIobject(it);
-    var keys = _objectKeys(O);
-    var length = keys.length;
-    var i = 0;
-    var result = [];
-    var key;
-    while (length > i) if (isEnum.call(O, key = keys[i++])) {
-      result.push(isEntries ? [key, O[key]] : O[key]);
-    } return result;
-  };
-};
-
-// https://github.com/tc39/proposal-object-values-entries
-
-var $entries = _objectToArray(true);
-
-_export(_export.S, 'Object', {
-  entries: function entries(it) {
-    return $entries(it);
-  }
-});
 
 var _anInstance = function (it, Constructor, name, forbiddenField) {
   if (!(it instanceof Constructor) || (forbiddenField !== undefined && forbiddenField in it)) {
@@ -2387,12 +1999,12 @@ function PromiseCapability(C) {
   this.reject = _aFunction(reject);
 }
 
-var f$5 = function (C) {
+var f$3 = function (C) {
   return new PromiseCapability(C);
 };
 
 var _newPromiseCapability = {
-	f: f$5
+	f: f$3
 };
 
 var _perform = function (exec) {
@@ -2885,361 +2497,208 @@ function (_Util) {
   return ImageLoader;
 }(Util);
 
-// 7.2.2 IsArray(argument)
-
-var _isArray = Array.isArray || function isArray(arg) {
-  return _cof(arg) == 'Array';
-};
-
-var SPECIES$2 = _wks('species');
-
-var _arraySpeciesConstructor = function (original) {
-  var C;
-  if (_isArray(original)) {
-    C = original.constructor;
-    // cross-realm fallback
-    if (typeof C == 'function' && (C === Array || _isArray(C.prototype))) C = undefined;
-    if (_isObject(C)) {
-      C = C[SPECIES$2];
-      if (C === null) C = undefined;
-    }
-  } return C === undefined ? Array : C;
-};
-
-// 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-
-
-var _arraySpeciesCreate = function (original, length) {
-  return new (_arraySpeciesConstructor(original))(length);
-};
-
-// 0 -> Array#forEach
-// 1 -> Array#map
-// 2 -> Array#filter
-// 3 -> Array#some
-// 4 -> Array#every
-// 5 -> Array#find
-// 6 -> Array#findIndex
-
-
-
-
-
-var _arrayMethods = function (TYPE, $create) {
-  var IS_MAP = TYPE == 1;
-  var IS_FILTER = TYPE == 2;
-  var IS_SOME = TYPE == 3;
-  var IS_EVERY = TYPE == 4;
-  var IS_FIND_INDEX = TYPE == 6;
-  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
-  var create = $create || _arraySpeciesCreate;
-  return function ($this, callbackfn, that) {
-    var O = _toObject($this);
-    var self = _iobject(O);
-    var f = _ctx(callbackfn, that, 3);
-    var length = _toLength(self.length);
-    var index = 0;
-    var result = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
-    var val, res;
-    for (;length > index; index++) if (NO_HOLES || index in self) {
-      val = self[index];
-      res = f(val, index, O);
-      if (TYPE) {
-        if (IS_MAP) result[index] = res;   // map
-        else if (res) switch (TYPE) {
-          case 3: return true;             // some
-          case 5: return val;              // find
-          case 6: return index;            // findIndex
-          case 2: result.push(val);        // filter
-        } else if (IS_EVERY) return false; // every
-      }
-    }
-    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : result;
-  };
-};
-
-// 22.1.3.8 Array.prototype.find(predicate, thisArg = undefined)
-
-var $find = _arrayMethods(5);
-var KEY = 'find';
-var forced = true;
-// Shouldn't skip holes
-if (KEY in []) Array(1)[KEY](function () { forced = false; });
-_export(_export.P + _export.F * forced, 'Array', {
-  find: function find(callbackfn /* , that = undefined */) {
-    return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-  }
-});
-_addToUnscopables(KEY);
-
 /**
- * 导航区域观察者
- * @param {Array.<Element>} anchors - Menu组件导航区域
+ * dialog观察者
  * @return {Observer}
  */
 
-var anchorsObserver = function anchorsObserver(anchors) {
-  var activeName = 'menu__anchor--active';
+function dialogObserver() {
+  var _this = this;
+
   return {
     /**
-     * 导航区域样式切换
+     * 判断是否存在dialog
      * @param {Object} state - 状态
-     * @param {string} state.page - 当期聚焦页
-     * @ignore
+     * @param {(boolean|string)} state.modal - modal是否显示
+     * @throws {Error} 不存在匹配元素.modal__dialog--{name}
      */
     update: function update(state) {
-      var currentPage = state.page;
-      anchors.forEach(function (anchor) {
-        var page = anchor.dataset.page;
+      var modal = state.modal;
 
-        if (page === currentPage) {
-          anchor.classList.add(activeName);
-        } else {
-          anchor.classList.remove(activeName);
+      if (modal && typeof modal === 'string') {
+        var dialogName = "modal__dialog--".concat(modal);
+
+        var target = _this.modal.querySelector(".".concat(dialogName));
+
+        if (!target) {
+          throw new Error(".".concat(dialogName, " not exist"));
         }
-      });
+      }
     }
   };
-};
+}
 /**
- * @class
- * @implements {Util}
- */
-
-
-var Menu =
-/*#__PURE__*/
-function (_Util) {
-  _inherits(Menu, _Util);
-
-  /**
-   * 新建Menu实例
-   * @param {string} [group] - 组件分类，区别单页中多个Menu组件，若单页仅一个Menu可忽略
-   * @augments {Util}
-   */
-  function Menu(group) {
-    var _this;
-
-    _classCallCheck(this, Menu);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Menu).call(this, group));
-    var query = ".menu".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
-    /**
-     * Menu组件容器
-     * @type {Element}
-     * @public
-     */
-
-    _this.menu = document.querySelector(query);
-    /**
-     * Menu组件导航区域
-     * @type {Array.<Element>}
-     * @private
-     */
-
-    _this.anchors = Array.from(_this.menu.querySelectorAll('.menu__anchor')); // 添加默认observer
-
-    _this.attach(anchorsObserver(_this.anchors));
-
-    return _this;
-  }
-  /**
-   * 打开指定页
-   * @param {(number|string)} id - 页面id，通过设置anchor的data-page确定
-   * @param {boolean} [fallback=false] - 无匹配id的anchor时是否使用fallback anchor，即第一个anchor
-   * @throws {Error} 无匹配id的anchor且不使用fallback anchor时抛出错误
-   */
-
-
-  _createClass(Menu, [{
-    key: "open",
-    value: function open(id) {
-      var fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var target = this.anchors.find(function (anchor) {
-        return anchor.dataset.page === id.toString();
-      });
-
-      if (!target && !fallback) {
-        throw new Error("Menu: ".concat(id, " not exists"));
-      }
-
-      target = target || this.anchors[0];
-      this.subject.state = Object.assign({}, target.dataset);
-    }
-    /**
-     * 当前聚焦的page
-     * @return {string}
-     * @public
-     */
-
-  }, {
-    key: "page",
-    get: function get() {
-      return this.subject.state.page || '';
-    }
-  }]);
-
-  return Menu;
-}(Util);
-
-/**
- * modal观察者
+ * modal观察者，控制开关
  * @param {Element} modal - modal对象
  * @return {Observer}
+ * @this {Modal}
  */
 
-var modalObserver = function modalObserver(modal) {
+
+function modalObserver() {
+  var _this2 = this;
+
   var activeName = 'modal--active';
+  var dialogActive = 'modal__dialog--active';
   return {
     /**
      * modal样式切换
      * @param {Object} state - 状态
-     * @param {boolean} state.hidden - modal是否显示
+     * @param {(boolean|string)} state.modal - 若bool判断modal是否显示；若非空str判断打开的dialog，此时modal总是显示
      * @ignore
      */
     update: function update(state) {
-      if (state.hidden) {
-        modal.classList.remove(activeName);
+      var modal = state.modal;
+      /**
+       * Modal组件dialogs
+       * @type {NodeList}
+       */
+
+      var dialogs = _this2.modal.querySelectorAll('.modal__dialog'); // truthy总是打开modal
+
+
+      if (modal) {
+        _this2.modal.classList.add(activeName);
+
+        var dialogName = typeof modal === 'string' && "modal__dialog--".concat(modal);
+        dialogs.forEach(function (d) {
+          if (d.classList.contains(dialogName)) {
+            d.classList.add(dialogActive);
+          } else {
+            d.classList.remove(dialogActive);
+          }
+        });
       } else {
-        modal.classList.add(activeName);
+        _this2.modal.classList.remove(activeName);
+
+        dialogs.forEach(function (d) {
+          d.classList.remove(dialogActive);
+        });
       }
     }
   };
-};
+}
 /**
- * dialog观察者
- * @param {Array.<Element>} dialogs - Modal组件dialog区域
+ * 提示信息观察者，控制显示的提示信息
+ * @param {Element} wrapper - Modal组件容器
  * @return {Observer}
  */
 
 
-var dialogObserver = function dialogObserver(dialogs) {
-  var activeName = 'modal__dialog--active';
-  return {
-    /**
-     * dialog样式切换
-     * @param {Object} state - 状态
-     * @param {boolean} state.hidden - modal是否显示
-     * @param {string} state.dialog - 当期聚焦dialog
-     * @ignore
-     */
-    update: function update(state) {
-      var hidden = state.hidden,
-          dialog = state.dialog;
-      var dialogName = dialog && "modal__dialog--".concat(dialog);
-      dialogs.forEach(function (p) {
-        if (hidden || !dialogName || !p.classList.contains(dialogName)) {
-          p.classList.remove(activeName);
-        } else {
-          p.classList.add(activeName);
-        }
-      });
-    }
-  };
-};
-/**
- * 提示信息观察者
- * @param {Array.<Element>} dialogs - Modal组件dialog区域
- * @return {Observer}
- */
-
-
-var messageObserver = function messageObserver(dialogs) {
+var messageObserver = function messageObserver(wrapper) {
   return {
     /**
      * 写入提示信息，若没有message子元素暂时不做任何操作
      * @param {Object} state - 状态
-     * @param {boolean} state.hidden - modal是否显示
-     * @param {string} state.dialog - 当期聚焦dialog
-     * @param {string} state.message - 提示信息
-     * @throws {Error} 不存在匹配元素.modal__dialog--{name}
+     * @param {(boolean|string)} state.modal - modal是否显示
+     * @param {string} state.message - 提示信息，已html转义
      * @ignore
      */
     update: function update(state) {
-      var hidden = state.hidden,
-          dialog = state.dialog,
+      var modal = state.modal,
           message = state.message;
-      var dialogName = dialog && "modal__dialog--".concat(dialog);
-      var dialogTarget = dialogName && dialogs.find(function (p) {
-        return p.classList.contains(dialogName);
-      });
+      var target = null;
 
-      if (!hidden && dialogName) {
-        // 提供提示
-        if (!dialogTarget) {
-          throw new Error("".concat(dialogName, " not exists"));
-        }
-
-        var target = dialogTarget.querySelector('.message');
-
-        if (target) {
-          target.innerHTML = message;
-        }
+      if (modal && typeof modal === 'string' && (target = wrapper.querySelector(".modal__dialog--".concat(modal, " .message")))) {
+        target.innerHTML = message;
       }
     }
   };
+};
+/**
+ * dialog状态查询字典
+ * @type {Object}
+ * @ignore
+ */
+
+
+var ModalDict = {
+  visible: {
+    MODALCLOSE: 'hidden',
+    MODALOPEN: 'visible'
+  },
+  hidden: {
+    MODALOPEN: 'visible'
+  }
 };
 /**
  * @class
  * @implements {Util}
  */
-
 
 var Modal =
 /*#__PURE__*/
 function (_Util) {
   _inherits(Modal, _Util);
 
-  /**
-   * 新建Modal实例
-   * @param {string} [group] - 组件分类，区别单页中多个Modal组件，若单页仅一个Modal可忽略
-   * @augments {Util}
-   */
+  _createClass(Modal, null, [{
+    key: "currentState",
+
+    /**
+     * 关联core state和fsm
+     * @param {(string|boolean)} modal - core state中modal和dialog显示信息
+     * @return {string}
+     * @ignore
+     */
+    value: function currentState(modal) {
+      return modal ? 'visible' : 'hidden';
+    }
+    /**
+     * 新建Modal实例
+     * @param {string} [group] - 组件分类，区别单页中多个Modal组件，若单页仅一个Modal可忽略
+     * @augments {Util}
+     */
+
+  }]);
+
   function Modal(group) {
-    var _this;
+    var _this3;
 
     _classCallCheck(this, Modal);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Modal).call(this, group));
-    var query = ".modal".concat(_this.group ? "[data-group=\"".concat(_this.group, "\"]") : '');
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(Modal).call(this, group));
+    var query = ".modal".concat(_this3.group ? "[data-group=\"".concat(_this3.group, "\"]") : '');
     /**
      * Modal组件容器
      * @type {Element}
      * @public
      */
 
-    _this.modal = document.querySelector(query);
-    /**
-     * Modal组件panel区域
-     * @type {Array.<Element>}
-     * @private
-     */
+    _this3.modal = document.querySelector(query); // 添加默认observer
 
-    _this.dialogs = Array.from(_this.modal.querySelectorAll('.modal__dialog')); // 添加默认observer
+    _this3.attach([dialogObserver.call(_assertThisInitialized(_assertThisInitialized(_this3))), modalObserver.call(_assertThisInitialized(_assertThisInitialized(_this3))), messageObserver(_this3.modal)]); // 添加状态机
 
-    _this.attach([modalObserver(_this.modal), dialogObserver(_this.dialogs), messageObserver(_this.dialogs)]);
 
-    return _this;
+    _this3.machine = machine(ModalDict);
+    return _this3;
   }
   /**
    * 提示信息
    * @param {string} name - dialog名称，将查找.modal__dialog--{name}
-   * @param {*} [msg=''] - 提示信息，注意0等值
+   * @param {*} [message=''] - 提示信息，注意0等值
+   * @public
    */
 
 
   _createClass(Modal, [{
     key: "prompt",
-    value: function prompt(name) {
-      var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-      this.subject.state = {
-        hidden: false,
-        dialog: name,
-        message: msg === null ? 'null' : this.constructor.escapeHtml(msg.toString())
-      };
+    value: function prompt() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      var modal = this.subject.state.modal;
+      var currentState = this.constructor.currentState(modal);
+      var nextState = this.machine(currentState)('MODALOPEN');
+
+      if (nextState === 'visible') {
+        this.subject.state = {
+          modal: name || true,
+          message: escapeHTML(String(message))
+        };
+      }
     }
     /**
      * loading效果
+     * @public
      */
 
   }, {
@@ -3248,35 +2707,38 @@ function (_Util) {
       this.prompt('loading');
     }
     /**
-     * 显示Modal，不显示任何panel
+     * 显示Modal，不显示任何dialog
+     * @public
      */
 
   }, {
     key: "open",
     value: function open() {
-      this.subject.state = {
-        hidden: false,
-        dialog: '',
-        message: ''
-      };
+      this.prompt();
     }
     /**
-     * 隐藏Modal
+     * 隐藏Modal，不显示任何dialog
+     * @public
      */
 
   }, {
     key: "close",
     value: function close() {
-      this.subject.state = {
-        hidden: true,
-        dialog: '',
-        message: ''
-      };
+      var modal = this.subject.state.modal;
+      var currentState = this.constructor.currentState(modal);
+      var nextState = this.machine(currentState)('MODALCLOSE');
+
+      if (nextState === 'hidden') {
+        this.subject.state = {
+          modal: false,
+          message: ''
+        };
+      }
     }
   }]);
 
   return Modal;
 }(Util);
 
-export { Carousel, CarouselLite, ImageLoader, Menu, Modal, PROCESS_PENDING, PROCESS_START, PROCESS_DONE, PROCESS_ERROR };
+export { Carousel, Group, ImageLoader, Modal, PROCESS_PENDING, PROCESS_START, PROCESS_DONE, PROCESS_ERROR };
 //# sourceMappingURL=index.esm.js.map
