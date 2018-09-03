@@ -1,6 +1,6 @@
 import Carousel from './src/carousel';
+import Group from './src/group';
 import ImageLoader from './src/imageLoader';
-import Menu from './src/menu';
 import Modal from './src/modal';
 import {
   PROCESS_PENDING,
@@ -11,8 +11,8 @@ import {
 
 export {
   Carousel,
+  Group,
   ImageLoader,
-  Menu,
   Modal,
   // constants
   PROCESS_PENDING,
