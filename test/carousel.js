@@ -25,11 +25,6 @@ const domStr = `
 </html>
 `;
 
-const window = new JSDOM(domStr).window;
-
-global.window = window;
-global.document = window.document;
-
 describe('Carousel', () => {
   describe('Basic', () => {
     let carousel = null;
@@ -39,6 +34,11 @@ describe('Carousel', () => {
     };
 
     before(() => {
+      const window = new JSDOM(domStr).window;
+
+      global.window = window;
+      global.document = window.document;
+
       carousel = new Carousel('main', opts);
     });
 
@@ -157,6 +157,11 @@ describe('Carousel', () => {
     const startPos = { clientX: 0, clientY: 0 };
 
     beforeEach(() => {
+      const window = new JSDOM(domStr).window;
+
+      global.window = window;
+      global.document = window.document;
+
       clock = sinon.useFakeTimers();;
 
       carousel = new Carousel('main', opts);
