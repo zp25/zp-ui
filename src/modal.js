@@ -4,8 +4,18 @@ import {
 } from 'zp-lib';
 import Util from './util';
 
+/**
+ * dialog观察者
+ * @return {Observer}
+ */
 function dialogObserver() {
   return {
+    /**
+     * 判断是否存在dialog
+     * @param {Object} state - 状态
+     * @param {(boolean|string)} state.modal - modal是否显示
+     * @throws {Error} 不存在匹配元素.modal__dialog--{name}
+     */
     update: (state) => {
       const { modal } = state;
 
@@ -42,9 +52,8 @@ function modalObserver() {
       const { modal } = state;
 
       /**
-       * Modal组件panel区域
-       * @type {Array.<Element>}
-       * @private
+       * Modal组件dialogs
+       * @type {NodeList}
        */
       const dialogs = this.modal.querySelectorAll('.modal__dialog');
 
@@ -82,7 +91,6 @@ const messageObserver = wrapper => ({
    * @param {Object} state - 状态
    * @param {(boolean|string)} state.modal - modal是否显示
    * @param {string} state.message - 提示信息，已html转义
-   * @throws {Error} 不存在匹配元素.modal__dialog--{name}
    * @ignore
    */
   update: (state) => {
@@ -122,9 +130,15 @@ const ModalDict = {
  * @implements {Util}
  */
 class Modal extends Util {
-  state = {
-    modal: 'hidden',
-  };
+  /**
+   * 关联core state和fsm
+   * @param {(string|boolean)} modal - core state中modal和dialog显示信息
+   * @return {string}
+   * @ignore
+   */
+  static currentState(modal) {
+    return modal ? 'visible' : 'hidden';
+  }
 
   /**
    * 新建Modal实例
@@ -155,19 +169,19 @@ class Modal extends Util {
   /**
    * 提示信息
    * @param {string} name - dialog名称，将查找.modal__dialog--{name}
-   * @param {*} [msg=''] - 提示信息，注意0等值
+   * @param {*} [message=''] - 提示信息，注意0等值
    * @public
    */
-  prompt(name = '', msg = '') {
-    const { modal: currentState } = this.state;
+  prompt(name = '', message = '') {
+    const { modal } = this.subject.state;
+
+    const currentState = this.constructor.currentState(modal);
     const nextState = this.machine(currentState)('MODALOPEN');
 
     if (nextState === 'visible') {
-      this.setState({ modal: nextState });
-
       this.subject.state = {
         modal: name || true,
-        message: msg === null ? 'null' : escapeHTML(msg.toString()),
+        message: escapeHTML(String(message)),
       };
     }
   }
@@ -193,12 +207,12 @@ class Modal extends Util {
    * @public
    */
   close() {
-    const { modal: currentState } = this.state;
+    const { modal } = this.subject.state;
+
+    const currentState = this.constructor.currentState(modal);
     const nextState = this.machine(currentState)('MODALCLOSE');
 
     if (nextState === 'hidden') {
-      this.setState({ modal: nextState });
-
       this.subject.state = {
         modal: false,
         message: '',

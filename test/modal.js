@@ -55,10 +55,6 @@ describe('Modal', () => {
 
       modal.modal.should.be.eql(target);
     });
-
-    it('Prop: state, 存储实例状态', () => {
-      modal.should.have.ownProperty('state');
-    });
   });
 
   describe('Methods', () => {
