@@ -79,7 +79,7 @@ describe('Modal', () => {
       ['<script>alert(\'&\');</script>', '&lt;script&gt;alert(\'&amp;\');&lt;/script&gt;'],
     ];
 
-    before(() => {
+    beforeEach(() => {
       const window = new JSDOM(domStr).window;
       global.document = window.document;
 
@@ -87,6 +87,23 @@ describe('Modal', () => {
 
       loading = document.querySelector('.modal__dialog--loading');
       prompt = document.querySelector('.modal__dialog--message');
+    });
+
+    it('初始态modal、dialogs都隐藏', () => {
+      const state = {
+        'loading': false,
+        'message': false,
+      };
+
+      const result = {
+        'loading': loading.classList.contains(dialogActive),
+        'message': prompt.classList.contains(dialogActive),
+      };
+
+      // modal状态
+      modal.modal.classList.contains(activeName).should.be.false;
+      // dialog状态
+      result.should.be.eql(state);
     });
 
     it('prompt, 正确显示modal并切换dialog，可自定义message', () => {
@@ -157,9 +174,11 @@ describe('Modal', () => {
         'message': false,
       };
 
+      // testA
+      modal.loading();
       modal.close();
 
-      const result = {
+      const resultA = {
         'loading': loading.classList.contains(dialogActive),
         'message': prompt.classList.contains(dialogActive),
       };
@@ -167,7 +186,21 @@ describe('Modal', () => {
       // modal状态
       modal.modal.classList.contains(activeName).should.be.false;
       // dialog状态
-      result.should.be.eql(state);
+      resultA.should.be.eql(state);
+
+      // testB
+      modal.prompt('message', 'foo_bar_baz');
+      modal.close();
+
+      const resultB = {
+        'loading': loading.classList.contains(dialogActive),
+        'message': prompt.classList.contains(dialogActive),
+      };
+
+      // modal状态
+      modal.modal.classList.contains(activeName).should.be.false;
+      // dialog状态
+      resultB.should.be.eql(state);
     });
   });
 });
