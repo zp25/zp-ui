@@ -21,10 +21,10 @@
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "zp-lib": "^0.1.1"
+    "zp-lib": "^0.1.2"
   },
   "peerDependencies": {
-    "zp-lib": "^0.1.1"
+    "zp-lib": "^0.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
