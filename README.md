@@ -16,16 +16,7 @@
   + _func.scss
   + _root.scss
 
-默认颜色通过css custom properties设置。legacy需自定义`$colorMap`，例如
-
-~~~scss
-$colorMap: (
-  black: #222,
-  border: #ccc,
-);
-~~~
-
-若`black, white, grey, blue, green, red`未定义使用默认颜色
+默认颜色通过css custom properties设置。
 
 ## Observer
 使用观察者模式管理状态切换
