@@ -36,7 +36,7 @@
     position: absolute;
     top: 40%;
     left: 50%;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity 200ms ease-in-out;
     overflow: hidden;
 
     &.modal__dialog--active {
@@ -70,13 +70,29 @@
     height: torem(104px);
     margin-top: torem(-52px);
     margin-left: torem(-66px);
-    animation: dialogFadeIn 0.1s ease-in-out;
+    animation: dialogFadeIn 200ms ease-in-out;
 
     .message {
       font-size: fontSize(bold);
       text-align: center;
       margin: 0;
-      animation: contentFadeIn 0.15s ease-in-out;
+      animation: contentFadeIn 240ms ease-in-out;
+    }
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .modal {
+    .modal__dialog {
+      transition-duration: 240ms;
+    }
+
+    .modal__dialog--message {
+      animation-duration: 280ms;
+
+      .message {
+        animation-duration: 280ms;
+      }
     }
   }
 }
