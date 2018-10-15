@@ -19,6 +19,5 @@ test/
 .travis.yml
 babel.config.js
 jsdoc.json
-legacy.js
 rollup.config.js
 yarn.lock

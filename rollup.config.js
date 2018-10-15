@@ -6,25 +6,6 @@ import pkg from './package.json';
 
 export default [
   {
-    input: 'legacy.js',
-    output: {
-      file: pkg.legacy,
-      format: 'cjs',
-    },
-    plugins: [
-      resolve({
-        module: true,
-        main: true,
-      }),
-      eslint(),
-      babel({
-        exclude: 'node_modules/**',
-        externalHelpers: false,
-      }),
-      commonjs(),
-    ],
-  },
-  {
     input: 'index.js',
     output: [
       {

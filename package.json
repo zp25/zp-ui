@@ -4,7 +4,6 @@
   "description": "UI",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
-  "legacy": "dist/legacy.cjs.js",
   "sideEffects": false,
   "scripts": {
     "start": "rollup -c -w",

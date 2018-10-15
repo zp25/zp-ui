@@ -6,7 +6,6 @@
 主要目录结构
 
 + constants，常量
-+ legacy，尝试IE9+
 + src
   + carousel
   + group，通用类，示例见example分支的menu
@@ -55,7 +54,8 @@ menu添加自定义观察者示例。当menu状态切换到打开main页时将�
 
 ~~~
 last 1 version
-> 0.5%
+> 1%
+not IE 11
 not dead
 ~~~
 .browserslistrc配置
