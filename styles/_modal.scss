@@ -52,14 +52,18 @@
     border-radius: torem(12px);
   }
 
-  .modal__dialog--loading {
-    @extend %dialogCommon;
+  %dialogLoading {
     @include flexbox(column, nowrap, center, center);
 
     width: torem(80px);
     height: torem(80px);
     margin-top: torem(-40px);
     margin-left: torem(-40px);
+  }
+
+  .modal__dialog--loading {
+    @extend %dialogCommon;
+    @extend %dialogLoading;
   }
 
   .modal__dialog--message {
