@@ -11,6 +11,12 @@
 //   outline: none;
 // }
 
+// 键盘聚焦不取消outline，注意浏览器支持
+// @link https://css-tricks.com/keyboard-only-focus-styles/
+// button:focus:not(:focus-visible) {
+//   outline: none;
+// }
+
 button,
 input,
 optgroup,
