@@ -19,6 +19,7 @@
 默认颜色通过css custom properties设置。
 
 ## Observer
+
 使用观察者模式管理状态切换
 
 自定义观察者(observer)必须包含`update`方法，接收被观察者(subject)的当前状态和原状态。使用Subject实例方法`attach(), detach()`管理观察者，参数接收`(Observer|Array.<Observer>)`。
@@ -38,25 +39,28 @@ const customObserver = () => ({
 const menu = new Menu('main');
 menu.attach(customObserver());
 ~~~
+
 menu添加自定义观察者示例。当menu状态切换到打开main页时将执行`doSth`函数。
 
 ## browserslist
+
 浏览器支持情况
 
-~~~
-last 1 version
-> 1%
-not IE 11
-not dead
-~~~
+    last 1 version
+    > 1%
+    not IE 11
+    not dead
+
 .browserslistrc配置
 
 ## 测试和文档
+
 测试和文档
 
 ~~~bash
 npm test
 ~~~
+
 运行单元测试
 
 ~~~bash
@@ -65,9 +69,11 @@ npm run jsdoc
 # darwin
 npm run open
 ~~~
+
 生成和查看doc
 
 ## 资源
+
 + [How to Build Your Own Progressive Image Loader](https://www.sitepoint.com/how-to-build-your-own-progressive-image-loader/ "How to Build Your Own Progressive Image Loader")
 + [How Medium does progressive image loading](https://jmperezperez.com/medium-image-progressive-loading-placeholder/ "How Medium does progressive image loading")
 + [SpinKit](http://tobiasahlin.com/spinkit/ "SpinKit")
