@@ -154,7 +154,7 @@ var _meta_4 = _meta.getWeak;
 var _meta_5 = _meta.onFreeze;
 
 var _core = createCommonjsModule(function (module) {
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.1' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 });
 var _core_1 = _core.version;
