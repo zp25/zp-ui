@@ -10,6 +10,7 @@
     "stylelint": "stylelint 'styles/**/*.scss'",
     "build": "rollup -c && npm run stylelint",
     "test": "cross-env BABEL_ENV=test nyc mocha --harmony --require @babel/register",
+    "analyze": "source-map-explorer",
     "prejsdoc": "rimraf docs/*",
     "jsdoc": "jsdoc -r -c jsdoc.json -d docs",
     "open": "open docs/index.html"
@@ -21,7 +22,7 @@
   "author": "zp25 <zebrap25@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "zp-lib": "^0.1.5"
+    "zp-lib": "^0.1.6"
   },
   "peerDependencies": {
     "zp-lib": "^0.1.5"
@@ -56,7 +57,9 @@
     "rollup-plugin-commonjs": "^9.2.2",
     "rollup-plugin-eslint": "^5.1.0",
     "rollup-plugin-node-resolve": "^4.0.1",
-    "sinon": "^7.3.0",
+    "rollup-plugin-terser": "^4.0.4",
+    "sinon": "^7.3.1",
+    "source-map-explorer": "^1.8.0",
     "stylelint": "^9.10.1",
     "stylelint-config-sass-guidelines": "^5.3.0"
   },
