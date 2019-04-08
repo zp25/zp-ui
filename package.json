@@ -15,6 +15,12 @@
     "jsdoc": "jsdoc -r -c jsdoc.json -d docs",
     "open": "open docs/index.html"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/zp25/zp-ui.git"
@@ -28,7 +34,7 @@
     "zp-lib": "^0.1.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0",
+    "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-proposal-decorators": "^7.4.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
@@ -36,27 +42,28 @@
     "@babel/plugin-proposal-throw-expressions": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-syntax-import-meta": "^7.2.0",
-    "@babel/polyfill": "^7.4.0",
-    "@babel/preset-env": "^7.4.2",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "@babel/register": "^7.4.0",
     "babel-eslint": "^10.0.1",
     "chai": "^4.2.0",
-    "core-js": "^3.0.0",
+    "core-js": "^3.0.1",
     "cross-env": "^5.2.0",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
+    "husky": "^1.3.1",
     "jsdoc": "^3.5.5",
     "jsdoc-strip-async-await": "^0.1.0",
     "jsdom": "^14.0.0",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.1",
     "nyc": "^13.3.0",
     "rimraf": "^2.6.3",
-    "rollup": "^1.7.3",
+    "rollup": "^1.9.0",
     "rollup-plugin-babel": "4.3.2",
-    "rollup-plugin-commonjs": "^9.2.2",
+    "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-eslint": "^5.1.0",
-    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-node-resolve": "^4.2.1",
     "rollup-plugin-terser": "^4.0.4",
     "sinon": "^7.3.1",
     "source-map-explorer": "^1.8.0",
