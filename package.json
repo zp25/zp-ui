@@ -6,10 +6,11 @@
   "module": "dist/index.esm.js",
   "sideEffects": false,
   "scripts": {
+    "upgrade-interactive": "npm-check -u",
     "start": "rollup -c -w",
     "stylelint": "stylelint 'styles/**/*.scss'",
     "build": "rollup -c && npm run stylelint",
-    "test": "cross-env BABEL_ENV=test nyc mocha --harmony --require @babel/register",
+    "test": "cross-env BABEL_ENV=test nyc mocha --require @babel/register",
     "analyze": "source-map-explorer",
     "prejsdoc": "rimraf docs/*",
     "jsdoc": "jsdoc -r -c jsdoc.json -d docs",
@@ -31,7 +32,7 @@
     "zp-lib": "^0.1.6"
   },
   "peerDependencies": {
-    "zp-lib": "^0.1.5"
+    "zp-lib": "^0.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -51,24 +52,25 @@
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-import": "^2.17.2",
     "husky": "^1.3.1",
     "jsdoc": "^3.5.5",
     "jsdoc-strip-async-await": "^0.1.0",
     "jsdom": "^14.0.0",
-    "mocha": "^6.1.1",
-    "nyc": "^13.3.0",
+    "mocha": "^6.1.4",
+    "npm-check": "^5.9.0",
+    "nyc": "^14.0.0",
     "rimraf": "^2.6.3",
-    "rollup": "^1.9.0",
+    "rollup": "^1.10.1",
     "rollup-plugin-babel": "4.3.2",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-eslint": "^5.1.0",
-    "rollup-plugin-node-resolve": "^4.2.1",
+    "rollup-plugin-node-resolve": "^4.2.3",
     "rollup-plugin-terser": "^4.0.4",
-    "sinon": "^7.3.1",
+    "sinon": "^7.3.2",
     "source-map-explorer": "^1.8.0",
-    "stylelint": "^9.10.1",
-    "stylelint-config-sass-guidelines": "^5.3.0"
+    "stylelint": "^10.0.1",
+    "stylelint-config-sass-guidelines": "^5.4.0"
   },
   "engines": {
     "node": ">=8.15.0"
