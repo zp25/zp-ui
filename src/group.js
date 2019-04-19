@@ -1,49 +1,38 @@
-import Util from './util';
+/* eslint no-underscore-dangle: ["error", { "allow": ["_group"] }] */
+
+import { Subject } from 'zp-lib';
 
 /**
  * @class
- * @implements {Util}
+ * @implements {Subject}
  */
-class Group extends Util {
+class Group extends Subject {
   /**
    * 新建Group实例，通用类
-   * @param {string} [group] - 组件分类
-   * @augments {Util}
+   * @param {string} group - 分组
    */
   constructor(group) {
-    super(group);
+    super();
 
-    if (!this.group) {
+    if (!group) {
       throw new Error('Please choose a group');
     }
+
+    /**
+     * 实例分组，用于单页多实例间区分
+     * @type string
+     * @private
+     */
+    this._group = String(group);
   }
 
   /**
-   * 所有当前组元素组成的NodeList
-   * @return {NodeList}
+   * 获取分组
+   * @type {string}
    * @public
    */
-  members() {
-    const query = `[data-group~="${this.group}"]`;
-
-    return document.querySelectorAll(query);
-  }
-
-  /**
-   * 更新状态
-   * @param {Object} state - 状态
-   */
-  update(state = {}) {
-    this.subject.state = Object.assign({}, state);
-  }
-
-  /**
-   * 获取当前状态
-   * @return {Object}
-   * @public
-   */
-  getState() {
-    return this.subject.state;
+  get group() {
+    return this._group;
   }
 }
 
