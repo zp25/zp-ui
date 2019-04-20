@@ -1,4 +1,6 @@
-import Util from './util';
+/* eslint no-underscore-dangle: ["error", { "allow": ["_options"] }] */
+
+import Group from './group';
 import {
   PROCESS_START,
   PROCESS_DONE,
@@ -9,54 +11,66 @@ import {
  * style观察者
  * @return {Observer}
  */
-const styleObserver = () => {
-  const replace = 'replace';
-  const done = 'done';
-  const error = 'error';
+const styleObserver = ({
+  replace = 'replace',
+  done = 'done',
+  error = 'error',
+}) => ({
+  /**
+   * 控制image-loader样式
+   * @param {Object} state - 状态
+   * @param {HTMLElement} state.loader - 需加载的对象
+   * @param {number} status - 当前处于的加载阶段
+   * @ignore
+   */
+  update: (state) => {
+    const {
+      loader,
+      status,
+    } = state;
 
-  return {
-    /**
-     * 控制image-loader样式
-     * @param {Object} state - 状态
-     * @param {HTMLElement} state.loader - 需加载的对象
-     * @param {number} status - 当前处于的加载阶段
-     * @ignore
-     */
-    update: (state) => {
-      const {
-        loader,
-        status,
-      } = state;
-
-      if (status === PROCESS_START) {
-        // 立即将loader移出loaders
-        loader.classList.remove(replace);
-      } else if (status === PROCESS_DONE) {
-        // 隐藏thumbnail
-        loader.classList.add(done);
-      } else if (status === PROCESS_ERROR) {
-        loader.classList.add(error);
-      }
-    },
-  };
-};
+    if (status === PROCESS_START) {
+      // 立即将loader移出loaders
+      loader.classList.remove(replace);
+    } else if (status === PROCESS_DONE) {
+      // 隐藏thumbnail
+      loader.classList.add(done);
+    } else if (status === PROCESS_ERROR) {
+      loader.classList.add(error);
+    }
+  },
+});
 
 /**
  * @class
- * @implements {Util}
+ * @implements {Group}
  */
-class ImageLoader extends Util {
+class ImageLoader extends Group {
+  /**
+   * 元素是否在y轴可视范围内
+   * @param {HTMLElement} item - 需要检测是否在可视范围的元素
+   * @return {boolean}
+   */
+  static inview(item) {
+    const rect = item.getBoundingClientRect();
+    const itemT = rect.top;
+    const itemB = itemT + rect.height;
+
+    return itemB > 0 && itemT < window.innerHeight;
+  }
+
   /**
    * 加载图片
    * @param {HTMLElement} loader - 正在操作的loader
+   * @param {string} [className='image'] - 图片要添加的类名
    * @private
    */
-  static loadImage(loader) {
+  static loadImage(loader, className = 'image') {
     const reserved = ['src', 'alt', 'crossorigin'];
 
     return new Promise((resolve, reject) => {
-      const img = new window.Image();
-      img.classList.add('image', 'image--full');
+      const img = new Image();
+      img.classList.add(className, `${className}--full`);
 
       Object.entries(loader.dataset).forEach(([key, val]) => {
         if (reserved.includes(key)) {
@@ -66,8 +80,8 @@ class ImageLoader extends Util {
         }
       });
 
-      img.onload = (e) => {
-        resolve(e.target);
+      img.onload = () => {
+        resolve(img);
       };
 
       img.onerror = () => {
@@ -77,22 +91,65 @@ class ImageLoader extends Util {
   }
 
   /**
-   * 新建Menu实例
-   * @param {string} [group] - 组件分类
-   * @augments {Util}
+   * 新建ImageLoader实例
+   * @param {string} [group='main'] - 组件分类
+   * @param {Object} [opts={}] - 配置
+   * @param {string} [opts.replace='replace'] - 未完成替换元素的类名
+   * @param {string} [opts.done='done'] - 替换成功元素的类名
+   * @param {string} [opts.error='error'] - 替换失败元素的类名
+   * @param {string} [opts.image='image'] - 图片类名
+   * @augments {Group}
    */
-  constructor(group) {
+  constructor(group = 'main', opts = {}) {
     super(group);
 
+    if (typeof opts !== 'object' || !opts) {
+      throw new TypeError('not an Object');
+    }
+
+    const {
+      replace = 'replace',
+      done = 'done',
+      error = 'error',
+      image = 'image',
+    } = opts;
+
+    this._options = {
+      replace,
+      done,
+      error,
+      image,
+    };
+
+    Object.freeze(this._options);
+
     /**
-     * 所有image-loader组件，live HTMLCollection
-     * @type {HTMLCollection}
-     * @public
+     * 状态
+     * @type {Object}
+     * @property {HTMLElement} loader - 当前loader
+     * @property {number} status - 当前loader所处状态
      */
-    this.loaders = document.getElementsByClassName('image-loader replace');
+    this.state = {
+      loader: null,
+      status: PROCESS_DONE,
+    };
 
     // 添加默认observer
-    this.attach(styleObserver());
+    this.attach(styleObserver(this.options));
+  }
+
+  /**
+   * 读取配置
+   * @type {Object}
+   * @property {string} replace - 未完成替换元素的类名
+   * @property {string} done - 替换成功元素的类名
+   * @property {string} error - 替换失败元素的类名
+   * @property {string} image - 图片类名
+   * @desc 初始化后不应该被修改，为避免修改而添加getter
+   * @public
+   */
+  get options() {
+    return Object.assign({}, this._options);
   }
 
   /**
@@ -104,10 +161,10 @@ class ImageLoader extends Util {
   done(loader, image) {
     loader.appendChild(image);
 
-    this.subject.state = {
+    this.setState({
       loader,
       status: PROCESS_DONE,
-    };
+    });
   }
 
   /**
@@ -116,26 +173,36 @@ class ImageLoader extends Util {
    * @private
    */
   error(loader) {
-    this.subject.state = {
+    this.setState({
       loader,
       status: PROCESS_ERROR,
-    };
+    });
   }
 
   /**
    * 延时加载，遍历loaders查找符合条件loader
+   * @param {string} [className='image-loader'] - 目标元素类名
    * @return {Promise}
    * @public
    */
-  lazyload() {
-    const loaders = Array.from(this.loaders).map((loader) => {
+  load(className = 'image-loader') {
+    const {
+      replace,
+      image: imgName,
+    } = this.options;
+
+    const list = Array.from(
+      document.getElementsByClassName(`${className} ${replace}`),
+    );
+
+    return Promise.all(list.map((loader) => {
       if (this.constructor.inview(loader)) {
-        this.subject.state = {
+        this.setState({
           loader,
           status: PROCESS_START,
-        };
+        });
 
-        return this.constructor.loadImage(loader).then((image) => {
+        return this.constructor.loadImage(loader, imgName).then((image) => {
           this.done(loader, image);
 
           return {
@@ -153,10 +220,11 @@ class ImageLoader extends Util {
       }
 
       return false;
-    });
-
-    return Promise.all(loaders);
+    }));
   }
 }
 
 export default ImageLoader;
+export {
+  styleObserver,
+};

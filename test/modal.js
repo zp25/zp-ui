@@ -1,206 +1,110 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import { JSDOM } from 'jsdom';
 import Modal from '../src/modal';
-import Util from '../src/util';
+import Group from '../src/group';
 
-chai.should();
-
-const loading = () => {
-  const arr = [...new Array(12).keys()].map(d => d + 1);
-
-  const circles = arr.reduce((prev, d) => (
-    `${prev}<span class="loading__circle loading__circle--${d}"></span>`
-  ), '');
-
-  return `<div class="loading">${circles}</div>`;
-};
-
-const domStr = `
-<!DOCTYPE html>
-<html>
-<body>
-  <div class="modal" data-group="main">
-    <div class="modal__dialog modal__dialog--loading">
-      ${loading()}
-    </div>
-    <div class="modal__dialog modal__dialog--message">
-      <p class="message"></p>
-    </div>
-  </div>
-</body>
-</html>
-`;
+const { expect } = chai;
 
 describe('Modal', () => {
   describe('Basic', () => {
-    let modal = null;
+    it('Extends Group', () => {
+      const modal = new Modal();
 
-    before(() => {
-      const window = new JSDOM(domStr).window;
-      global.document = window.document;
-
-      modal = new Modal('main');
+      expect(modal).to.be.an.instanceof(Group);
     });
 
-    it('Extends: Util', () => {
-      modal.should.be.an.instanceof(Util);
+    it('group, 不传入能初始化为main', () => {
+      const modal = new Modal();
+
+      expect(modal.group).to.equal('main');
     });
 
-    /**
-     * Properties
-     */
-    it('Prop: modal, 容器实例', () => {
-      const target = document.querySelector('.modal');
+    it('state, 初始化指定值', () => {
+      const modal = new Modal();
 
-      modal.modal.should.be.eql(target);
-    });
-  });
-
-  describe('Methods', () => {
-    let modal = null;
-    // dialogs
-    let loading = null;
-    let prompt = null;
-
-    const activeName = 'modal--active';
-    const dialogName = 'modal__dialog';
-    const dialogActive = 'modal__dialog--active';
-
-    const msgList = [
-      ['custome message', 'custome message'],
-      [NaN, 'NaN'],
-      [0, '0'],
-      [false, 'false'],
-      [undefined, ''],
-      [null, 'null'],
-      [[], ''],
-      [{}, '[object Object]'],
-      ['<script>alert(\'&\');</script>', '&lt;script&gt;alert(\'&amp;\');&lt;/script&gt;'],
-    ];
-
-    beforeEach(() => {
-      const window = new JSDOM(domStr).window;
-      global.document = window.document;
-
-      modal = new Modal('main');
-
-      loading = document.querySelector('.modal__dialog--loading');
-      prompt = document.querySelector('.modal__dialog--message');
-    });
-
-    it('初始态modal、dialogs都隐藏', () => {
-      const state = {
-        'loading': false,
-        'message': false,
-      };
-
-      const result = {
-        'loading': loading.classList.contains(dialogActive),
-        'message': prompt.classList.contains(dialogActive),
-      };
-
-      // modal状态
-      modal.modal.classList.contains(activeName).should.be.false;
-      // dialog状态
-      result.should.be.eql(state);
-    });
-
-    it('prompt, 正确显示modal并切换dialog，可自定义message', () => {
-      const [raw, encoded] = msgList[0];
-      const state = {
-        'loading': false,
-        'message': true,
-      };
-
-      modal.prompt('message', raw);
-
-      const result = {
-        'loading': loading.classList.contains(dialogActive),
-        'message': prompt.classList.contains(dialogActive),
-      };
-
-      // modal状态
-      modal.modal.classList.contains(activeName).should.be.true;
-      // dialog状态
-      result.should.be.eql(state);
-      // 自定义message
-      prompt.querySelector('.message').innerHTML.should.equal(encoded);
-    });
-
-    it('prompt, 无匹配dialog将抛出Error', () => {
-      const func = () => { modal.prompt('nopanel'); };
-
-      func.should.throw(Error);
-    });
-
-    it('prompt, 能处理多种数据类型message', () => {
-      msgList.forEach(([raw, encoded]) => {
-        modal.prompt('message', raw);
-        prompt.querySelector('.message').innerHTML.should.equal(encoded);
+      expect(modal.state).to.eql({
+        modal: false,
+        dialog: '',
       });
     });
 
-    it('loading, loading效果，prompt语法糖', () => {
-      const spy = sinon.spy(modal, 'prompt');
-
-      modal.loading();
-
-      spy.calledWithExactly('loading').should.be.true;
+    it('currentState, 可准确转换状态', () => {
+      expect(Modal.currentState(true)).to.equal('visible');
+      expect(Modal.currentState(false)).to.equal('hidden');
     });
 
-    it('open, 显示modal，不显示任何dialog', () => {
-      const state = {
-        'loading': false,
-        'message': false,
-      };
+    it('currentState, 接收非boolean参数抛出TypeError', () => {
+      const str = () => { Modal.currentState(''); };
+      const num = () => { Modal.currentState(1); };
+      const obj = () => { Modal.currentState({}); };
 
-      modal.open();
+      expect(str).to.throw(TypeError);
+      expect(num).to.throw(TypeError);
+      expect(obj).to.throw(TypeError);
+    });
+  });
 
-      const result = {
-        'loading': loading.classList.contains(dialogActive),
-        'message': prompt.classList.contains(dialogActive),
-      };
-
-      // modal状态
-      modal.modal.classList.contains(activeName).should.be.true;
-      // dialog状态
-      result.should.be.eql(state);
+  describe('Methods', function() {
+    beforeEach(function() {
+      this.modal = new Modal('main');
     });
 
-    it('close, 隐藏modal，不显示任何dialog', () => {
-      const state = {
-        'loading': false,
-        'message': false,
-      };
+    it('prompt, 从关闭状态进入modal开启状态', function() {
+      const dialog = 'dialog';
 
-      // testA
-      modal.loading();
-      modal.close();
+      this.modal.prompt(dialog);
 
-      const resultA = {
-        'loading': loading.classList.contains(dialogActive),
-        'message': prompt.classList.contains(dialogActive),
-      };
+      expect(this.modal.state).to.eql({
+        modal: true,
+        dialog,
+      });
+    });
 
-      // modal状态
-      modal.modal.classList.contains(activeName).should.be.false;
-      // dialog状态
-      resultA.should.be.eql(state);
+    it('prompt, 从任意开启状态进入开启状态, 切换dialog', function() {
+      const prev = 'prev';
+      const next = 'next';
 
-      // testB
-      modal.prompt('message', 'foo_bar_baz');
-      modal.close();
+      this.modal.prompt(prev);
+      this.modal.prompt(next);
 
-      const resultB = {
-        'loading': loading.classList.contains(dialogActive),
-        'message': prompt.classList.contains(dialogActive),
-      };
+      expect(this.modal.state).to.eql({
+        modal: true,
+        dialog: next,
+      });
+    });
 
-      // modal状态
-      modal.modal.classList.contains(activeName).should.be.false;
-      // dialog状态
-      resultB.should.be.eql(state);
+    it('loading, 开启modal, dialog切换到loading', function() {
+      this.modal.loading();
+
+      expect(this.modal.state).to.eql({
+        modal: true,
+        dialog: 'loading',
+      });
+    });
+
+    it('open, 仅开启modal, 没有dialog显示', function() {
+      this.modal.open();
+
+      expect(this.modal.state).to.eql({
+        modal: true,
+        dialog: '',
+      });
+    });
+
+    it('close, 从开启状态能进入关闭状态', function() {
+      this.modal.prompt('dialog');
+      this.modal.close();
+
+      expect(this.modal.state).to.eql({
+        modal: false,
+        dialog: '',
+      });
+    });
+
+    it('close, 关闭状态会维持，不会尝试修改state', function() {
+      const result = this.modal.close();
+
+      expect(result).to.be.false;
     });
   });
 });
