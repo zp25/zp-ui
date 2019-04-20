@@ -63,17 +63,6 @@ html {
   }
 }
 
-:root {
-  --black: #151513;
-  --white: #fff;
-  --grey: #808080;
-  --darkgrey: #a9a9a9;
-  --lightgrey: #d3d3d3;
-  --red: #f00;
-  --green: #008000;
-  --blue: #00f;
-}
-
 @function rootFontSize($base) {
   $layout: 375;
   @return ($base / $layout) * 100px;
@@ -114,8 +103,21 @@ html {
   }
 }
 
-// ipad pro
+// ipad pro 1024*1366
 @media only screen and (min-width: 1024px) {
+  html {
+    font-size: rootFontSize(1024) !important;
+  }
+}
+
+// ipad 768*1024
+@media only screen and (orientation: landscape) and (min-width: 1024px) {
+  html {
+    font-size: rootFontSize(375) !important;
+  }
+}
+
+@media only screen and (min-width: 1080px) {
   html {
     font-size: rootFontSize(375) !important;
   }

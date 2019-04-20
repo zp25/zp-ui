@@ -17,16 +17,7 @@
     }
 
     &.image--full {
-      position: absolute;
-      left: 0;
-      top: 0;
       animation: reveal 1s ease-out;
-    }
-  }
-
-  &.loaded {
-    .image--thumbnail {
-      opacity: 0;
     }
   }
 
