@@ -8,10 +8,11 @@
 + constants，常量
 + src
   + carousel
-  + group，通用类，示例见example分支的menu
+  + group，通用类
   + imageLoader
   + modal
-  + util
+  + swipe
+  + swipeCarousel
 + styles
   + _func.scss
   + _root.scss
@@ -22,7 +23,7 @@
 
 使用观察者模式管理状态切换
 
-自定义观察者(observer)必须包含`update`方法，接收被观察者(subject)的当前状态和原状态。使用Subject实例方法`attach(), detach()`管理观察者，参数接收`(Observer|Array.<Observer>)`。
+自定义观察者(observer)必须包含`update`方法，接收目标(subject)的当前状态和原状态。使用目标实例方法`attach(), detach()`管理观察者，参数接收`(Observer|Array.<Observer>)`。
 
 ~~~javascript
 const customObserver = () => ({
@@ -46,12 +47,11 @@ menu添加自定义观察者示例。当menu状态切换到打开main页时将�
 
 浏览器支持情况
 
-    last 1 version
-    > 1%
-    not IE 11
-    not dead
+~~~bash
+npx browserslist
+~~~
 
-.browserslistrc配置
+见.browserslistrc
 
 ## 测试和文档
 
