@@ -54,6 +54,10 @@ class Swipe extends Group {
 
   /**
    * 获取尺寸信息
+   * @param {number} x0 - 起始x坐标
+   * @param {number} y0 - 起始y坐标
+   * @param {number} x1 - 结束x坐标
+   * @param {number} y1 - 结束y坐标
    * @return {Dimention} 尺寸信息
    * @public
    */
@@ -115,24 +119,26 @@ class Swipe extends Group {
      * @ignore
      */
     return (e) => {
-      const {
-        clientX,
-        clientY,
-      } = this.constructor.unify(e);
-      const pos = {
-        clientX,
-        clientY,
-      };
-
       const { swipe: currentState } = this.state;
       const nextState = swipeMachine(currentState)(action);
 
-      if (nextState === 'start') {
-        this.swipeStart(pos);
-      } else if (nextState === 'move') {
-        this.swipeMove(pos);
-      } else if (nextState === 'end') {
-        this.swipeEnd(pos);
+      if (nextState) {
+        const {
+          clientX,
+          clientY,
+        } = this.constructor.unify(e);
+        const pos = {
+          clientX,
+          clientY,
+        };
+
+        if (nextState === 'start') {
+          this.swipeStart(pos);
+        } else if (nextState === 'move') {
+          this.swipeMove(pos);
+        } else if (nextState === 'end') {
+          this.swipeEnd(pos);
+        }
       }
     };
   }
