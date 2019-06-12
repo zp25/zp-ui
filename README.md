@@ -17,7 +17,7 @@
   + _func.scss
   + _root.scss
 
-默认颜色通过css custom properties设置。
+其中`_func.scss`中`$rem`默认100px，可设置覆盖
 
 ## Observer
 
@@ -27,7 +27,7 @@
 
 ~~~javascript
 const customObserver = () => ({
-  update: (state, prevState) => {
+  update(state, prevState) {
     const { page: currentPage } = state;
     const { page: prevPage } = prevState;
 
