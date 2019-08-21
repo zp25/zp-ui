@@ -149,7 +149,7 @@ class ImageLoader extends Group {
    * @public
    */
   get options() {
-    return Object.assign({}, this._options);
+    return { ...this._options };
   }
 
   /**

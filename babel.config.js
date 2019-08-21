@@ -2,27 +2,29 @@ module.exports = (api) => {
   const presets = [];
 
   if (api.env() === 'test') {
-    presets.push('@babel/preset-env');
+    presets.push([
+      '@babel/preset-env',
+      {
+        useBuiltIns: 'usage',
+        corejs: 3,
+      },
+    ]);
   } else {
     presets.push([
       '@babel/preset-env',
       {
         modules: false,
-        useBuiltIns: 'usage',
-        corejs: 3,
+        useBuiltIns: false,
       },
     ]);
   }
 
   const plugins = [
-    '@babel/plugin-syntax-dynamic-import',
-    '@babel/plugin-syntax-import-meta',
     '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-proposal-json-strings',
     [
       '@babel/plugin-proposal-decorators',
       {
-        legacy: true,
+        decoratorsBeforeExport: false,
       },
     ],
     '@babel/plugin-proposal-export-namespace-from',
