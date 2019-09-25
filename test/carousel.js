@@ -68,13 +68,6 @@ describe('Carousel', () => {
 
       carousel.setState({ focus: 666 });
       expect(carousel.focus).to.equal(666);
-    })
-
-    it('focus, 总是返回数字', () => {
-      const carousel = new Carousel();
-
-      carousel.setState({ focus: 'str' });
-      expect(carousel.focus).to.be.a('number');
     });
 
     it('默认关闭autoplay, 没有定时器', () => {

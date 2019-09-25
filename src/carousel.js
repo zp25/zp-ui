@@ -35,16 +35,16 @@ class Carousel extends Group {
     }
 
     const {
-      length = 1,
-      focus = 1,
-      delay = 8000,
+      length,
+      focus,
+      delay,
     } = opts;
 
     // Carousel配置，不可变
     this._options = {
-      length,
-      focus,
-      delay,
+      length: ~~length || 1,
+      focus: ~~focus || 1,
+      delay: ~~delay || 8000,
     };
 
     Object.freeze(this._options);
@@ -80,7 +80,7 @@ class Carousel extends Group {
   get focus() {
     const { focus } = this.state;
 
-    return Number(focus) || 0;
+    return focus;
   }
 
   /**
@@ -120,7 +120,7 @@ class Carousel extends Group {
       length,
     } = this.options;
 
-    const nextid = Number(to);
+    const nextid = ~~to;
 
     this.setState({
       focus: nextid > 0 && nextid <= length ? nextid : initFocus,
@@ -130,7 +130,7 @@ class Carousel extends Group {
   }
 
   /**
-   * 获取下一播放页编号，若首次运行(this.focus空)，聚焦到this.options.focus
+   * 获取下一播放页编号，若首次运行或this.focus不规范，聚焦到this.options.focus
    * @param {boolean} reverse=false - 是否反向播放，反向指播放页编号比当前页小1
    * @return {number} 下一页编号
    * @protected
@@ -142,17 +142,18 @@ class Carousel extends Group {
       length,
     } = this.options;
 
-    let result = initFocus;
+    const focus = ~~this.focus;
 
-    if (this.focus) {
-      if (reverse) {
-        result = this.focus <= 1 ? length : this.focus - 1;
-      } else {
-        result = this.focus >= length ? 1 : this.focus + 1;
-      }
+    // 首次执行或不规范focus
+    if (!focus) {
+      return initFocus;
     }
 
-    return result;
+    if (reverse) {
+      return focus <= 1 ? length : focus - 1;
+    }
+
+    return focus >= length ? 1 : focus + 1;
   }
 
   /**
