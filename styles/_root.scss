@@ -44,23 +44,30 @@ a:hover {
 
 html {
   font-size: 100px;
+  scroll-behavior: smooth;
+}
 
-  body {
-    // @link https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
-    // @link http://markdotto.com/2018/02/07/github-system-fonts/
-    font-family: -apple-system, BlinkMacSystemFont,
-      'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-      'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      'PingFang SC', 'Microsoft YaHei', sans-serif;
-    line-height: 1.5;
-
-    /**
-     * 文本平滑属性, 仅Mac OS X/macOS
-     * @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth
-     */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
+}
+
+body {
+  // @link https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
+  // @link http://markdotto.com/2018/02/07/github-system-fonts/
+  font-family: -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'PingFang SC', 'Microsoft YaHei', sans-serif;
+  line-height: 1.5;
+
+  /**
+   * 文本平滑属性, 仅Mac OS X/macOS
+   * @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth
+   */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @function rootFontSize($base) {
